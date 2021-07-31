@@ -1,41 +1,44 @@
 class Tournament:
-    def __index__(
-            self,
-            name,
-            location,
-            tournament_players,
-            time_control,
-            description,
-            total_round_number=4
-    ):
+    def __init__(self, name, location, tournament_players, time_control, description, total_round_number=4):
         self.name = name
         self.location = location
-        self.begin_date = "le 12/12/12"  #current_date
-        self.end_date = ""  # obligé de renseigner dans init ???
+        self.begin_date = "le 12/12/12"  # current_date
+        self.end_date = None  # obligé de renseigner dans init ???
         self.rounds = []
         self.total_round_number = total_round_number
         self.round_count = 0
         self.tournament_players = tournament_players
         self.time_control = time_control
         self.description = description
+        for player in self.tournament_players:
+            player.tournament_score = 0
 
     def generate_rounds(self):
         if self.round_count == 0:
-            round.pair_by_elo()
-
-            self.round_count += 1
-        elif self.round_count < 4:
-            Round.pair_by_score()
-            self.round_number += 1
+            round1 = Round("round1")
+            round1.pair_by_elo(self.tournament_players)
+        elif self.round_count == 2:
+            round2 = Round("round2")
+            round2.pair_by_score(self.rounds[self.round_count], self.tournament_players)
+        self.round_count += 1
 
     def end_tournament(self):
         self.end_date = "le 12/12/12"  #current_date
 
+    def serialize(self):
+        pass
+
+    @classmethod
+    def deserialize(cls, dictionary):
+        # return Tournament(dictionary[2][2])
+        pass
+
+
 
 class Round:
-    def __init__(self, name, matches):
+    def __init__(self, name):
         self.name = name
-        self.matches = matches
+        self.matches = []
         self.begin_time = "le 12/12/12 a 12:12:12"  #current_time
         self.end_time = ""
 
@@ -47,7 +50,7 @@ class Round:
         match2 = Match(players[2], players[3])
         self.matches = [match1, match2]  # make matches with the two lists
 
-    def pair_by_ranking(self):
+    def pair_by_score(self, players):
         pass
         # associate with swiss tournament algorithm
         # make matches
@@ -57,18 +60,26 @@ class Round:
             match.input_result()
         self.end_time = "le 12/12/12 a 12:12:12"  #current_time
 
+    def serialize:
+        pass
+
+    def deserialize:
+        pass
 
 class Match:
     def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
-        self.result_player1 = None  #obligé de déclarer dans init ???
-        self.result_player2 = None
+        self.score_player1 = 0  #obligé de déclarer dans init ???
+        self.score_player2 = 0
 
-    def input_result_player1(self):
-        print(f"Match {self.player1.name} vs {self.player2.name}")
-        self.result_player1 = input(f"result of {self.player1.name}")
-        self.result_player2 = input(f"result of {self.player2.name}")
+    def input_scores(self):
+        while self.score_player1 + self.score_player2 != 1:
+            print(f"Match {self.player1.name} vs {self.player2.name}")
+            self.score_player1 = input(f"result of {self.player1.name}")
+            self.score_player2 = input(f"result of {self.player2.name}")
+        self.player1.modify_score(self.score_player1)
+        self.player2.modify_score(self.score_player2)
 
 
 class Player:
@@ -78,9 +89,13 @@ class Player:
         self.birth_date = birth_date
         self.sex = sex
         self.elo_ranking = elo_ranking
+        self.tournament_score = 0
 
     def modify_elo(self, new_elo):
         self.elo_ranking = new_elo
+
+    def modify_score(self, last_match_score):
+        self.tournament_score += last_match_score
 
 
 def main():
@@ -91,9 +106,17 @@ def main():
     player4 = Player("Libizeswski", "Fabien", "12/12/12", "M", "2224")
     players = [player1, player2, player3, player4]
 
+
     tournament = Tournament("tournament1", "place1", players, "Bullet", "this is the description of tournament")
 
     while tournament.round_count < 4:
         tournament.generate_rounds()
+        # input scores
+        for match in tournament.rounds[tournament.round_count].matches:
+            match.input_scores()
 
     tournament.end_tournament()
+
+
+if __name__ == "__main__":
+    main()
