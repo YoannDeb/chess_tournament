@@ -13,6 +13,9 @@ class Tournament:
         for player in self.tournament_players:
             player.tournament_score = 0
 
+    def __repr__(self):
+        return repr(f"name : {self.name} | location : {self.location} | total round number : {self.total_round_number} | tournament players : {self.tournament_players}")
+
     def generate_rounds(self):
         if self.round_count == 0:
             self.rounds.append(Round("Round 1"))
@@ -42,25 +45,39 @@ class Round:
         self.end_time = ""
 
     def pair_by_elo(self, players):
-        # order players by elo
-        # split in two lists
-        for player in players[::2]:
-            self.matches.append(Match(player, player))
- # make matches with the two lists
+        """
+        Orders players by elo, separate in two lists from the middle, zip the two lists
+        Finally create the matches corresponding to the pairs.
+        :param players: instances of players
+        :return:
+        """
+        players.sort(key=lambda player: player.elo_ranking)
+        players.reverse()
+        first_half_players = players[:2]  # todo: find good way to split in two, and handle odd lenght list of players
+        second_half_players = players[2:]
+        # print(first_half_players)
+        # print(second_half_players)
+        pairs = zip(first_half_players, second_half_players)
+        # print(list(pairs))
+        for pair in pairs:
+            print(pair)
+            self.matches.append(Match(pair[0], pair[1]))
 
     def pair_by_score(self, players):
-        pass
+        players.sort(key=lambda player: player.elo_ranking)
+        players.sort(key=lambda player: player.tournament_score)
+        players.reverse()  # todo check if match already exists and handle odd players number
+        for index in range(0, len(players), 2):
+            self.matches.append(Match(players[index], players[index + 1]))
         # associate with swiss tournament algorithm :
-        # trier par score
         # associer 1 et 2, 2 et 3
         # vérifier si match a déjà existé
         # réassocier joueurs ayant déjà joué ensemble
         # make matches
 
-
     def input_round_result(self):
         for match in self.matches:
-            match.input_result()
+            match.input_scores()
         self.end_time = "le 12/12/12 a 12:12:12"  #current_time
 
     def serialize(self):
@@ -80,6 +97,11 @@ class Match:
                     )
 
     def input_scores(self):
+        """
+        prototype input_score menu, should just become score modification
+        match_data[0] = (first player, first player's score)
+        :return:
+        """
         print(f"Match {self.match_data[0][0].name} vs {self.match_data[1][0].name}")
         self.match_data[0][1] = float(input(f"result of {self.match_data[0][0].name}"))
         self.match_data[1][1] = float(input(f"result of {self.match_data[1][0].name}"))
@@ -114,20 +136,20 @@ def main():
     player4 = Player("Libizeswski", "Fabien", "12/12/12", "M", "2224")
     players = [player1, player2, player3, player4]
 
-
     tournament = Tournament("tournament1", "place1", players, "Bullet", "this is the description of tournament")
 
     while tournament.round_count < tournament.total_round_number:
         tournament.generate_rounds()
+        # input scores, (round_count -1) because round_count already increase in, generate rounds
         print(tournament.rounds[tournament.round_count - 1].name)
-        print(tournament.rounds[tournament.round_count - 1].matches[0].match_data)
-        print(tournament.rounds[tournament.round_count - 1].matches[1].match_data)
-        # input scores, -1 because round_count already increase in, generate rounds
+        print(tournament.rounds[tournament.round_count - 1].matches)
+
         for match in tournament.rounds[tournament.round_count - 1].matches:
             match.input_scores()
             print(match)
 
     tournament.end_tournament()
+    print(tournament)
 
 
 if __name__ == "__main__":
