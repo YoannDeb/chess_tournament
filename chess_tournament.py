@@ -53,22 +53,35 @@ class Round:
         """
         players.sort(key=lambda player: player.elo_ranking)
         players.reverse()
-        first_half_players = players[:2]  # todo: find good way to split in two, and handle odd lenght list of players
-        second_half_players = players[2:]
-        # print(first_half_players)
-        # print(second_half_players)
+        list_middle = int(len(players) / 2)
+        first_half_players = players[:list_middle]
+        # if (len(players) % 2) == 0:
+        second_half_players = players[list_middle:]
+        # else:
+        #     second_half_players = players[list_middle:-1]
+        #     players[-1].modify_tournament_score(1)
+        #     print(players[-1])
+        print(first_half_players)
+        print(second_half_players)
         pairs = zip(first_half_players, second_half_players)
         # print(list(pairs))
         for pair in pairs:
             print(pair)
             self.matches.append(Match(pair[0], pair[1]))
+        if (len(players) % 2) == 1:
+            self.matches.append(Match(players[-1]))
 
     def pair_by_score(self, players):
         players.sort(key=lambda player: player.elo_ranking)
         players.sort(key=lambda player: player.tournament_score)
         players.reverse()  # todo check if match already exists and handle odd players number
         for index in range(0, len(players), 2):
-            self.matches.append(Match(players[index], players[index + 1]))
+            if players[index] != players[-1]:
+                self.matches.append(Match(players[index], players[index + 1]))
+            else:
+                self.matches.append(Match(players[index]))
+        # todo verifier que le match n'existe pas déjà
+        # todo corriger la liste si c'est le cas
         # associate with swiss tournament algorithm :
         # associer 1 et 2, 2 et 3
         # vérifier si match a déjà existé
@@ -88,13 +101,16 @@ class Round:
 
 
 class Match:
-    def __init__(self, player1, player2):
+    def __init__(self, player1, player2="Unpaired"):
         self.match_data = ([player1, 0], [player2, 0])
 
     def __repr__(self):
-        return repr(f"{self.match_data[0][0].name} {self.match_data[0][0].surname}; score : {self.match_data[0][1]} | "
-                    f"{self.match_data[1][0].name} {self.match_data[1][0].surname}; score : {self.match_data[1][1]}"
-                    )
+        if self.match_data[1][0] != "Unpaired":
+            return repr(f"{self.match_data[0][0].name} {self.match_data[0][0].surname}; score : {self.match_data[0][1]} | "
+                        f"{self.match_data[1][0].name} {self.match_data[1][0].surname}; score : {self.match_data[1][1]}"
+                        )
+        else:
+            return repr(f"{self.match_data[0][0].name} {self.match_data[0][0].surname}; score : {self.match_data[0][1]} was unpaired for this round")
 
     def input_scores(self):
         """
@@ -102,11 +118,17 @@ class Match:
         match_data[0] = (first player, first player's score)
         :return:
         """
-        print(f"Match {self.match_data[0][0].name} vs {self.match_data[1][0].name}")
-        self.match_data[0][1] = float(input(f"result of {self.match_data[0][0].name}"))
-        self.match_data[1][1] = float(input(f"result of {self.match_data[1][0].name}"))
-        self.match_data[0][0].modify_tournament_score(self.match_data[0][1])
-        self.match_data[1][0].modify_tournament_score(self.match_data[1][1])
+        if self.match_data[1][0] != "Unpaired":
+            print(f"Match {self.match_data[0][0].name} vs {self.match_data[1][0].name}")
+            self.match_data[0][1] = float(input(f"result of {self.match_data[0][0].name}"))
+            self.match_data[1][1] = float(input(f"result of {self.match_data[1][0].name}"))
+            self.match_data[0][0].modify_tournament_score(self.match_data[0][1])
+            self.match_data[1][0].modify_tournament_score(self.match_data[1][1])
+        else:
+            print(f"Player {self.match_data[0][0].name} {self.match_data[0][0].surname} is unpaired for this round")
+            print("He will receive 1 point")
+            self.match_data[0][1] = float(1)
+            self.match_data[0][0].modify_tournament_score(1)
 
 
 class Player:
@@ -134,7 +156,10 @@ def main():
     player2 = Player("Bacrot", "Etienne", "12/12/12", "M", "2452")
     player3 = Player("Mazetovich", "Sebastien", "12/12/12", "M", "1645")
     player4 = Player("Libizeswski", "Fabien", "12/12/12", "M", "2224")
-    players = [player1, player2, player3, player4]
+    player5 = Player("Bordi", "Kévin", "12/12/12", "M", "1200")
+    player6 = Player("Tkachiev", "Vladimir", "12/12/12", "M", "0850")
+    player7 = Player("Cornette", "Mathieu", "12/12/12", "M", "2000")
+    players = [player1, player2, player3, player4, player5, player6, player7]
 
     tournament = Tournament("tournament1", "place1", players, "Bullet", "this is the description of tournament")
 
