@@ -27,6 +27,8 @@ def main():
 
     tournament.end_tournament()
     print(tournament)
+    for tournament_round in tournament.rounds:
+        print(tournament_round.matches)
 
 
 if __name__ == "__main__":
