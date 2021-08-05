@@ -114,7 +114,28 @@ class Round:
         self.end_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
     def serialize(self):
-        pass
 
-    def deserialize(self):
-        pass
+        serialized_matches = []
+        for match in self.matches:
+            serialized_matches.append(match.serialize())
+
+        serialized_round = {
+            'name': self.name,
+            'matches': serialized_matches,
+            'begin_time': self.begin_time,
+            'end_time': self.end_time,
+        }
+        return serialized_round
+
+    @classmethod
+    def deserialize(cls, serialized_round):
+        deserialized_matches = []
+        for match in serialized_round['matches']:
+            deserialized_matches.append(Match.deserialize(match))
+
+        chess_round = cls(serialized_round['name'])
+        chess_round.matches = deserialized_matches
+        chess_round.begin_time = serialized_round['begin_time']
+        chess_round.end_time = serialized_round['end_time']
+
+        return chess_round
