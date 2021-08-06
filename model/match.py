@@ -1,45 +1,39 @@
+from model.player import Player
+
+
 class Match:
-    def __init__(self, player1, player2="Unpaired"):
-        self.match_data = ([player1, 0], [player2, 0])   # todo players will be ids
+    def __init__(self, player1_id, player2_id):
+        self.match_data = ([player1_id, None], [player2_id, None])
+        self.player1 = Player.get(player1_id)
+        self.player2 = Player.get(player2_id)
 
     def __repr__(self):
-        if self.match_data[1][0] != "Unpaired":
-            return repr(f"{self.match_data[0][0].name} {self.match_data[0][0].surname}; "
-                        f"score : {self.match_data[0][1]} | "
-                        f"{self.match_data[1][0].name} {self.match_data[1][0].surname}; "
-                        f"score : {self.match_data[1][1]}"
-                        )
-        else:
-            return repr(f"{self.match_data[0][0].name} {self.match_data[0][0].surname};"
-                        f" score : {self.match_data[0][1]} was unpaired for this round")
+        return repr(f"player 1: {self.player1.name} {self.player1.surname} ; "
+                    f"score: {self.match_data[0][1]} | "
+                    f"player 2: {self.player2.name} {self.player2.surname} ; "
+                    f"score: {self.match_data[1][1]}"
+                    )
 
     def input_scores(self):
         """
         prototype input_score menu, should just become score modification
-        match_data[0] = (first player, first player's score)
+        match_data[0] = [player1_id, player1 score]
         :return:
         """
-        if self.match_data[1][0] != "Unpaired":
-            print(f"Match {self.match_data[0][0].name} vs {self.match_data[1][0].name}")
-            self.match_data[0][1] = float(input(f"result of {self.match_data[0][0].name}"))
-            self.match_data[1][1] = float(input(f"result of {self.match_data[1][0].name}"))
-            self.match_data[0][0].modify_tournament_score(self.match_data[0][1])
-            self.match_data[1][0].modify_tournament_score(self.match_data[1][1])
-        else:
-            print(
-                f"Player {self.match_data[0][0].name} {self.match_data[0][0].surname} "
-                f"is unpaired for this round"
-            )
-            print("He will receive 1 point")
-            self.match_data[0][1] = float(1)
-            self.match_data[0][0].modify_tournament_score(1)
+        print(f"Match {self.player1.name} vs {self.player2.name}")
+        self.match_data[0][1] = float(input(f"result of {self.player1.name}"))
+        self.match_data[1][1] = float(input(f"result of {self.player2.name}"))
+        self.player1.modify_tournament_score(self.match_data[0][1])
+        self.player2.modify_tournament_score(self.match_data[1][1])
 
     def serialize(self):
-        serialized_match = {'match_data': self.match_data}
-        return serialized_match
+        print(self.match_data)
+        return {'match_data': self.match_data}
 
     @classmethod
     def deserialize(cls, serialized_match):
+        print(serialized_match)
+        print(serialized_match['match_data'])
         match = cls(
             serialized_match['match_data'][0][0],
             serialized_match['match_data'][1][0],
