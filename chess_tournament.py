@@ -1,13 +1,5 @@
-from tinydb import TinyDB
-
 from model.tournament import Tournament
 from model.player import Player
-
-
-def save_tournament(tournament):
-    tournament.save()
-    for player in tournament.tournament_players():
-        player.save()
 
 
 def main():
