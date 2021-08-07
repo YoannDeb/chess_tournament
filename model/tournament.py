@@ -26,9 +26,6 @@ class Tournament:
         self.time_control = time_control
         self.description = description
         self.id = None
-        if self.rounds is None:
-            # self.players_ranking = self.get_players_ranking()
-            self.generate_first_round()
 
     def __repr__(self):
         return repr(
