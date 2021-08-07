@@ -76,6 +76,8 @@ class Round:
         print(sorted_players_id)
         last_players_not_pairable = False
         for index in range(0, len(sorted_players_id), 2):
+            if last_players_not_pairable:
+                break
             index_of_player_to_switch_with = 2
             print(f"checking player in position {index} id = {sorted_players_id[index]} with player in position {index + 1} id = {sorted_players_id[index + 1]}")
             while self.check_if_previous_encounter(sorted_players_id[index], sorted_players_id[index + 1], rounds):
@@ -85,6 +87,7 @@ class Round:
                     if index <= len(sorted_players_id) - 4:
                         sorted_players_id[index + 1], sorted_players_id[index + index_of_player_to_switch_with - 1] = sorted_players_id[index + index_of_player_to_switch_with - 1], sorted_players_id[index + 1]
                     last_players_not_pairable = True
+                    print(f"players before rearangement {sorted_players_id}")
                     break
                 sorted_players_id[index + 1], sorted_players_id[index + index_of_player_to_switch_with] = sorted_players_id[index + index_of_player_to_switch_with], sorted_players_id[index + 1]
                 print(f"nouvelle liste réarrangée : {sorted_players_id}")
@@ -114,6 +117,7 @@ class Round:
             self.matches.append(([sorted_players_id[index], None], [sorted_players_id[index + 1], None]))
 
     def input_round_result(self):
+        """ à modifier quand plus d'input dans le test"""
         for match in self.matches:
             player1_name = Player.get(match[0][0]).name
             player2_name = Player.get(match[1][0]).name
