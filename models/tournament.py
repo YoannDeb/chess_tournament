@@ -2,8 +2,8 @@ from datetime import datetime
 
 from tinydb import TinyDB
 
-from model.round import Round
-from model.player import Player
+from models.round import Round
+from models.player import Player
 
 
 class Tournament:

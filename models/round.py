@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from model.player import Player
+from models.player import Player
 
 
 class Round:

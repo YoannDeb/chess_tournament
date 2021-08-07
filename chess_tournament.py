@@ -1,5 +1,5 @@
-from model.tournament import Tournament
-from model.player import Player
+from models.tournament import Tournament
+from models.player import Player
 
 
 def main():
