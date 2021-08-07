@@ -111,6 +111,18 @@ class Tournament:
         tournament.rounds = deserialized_rounds
         return tournament
 
+    @classmethod
+    def get(cls, tournament_id):
+        """
+        Take id and return instance of tournament from the tournaments table in db.json.
+        update the tournament id parameter
+        :param tournament_id:
+        :return:
+        """
+        tournament = cls.deserialize(TinyDB('db.json').table('tournaments').get(doc_id=tournament_id))
+        tournament.id = tournament_id
+        return tournament
+
     def store_in_database(self):
         return TinyDB('db.json').table('tournaments').insert(self.serialize())
 
