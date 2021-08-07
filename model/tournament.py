@@ -3,7 +3,7 @@ from datetime import datetime
 from tinydb import TinyDB
 
 from model.round import Round
-from model.match import Match
+from model.player import Player
 
 
 class Tournament:
@@ -21,29 +21,43 @@ class Tournament:
         self.end_date = None
         self.rounds = []
         self.total_round_number = total_round_number
-        self.tournament_players_id = tournament_players_id
+        self.players_id = tournament_players_id
+        # self.players_ranking = []
         self.time_control = time_control
         self.description = description
         self.id = None
-
-    def tournament_players(self):
-        tournament_players = []
-        for match in self.rounds[0].matches:
-            tournament_players.append(match.player1)
-            tournament_players.append(match.player2)
-        return tournament_players
 
     def __repr__(self):
         return repr(
             f"name : {self.name} | "
             f"location : {self.location} | "
             f"total round number : {self.total_round_number} | "
-            f"tournament players : {self.tournament_players()}"
+            f"tournament players : {self.get_players()}"
         )
+
+    def get_players(self):
+        return [Player.get(player_id) for player_id in self.players_id]
+
+    # def get_players_ranking(self):
+    #     return [player.elo_ranking for player in self.get_players()]
+
+    def players_score(self):
+        players_score = []
+        for player_id in self.players_id:
+            score = 0.0
+            for chess_round in self.rounds:
+                for match in chess_round.matches:
+                    if None not in match:
+                        if player_id == match[0][0]:
+                            score += match[0][1]
+                        elif player_id == match[1][0]:
+                            score += match[1][1]
+            players_score.append(score)
+        return players_score
 
     def generate_first_round(self):
         self.rounds.append(Round("Round 1"))
-        self.rounds[0].pair_by_elo(self.tournament_players_id)
+        self.rounds[0].pair_by_elo(self.players_id)
         self.save()
         self.rounds[0].input_round_result()
         self.save()
@@ -51,7 +65,7 @@ class Tournament:
     def generate_following_round(self):
         self.rounds.append(Round(f"Round {len(self.rounds) + 1}"))
         print(self.rounds[-1].name)
-        self.rounds[-1].pair_by_score(self.tournament_players_id, self.rounds)
+        self.rounds[-1].pair_by_score(self.players_id, self.players_score(), self.rounds)
         self.save()
         self.rounds[-1].input_round_result()
         self.save()
@@ -72,7 +86,7 @@ class Tournament:
             'end_date': self.end_date,
             'rounds': serialized_rounds,
             'total_round_number': self.total_round_number,
-            'players_id': self.tournament_players_id,
+            'players_id': self.players_id,
             'time_control': self.time_control,
             'description': self.description
         }
@@ -87,7 +101,7 @@ class Tournament:
         tournament = cls(
             serialized_tournament['name'],
             serialized_tournament['location'],
-            serialized_tournament['tournament_players_id'],
+            serialized_tournament['players_id'],
             serialized_tournament['time_control'],
             serialized_tournament['description'],
             serialized_tournament['total_round_number']
@@ -95,7 +109,6 @@ class Tournament:
         tournament.begin_date = serialized_tournament['begin_date']
         tournament.end_date = serialized_tournament['end_date']
         tournament.rounds = deserialized_rounds
-        tournament.round_count = serialized_tournament['round_count']
         return tournament
 
     def store_in_database(self):

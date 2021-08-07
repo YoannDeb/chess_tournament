@@ -1,13 +1,5 @@
-from tinydb import TinyDB
-
 from model.tournament import Tournament
 from model.player import Player
-
-
-def save_tournament(tournament):
-    tournament.save()
-    for player in tournament.tournament_players():
-        player.save()
 
 
 def main():
@@ -23,9 +15,14 @@ def main():
     player6 = Player("Vladimir", "Tkachiev", "12/12/12", "M", "0850")
     player7 = Player("Mathieu", "Cornette", "12/12/12", "M", "2000")
     player8 = Player("Alireza", "Firouja", "12/12/12", "M", "2500")
-    players = [player1, player2, player3, player4, player5, player6, player7, player8]
 
-    print(player1.id)
+    test = player1.serialize()
+    print(test)
+    playertest = Player.deserialize(test)
+    print(playertest)
+
+
+    players = [player1, player2, player3, player4, player5, player6, player7, player8]
 
     # serialized_players = []
     # for player in players:
@@ -57,17 +54,16 @@ def main():
         #     print(match)
 
     tournament.end_tournament()
-    print(tournament)
 
-    # print("tournament", tournament)
-    # # serialization test
-    # serialized_tournament = tournament.serialize()
-    # print("serialized_tournament", serialized_tournament)
-    # tournament2 = Tournament.deserialize(serialized_tournament)
-    # print("serialized then deserialized tournament", tournament2)
-    # print("tournament rounds", tournament.rounds)
-    # for tournament_round in tournament.rounds:
-    #     print(tournament_round.matches)
+    print("tournament", tournament)
+    # serialization test
+    serialized_tournament = tournament.serialize()
+    print("serialized_tournament", serialized_tournament)
+    tournament2 = Tournament.deserialize(serialized_tournament)
+    print("serialized then deserialized tournament", tournament2)
+    print("tournament rounds", tournament.rounds)
+    for tournament_round in tournament.rounds:
+        print(tournament_round.matches)
 
 
 if __name__ == "__main__":

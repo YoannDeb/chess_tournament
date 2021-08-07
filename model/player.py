@@ -17,21 +17,11 @@ class Player:
             f"nom : {self.name} {self.surname}, "
             f"né le {self.birth_date}, "
             f"sexe : {self.sex}, "
-            f"classement Elo : {self.elo_ranking}, "
-            f"score dans le tournoi : {self.tournament_score}"
+            f"classement Elo : {self.elo_ranking}"
         )
 
     def modify_elo(self, new_elo):
         self.elo_ranking = new_elo
-        self.save()
-
-    def modify_tournament_score(self, last_match_score):
-        print(self.tournament_score)
-        if self.tournament_score is None:
-            self.tournament_score = 0
-        print(self.tournament_score)
-        self.tournament_score += last_match_score
-        print(self.tournament_score)
         self.save()
 
     def serialize(self):
@@ -41,9 +31,7 @@ class Player:
             'birth_date': self.birth_date,
             'sex': self.sex,
             'elo_ranking': self.elo_ranking,
-            'tournament_score': self.tournament_score
         }
-        print("score of serialized player", self.name, self.tournament_score)
         return serialized_player
 
     @classmethod
@@ -55,8 +43,6 @@ class Player:
             serialized_player['sex'],
             serialized_player['elo_ranking'],
         )
-        player.tournament_score = serialized_player['tournament_score']
-        print("score of deserialized player", player.name, player.tournament_score)
         return player
 
     @classmethod
