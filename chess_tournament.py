@@ -16,12 +16,15 @@ def main():
     player7 = Player("Mathieu", "Cornette", "12/12/12", "M", "2000")
     player8 = Player("Alireza", "Firouja", "12/12/12", "M", "2500")
 
-    test = player5.serialize()
-    print(test)
-    playertest = Player.deserialize(test)
-    print(playertest)
+    # test = player5.serialize()
+    # print(test)
+    # playertest = Player.deserialize(test)
+    # print(playertest)
 
-    players = [player1, player2, player3, player4, player5, player6, player7, player8]
+    players = [
+        player1, player2, player3, player4,
+        player5, player6, player7, player8
+    ]
 
     # serialized_players = []
     # for player in players:
@@ -32,9 +35,15 @@ def main():
     # players_table.truncate()
     # players_table.insert_multiple(serialized_players)
 
-    for player in players:
-        player.save()
-        print(player.id)
+    # for player in players:
+    #     player.save('db.json')
+        # print(player.id)
+
+    players = Player.get_all('db.json')
+    print(players)
+
+    breakpoint()
+
 
     players_id = [player.id for player in players]
 
