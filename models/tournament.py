@@ -22,7 +22,7 @@ class Tournament:
         self.rounds = []
         self.total_round_number = total_round_number
         self.players_id = tournament_players_id
-        # self.players_ranking = []
+        # self.players_elo_ranking = []
         self.time_control = time_control
         self.description = description
         self.id = None
@@ -36,9 +36,9 @@ class Tournament:
         )
 
     def get_players(self):
-        return [Player.get(player_id) for player_id in self.players_id]
+        return [Player.get(player_id, ) for player_id in self.players_id]
 
-    # def get_players_ranking(self):
+    # def get_players_elo_ranking(self):
     #     return [player.elo_ranking for player in self.get_players()]
 
     def players_score(self):
@@ -112,25 +112,34 @@ class Tournament:
         return tournament
 
     @classmethod
-    def get(cls, tournament_id):
+    def get(cls, tournament_id, database_file):
         """
-        Take id and return instance of tournament from the tournaments table in db.json.
-        update the tournament id parameter
+        Take id and return instance of tournamnent from the tournaments table in database file.
+        update the tournament id attribute
         :param tournament_id:
+        :param database_file:
         :return:
         """
-        tournament = cls.deserialize(TinyDB('db.json').table('tournaments').get(doc_id=tournament_id))
+        tournament = cls.deserialize(TinyDB(database_file).table('tournaments').get(doc_id=tournament_id))
         tournament.id = tournament_id
         return tournament
 
-    def store_in_database(self):
-        return TinyDB('db.json').table('tournaments').insert(self.serialize())
+    @classmethod
+    def get_all(cls, database_file):
+        tournaments = []
+        for tournament in TinyDB(database_file).table('tournaments').all():
+            tournament_id = tournament.doc_id
+            tournaments.append(cls.get(tournament_id, database_file))
+        return tournaments
 
-    def update_in_database(self):
-        TinyDB('db.json').table('tournaments').update(self.serialize(), doc_ids=[self.id])
+    def store_in_database(self, database_file):
+        return TinyDB(database_file).table('tournaments').insert(self.serialize())
 
-    def save(self):
+    def update_in_database(self, database_file):
+        TinyDB(database_file).table('tournaments').update(self.serialize(), doc_ids=[self.id])
+
+    def save(self, database_file):
         if self.id is None:
-            self.id = self.store_in_database()
+            self.id = self.store_in_database(database_file)
         else:
-            self.update_in_database()
+            self.update_in_database(database_file)
