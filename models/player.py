@@ -22,7 +22,6 @@ class Player:
 
     def modify_elo(self, new_elo):
         self.elo_ranking = new_elo
-        self.save()
 
     def serialize(self):
         serialized_player = {
