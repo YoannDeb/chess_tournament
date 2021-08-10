@@ -84,7 +84,6 @@ class PlayersMenuController:
             self.menu_data.add_entry("auto", chess_player, ModifyPlayerEloMenuController(self.players, self.tournaments, chess_player))
 
         self.menu_data.add_entry("c", "Ajouter un joueur", CreatePlayerMenuController(self.players, self.tournaments))
-        self.menu_data.add_entry(None, "Saisissez le numéro du joueur pour le modifier", None)
         if self.sorting == "surname":
             self.menu_data.add_entry("e", "Classement par Elo", PlayersMenuController(self.players, self.tournaments, "elo_ranking"))
         elif self.sorting == "elo_ranking":
