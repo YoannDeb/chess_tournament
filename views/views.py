@@ -30,17 +30,18 @@ class HomeMenuView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        print("Chess Tournament")
+        print("CHESS TOURNAMENT")
         for key in self.menu_data.entries:
             print(f"{key}: {self.menu_data.entries[key][0]}")
         print("")
 
     def get_user_choice(self):
+        self.display_menu()
         while True:
-            self.display_menu()
             choice = input("Saisissez votre choix >>")
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
+            print("/!\\ Choix invalide /!\\")
 
 
 class PlayerMenuView:
@@ -48,17 +49,59 @@ class PlayerMenuView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        print("Menu Joueurs")
+        print("MENU JOUEURS")
+        for header in self.menu_data.headers:
+            print(header)
         for key in self.menu_data.entries:
             print(f"{key}: {self.menu_data.entries[key][0]}")
         print()
 
     def get_user_choice(self):
+        self.display_menu()
         while True:
-            self.display_menu()
-            choice = input("Saisissez le numéro d'un joueur pour modifier son elo, ou choisissez une autre option >>")
+            choice = input("Saisissez le numéro d'un joueur pour modifier son Elo, ou choisissez une autre option >>")
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
+            print("/!\\ Choix invalide /!\\")
+
+
+class PlayerCreationMenuView:
+    def __init__(self, menu_data):
+        self.menu_data = menu_data
+        self.player_attributes = []
+
+    def display_menu(self):
+        for header in self.menu_data.headers:
+            print(header)
+        print()
+
+    def get_user_choice(self):
+        print("CREATION D'UN NOUVEAU JOUEUR")
+        self.display_menu()
+        for query in self.menu_data.queries:
+            self.player_attributes.append(input(f"{query} >>"))
+        return self.player_attributes
+
+
+class PlayerCreationConfirmationMenuView:
+    def __init__(self, menu_data):
+        self.menu_data = menu_data
+
+    def display_menu(self):
+        for header in self.menu_data.headers:
+            print(header)
+        print()
+
+        for key in self.menu_data.entries:
+            print(f"{key}: {self.menu_data.entries[key][0]}")
+
+    def get_user_choice(self):
+        self.display_menu()
+        while True:
+            choice = input("Saisissez votre choix >>")
+            if choice in self.menu_data.entries:
+                return self.menu_data.entries[choice][1]
+            print("/!\\ Choix invalide /!\\")
 
 
 class ModifyPlayerMenuView:
@@ -73,6 +116,9 @@ class ModifyPlayerMenuView:
     def get_user_choice(self):
         self.display_menu()
         return input(f"{self.menu_data.queries[0]} >>")
+
+
+
 
 
 
