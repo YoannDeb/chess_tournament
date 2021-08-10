@@ -2,9 +2,9 @@ from tinydb import TinyDB
 
 
 class Player:
-    def __init__(self, name, surname, birth_date, sex, elo_ranking):
-        self.name = name
+    def __init__(self, surname, name, birth_date, sex, elo_ranking):
         self.surname = surname
+        self.name = name
         self.birth_date = birth_date
         self.sex = sex
         self.elo_ranking = int(elo_ranking)
@@ -13,9 +13,8 @@ class Player:
 
     def __repr__(self):
         return repr(
-            f"id: {self.id}, "
-            f"nom : {self.name} {self.surname}, "
-            f"né le {self.birth_date}, "
+            f"{self.surname}, {self.name}, "
+            f"né le : {self.birth_date}, "
             f"sexe : {self.sex}, "
             f"classement Elo : {self.elo_ranking}"
         )
@@ -25,8 +24,8 @@ class Player:
 
     def serialize(self):
         serialized_player = {
-            'name': self.name,
             'surname': self.surname,
+            'name': self.name,
             'birth_date': self.birth_date,
             'sex': self.sex,
             'elo_ranking': self.elo_ranking,
@@ -36,8 +35,8 @@ class Player:
     @classmethod
     def deserialize(cls, serialized_player):
         player = cls(
-            serialized_player['name'],
             serialized_player['surname'],
+            serialized_player['name'],
             serialized_player['birth_date'],
             serialized_player['sex'],
             serialized_player['elo_ranking'],
