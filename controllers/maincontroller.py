@@ -1,6 +1,6 @@
 from models.tournament import Tournament
 from models.player import Player
-from views.views import MenuData, HomeMenuView, PlayerMenuView, ModifyPlayerMenuView
+from views.views import MenuData, HomeMenuView, PlayerMenuView, ModifyPlayerMenuView, PlayerCreationMenuView, PlayerCreationConfirmationMenuView
 
 
 DATABASE_FILE = 'db.json'
@@ -57,8 +57,8 @@ class HomeMenuController:
         self.view = HomeMenuView(self.menu_data)
 
     def __call__(self):
-        self.menu_data.add_entry("auto", "Consulter modifier et renseigner les joueurs", PlayersMenuController(self.players, self.tournament))
-        self.menu_data.add_entry("auto", "Consulter les tournois passés, en créer un nouveau", TournamentMenuController(self.players, self.tournament))
+        self.menu_data.add_entry("auto", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournament))
+        self.menu_data.add_entry("auto", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentMenuController(self.players, self.tournament))
         self.menu_data.add_entry("q", "Quitter le programme (tous les changements sont automatiquement enregistrés au fur et à mesure)", EndScreenController())
 
         return self.view.get_user_choice()
@@ -79,29 +79,62 @@ class PlayersMenuController:
         elif self.sorting == "elo_ranking":
             self.players.sort(key=lambda player: player.elo_ranking)
             self.players.reverse()
-#        self.menu.add_header("Nom", "Prénom", "Classement Elo", "Date de naissance")  # todo adjust headers or decide not to show them or make a real table !
+        self.menu_data.add_header("Index, Nom, Prénom, Date de naissance, Sexe, Classement Elo")  # todo adjust headers or decide not to show them or make a real table !
         for chess_player in self.players:
             self.menu_data.add_entry("auto", chess_player, ModifyPlayerEloMenuController(self.players, self.tournaments, chess_player))
 
-        self.menu_data.add_entry("c", "Ajouter un joueur", CreatePlayerMenuController(self.players, self.tournaments))
+        self.menu_data.add_entry("c", "Créer un joueur", PlayerCreationMenuController(self.players, self.tournaments, self.sorting))
         if self.sorting == "surname":
-            self.menu_data.add_entry("e", "Classement par Elo", PlayersMenuController(self.players, self.tournaments, "elo_ranking"))
+            self.menu_data.add_entry("e", "Classer par Elo", PlayersMenuController(self.players, self.tournaments, "elo_ranking"))
         elif self.sorting == "elo_ranking":
-            self.menu_data.add_entry("a", "Classement par ordre alphabétique", PlayersMenuController(self.players, self.tournaments, "surname"))
+            self.menu_data.add_entry("a", "Classer par ordre alphabétique", PlayersMenuController(self.players, self.tournaments, "surname"))
 
-        self.menu_data.add_entry("r", "retourner au menu précédent", self.parent_menu)
+        self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", self.parent_menu)
 
         return self.view.get_user_choice()
 
 
-class CreatePlayerMenuController:
-    def __init__(self, players, tournaments):
+class PlayerCreationMenuController:
+    def __init__(self, players, tournaments, sorting):
+        print("debut du constructeur")
         self.players = players
         self.tournaments = tournaments
+        self.sorting = sorting
+        self.main_menu_data = MenuData()
+        self.confirmation_menu_data = MenuData()
+        self.main_view = PlayerCreationMenuView(self.main_menu_data)
+        self.confirmation_view = PlayerCreationConfirmationMenuView(self.confirmation_menu_data)
 
     def __call__(self):
-        print("dans le menu création joueur")
-        return HomeMenuController()
+        print("debut du call")
+        self.main_menu_data.add_query("Nom de famille")
+        self.main_menu_data.add_query("Prénom")
+        self.main_menu_data.add_query("Date de naissance")
+        self.main_menu_data.add_query("Sexe")
+        self.main_menu_data.add_query("Classement Elo")
+
+        players_attributes = self.main_view.get_user_choice()
+
+        # todo create data verification before player creation
+        player = Player(
+            players_attributes[0].capitalize(),
+            players_attributes[1].capitalize(),
+            players_attributes[2],
+            players_attributes[3],
+            int(players_attributes[4]),
+        )
+        print("after player creation")
+        player.save(DATABASE_FILE)
+        self.players.append(player)
+        print("after player save in database")
+        self.confirmation_menu_data.add_header(f"Création du joueur")
+        self.confirmation_menu_data.add_header(player)
+        self.confirmation_menu_data.add_header("réalisée avec succès")
+        self.confirmation_menu_data.add_entry("c", "Créer un autre joueur", PlayerCreationMenuController(self.players, self.tournaments, self.sorting))
+        self.confirmation_menu_data.add_entry("j", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournaments, self.sorting))
+        self.confirmation_menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
+
+        return self.confirmation_view.get_user_choice()
 
 
 class ModifyPlayerEloMenuController:
@@ -109,7 +142,6 @@ class ModifyPlayerEloMenuController:
         self.players = players
         self.tournaments = tournaments
         self.player = player
-        print(player)
         self.menu_data = MenuData()
         self.view = ModifyPlayerMenuView(self.menu_data)
 
@@ -148,7 +180,7 @@ class TournamentMenuController:
 
     def __call__(self):
         print("dans le tournoi")
-        return HomeMenuController()
+        return HomeMenuController(self.players, self.tournaments)
 
 
 class EndScreenController:
