@@ -56,7 +56,7 @@ class PlayerMenuView:
     def get_user_choice(self):
         while True:
             self.display_menu()
-            choice = input("Saisissez votre choix >>")
+            choice = input("Saisissez le numéro d'un joueur pour modifier son elo, ou choisissez une autre option >>")
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
 
