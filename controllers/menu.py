@@ -2,9 +2,11 @@
 from controllers.tournament import TournamentController
 from models.player import Player
 from views.views import (
-    MenuData, HomeMenuView, PlayerMenuView, PlayerCreationMenuView,
-    PlayerCreationConfirmationMenuView, ModifyPlayerMenuView, TournamentMenuView
+    MenuData, HomeMenuView, PlayersMenuView, PlayerCreationMenuView,
+    PlayerCreationConfirmationMenuView, ModifyPlayerMenuView,
+    TournamentMenuView, TournamentInfoMenuView
 )
+
 DATABASE_FILE = 'db.json'
 
 
@@ -16,8 +18,8 @@ class HomeMenuController:
         self.view = HomeMenuView(self.menu_data)
 
     def __call__(self):
-        self.menu_data.add_entry("auto", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournaments))
-        self.menu_data.add_entry("auto", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentMenuController(self.players, self.tournaments))
+        self.menu_data.add_entry("j", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournaments))
+        self.menu_data.add_entry("t", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentMenuController(self.players, self.tournaments))
         self.menu_data.add_entry("q", "Quitter le programme (tous les changements sont automatiquement enregistrés au fur et à mesure)", EndScreenController())
 
         return self.view.get_user_choice()
@@ -28,7 +30,7 @@ class PlayersMenuController:
         self.players = players
         self.tournaments = tournaments
         self.menu_data = MenuData()
-        self.view = PlayerMenuView(self.menu_data)
+        self.view = PlayersMenuView(self.menu_data)
         self.sorting = sorting
         self.parent_menu = HomeMenuController(self.players, self.tournaments)
 
@@ -161,23 +163,32 @@ class TournamentInfoMenuController:
         self.tournaments = tournaments
         self.tournament = tournament
         self.menu_data = MenuData()
+        self.view = TournamentInfoMenuView(self.menu_data)
+
+    def get_player_tournament_info(self, player_id):
+        match_scores = []
+        tournament_score = 0
+        for chess_round in self.tournament.rounds:
+            for match in chess_round.matches:
+                if player_id == match[0][0]:
+                    match_scores.append(match[0][1])
+                elif player_id == match[1][0]:
+                    match_scores.append(match[1][1])
+        return f"{Player.get(player_id, DATABASE_FILE).surname}, {Player.get(player_id, DATABASE_FILE).name}, {match_scores}, total : {sum(match_scores)}"
 
     def __call__(self):
         self.menu_data.add_header(self.tournament)
-        self.menu_data.add_header("tableau des scores")
-        self.menu_data.add_header("ligne 1")
-        self.menu_data.add_header("ligne 2")
-        self.menu_data.add_header("ligne 3")
-        self.menu_data.add_header("ligne 4")
-        self.menu_data.add_header("ligne 5")
-        self.menu_data.add_header("ligne 6")
-        self.menu_data.add_header("ligne 7")
-        self.menu_data.add_header("ligne 8")
+        self.menu_data.add_header("TABLEAU DES SCORES")
+        for player_id in self.tournament.players_id:
+            self.menu_data.add_header(self.get_player_tournament_info(player_id))
 
-        self.menu_data.add_entry("auto", "rapport des rondes et matchs du tournoi", TournamentRoundsMenuController(self.players, self.tournaments, self.tournament))
+        self.menu_data.add_entry("c", "Consulter le rapport des rondes et matchs du tournoi", TournamentRoundsMenuController(self.players, self.tournaments, self.tournament))
         # todo determine if usefull if the tournament info shows a recapitulative table of scores you can order by score or name
         # self.menu_data.add_entry("auto", "liste des joueurs du tournoi", TournamentPlayersMenuController(self.player, self.tournaments, self.tournament))
-        self.menu_data.add_entry("auto", "retour au menu des tournois", TournamentMenuController(self.players, self.tournaments))
+        self.menu_data.add_entry("t", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentMenuController(self.players, self.tournaments))
+        self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
+
+        return self.view.get_user_choice()
 
 
 class TournamentRoundsMenuController:
@@ -187,6 +198,8 @@ class TournamentRoundsMenuController:
         self.tournament = tournament
 
     def __call__(self):
+        print("dans le menu Info Round")
+        print()
         return TournamentInfoMenuController(self.players, self.tournaments, self.tournament)
 
 # see line 216
