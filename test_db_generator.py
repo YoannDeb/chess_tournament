@@ -8,14 +8,14 @@ def main():
 #     # if database exist : load database
 #
     # normalement players généré par le menu
-    player1 = Player("Maxime", "Vachier-Lagrave", "12/12/12", "M", "2653")
-    player2 = Player("Etienne", "Bacrot", "12/12/12", "M", "2452")
-    player3 = Player("Sebastien", "Mazetovich", "12/12/12", "M", "1645")
-    player4 = Player("Fabien", "Libizeswski", "12/12/12", "M", "2224")
-    player5 = Player("Kévin", "Bordi", "12/12/12", "M", "1200")
-    player6 = Player("Vladimir", "Tkachiev", "12/12/12", "M", "0850")
-    player7 = Player("Mathieu", "Cornette", "12/12/12", "M", "2000")
-    player8 = Player("Alireza", "Firouja", "12/12/12", "M", "2500")
+    player1 = Player("Vachier-Lagrave", "Maxime", "12/12/12", "M", "2653")
+    player2 = Player("Bacrot", "Etienne", "12/12/12", "M", "2452")
+    player3 = Player("Mazetovich","Sebastien",  "12/12/12", "M", "1645")
+    player4 = Player("Libizeswski", "Fabien", "12/12/12", "M", "2224")
+    player5 = Player("Bordi", "Kévin", "12/12/12", "M", "1200")
+    player6 = Player("Tkachiev", "Vladimir", "12/12/12", "M", "0850")
+    player7 = Player("Cornette", "Mathieu", "12/12/12", "M", "2000")
+    player8 = Player("Firouja", "Alireza", "12/12/12", "M", "2500")
 #
 #     # test = player5.serialize()
 #     # print(test)
@@ -50,11 +50,27 @@ def main():
 #
 #     # create tournament
     tournament = Tournament("tournament1", "place1", players_id, "Bullet", "this is the description of tournament")
-    tournament.generate_first_round(DATABASE_FILE)
+    tournament.sort_players_id_by_rank(DATABASE_FILE)
+    tournament.generate_first_round()
+    tournament.save(DATABASE_FILE)
+    print(f"{tournament.rounds[-1].name} generated with following pairs :")
+    for match in tournament.rounds[-1].matches:
+        print(f"{Player.get(match[0][0], DATABASE_FILE).name} vs {Player.get(match[1][0], DATABASE_FILE).name}")
+    input("press enter to input scores")
+    tournament.rounds[-1].input_scores(DATABASE_FILE)
+    tournament.sort_players_id_by_rank(DATABASE_FILE)
     tournament.save(DATABASE_FILE)
 #
     while len(tournament.rounds) < tournament.total_round_number:
         tournament.generate_following_round(DATABASE_FILE)
+        tournament.save(DATABASE_FILE)
+        print(f"{tournament.rounds[-1].name} generated with following pairs :")
+        for match in tournament.rounds[-1].matches:
+            print(f"{Player.get(match[0][0], DATABASE_FILE).name} vs {Player.get(match[1][0], DATABASE_FILE).name}")
+        input("press enter to input scores")
+        tournament.rounds[-1].input_scores(DATABASE_FILE)
+        tournament.sort_players_id_by_rank(DATABASE_FILE)
+        tournament.save(DATABASE_FILE)
         print("end of ", tournament.rounds[-1].name)
         print(tournament.rounds[-1].matches)
         print(tournament)
