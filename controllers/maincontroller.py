@@ -1,11 +1,8 @@
 from models.tournament import Tournament
 from models.player import Player
-from views.views import MenuData, HomeMenuView, PlayerMenuView, ModifyPlayerMenuView, PlayerCreationMenuView, PlayerCreationConfirmationMenuView
-
+from views.views import MenuData, HomeMenuView, PlayerMenuView, ModifyPlayerMenuView, PlayerCreationMenuView, PlayerCreationConfirmationMenuView, TournamentMenuView
 
 DATABASE_FILE = 'db.json'
-# players = []
-# tournaments = []
 
 
 class MainController:
@@ -37,7 +34,7 @@ class MainController:
 
         self.ongoing_tournament = self.check_ongoing_tournament()
         if self.ongoing_tournament is not None:
-            self.controller = TournamentController(self.ongoing_tournament)
+            self.controller = TournamentController(self.players, self.tournaments, self.ongoing_tournament)
         else:
             self.controller = HomeMenuController(self.players, self.tournaments)
 
@@ -50,15 +47,15 @@ class MainController:
 
 
 class HomeMenuController:
-    def __init__(self, players, tournament):
+    def __init__(self, players, tournaments):
         self.players = players
-        self.tournament = tournament
+        self.tournaments = tournaments
         self.menu_data = MenuData()
         self.view = HomeMenuView(self.menu_data)
 
     def __call__(self):
-        self.menu_data.add_entry("auto", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournament))
-        self.menu_data.add_entry("auto", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentMenuController(self.players, self.tournament))
+        self.menu_data.add_entry("auto", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournaments))
+        self.menu_data.add_entry("auto", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentMenuController(self.players, self.tournaments))
         self.menu_data.add_entry("q", "Quitter le programme (tous les changements sont automatiquement enregistrés au fur et à mesure)", EndScreenController())
 
         return self.view.get_user_choice()
@@ -75,13 +72,13 @@ class PlayersMenuController:
 
     def __call__(self):
         if self.sorting == "surname":
-            self.players.sort(key=lambda player: player.surname)
+            self.players.sort(key=lambda chess_player: chess_player.surname)
         elif self.sorting == "elo_ranking":
             self.players.sort(key=lambda player: player.elo_ranking)
             self.players.reverse()
         self.menu_data.add_header("Index, Nom, Prénom, Date de naissance, Sexe, Classement Elo")  # todo adjust headers or decide not to show them or make a real table !
-        for chess_player in self.players:
-            self.menu_data.add_entry("auto", chess_player, ModifyPlayerEloMenuController(self.players, self.tournaments, chess_player))
+        for player in self.players:
+            self.menu_data.add_entry("auto", player, ModifyPlayerEloMenuController(self.players, self.tournaments, player))
 
         self.menu_data.add_entry("c", "Créer un joueur", PlayerCreationMenuController(self.players, self.tournaments, self.sorting))
         if self.sorting == "surname":
@@ -96,7 +93,6 @@ class PlayersMenuController:
 
 class PlayerCreationMenuController:
     def __init__(self, players, tournaments, sorting):
-        print("debut du constructeur")
         self.players = players
         self.tournaments = tournaments
         self.sorting = sorting
@@ -106,7 +102,6 @@ class PlayerCreationMenuController:
         self.confirmation_view = PlayerCreationConfirmationMenuView(self.confirmation_menu_data)
 
     def __call__(self):
-        print("debut du call")
         self.main_menu_data.add_query("Nom de famille")
         self.main_menu_data.add_query("Prénom")
         self.main_menu_data.add_query("Date de naissance")
@@ -123,10 +118,10 @@ class PlayerCreationMenuController:
             players_attributes[3],
             int(players_attributes[4]),
         )
-        print("after player creation")
+
         player.save(DATABASE_FILE)
         self.players.append(player)
-        print("after player save in database")
+
         self.confirmation_menu_data.add_header(f"Création du joueur")
         self.confirmation_menu_data.add_header(player)
         self.confirmation_menu_data.add_header("réalisée avec succès")
@@ -177,18 +172,66 @@ class TournamentMenuController:
     def __init__(self, players, tournaments):
         self.players = players
         self.tournaments = tournaments
+        self.menu_data = MenuData()
+        self.view = TournamentMenuView(self.menu_data)
 
     def __call__(self):
-        print("dans le tournoi")
-        return HomeMenuController(self.players, self.tournaments)
+        self.tournaments.sort(key=lambda chess_tournament: chess_tournament.begin_date[:2])
+        self.tournaments.sort(key=lambda chess_tournament: chess_tournament.begin_date[3:5])
+        self.tournaments.sort(key=lambda chess_tournament: chess_tournament.begin_date[6:])
+
+        self.menu_data.add_header(
+            "Index, Nom | Lieu | Date de début | Date de fin | Nombre de tours | "
+            "Contrôle du temps | Description"
+        )
+        for tournament in self.tournaments:
+            self.menu_data.add_entry("auto", tournament, TournamentInfoMenuController(self.players, self.tournaments, tournament))
+
+        self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
+
+        return self.view.get_user_choice()
 
 
-class EndScreenController:
+class TournamentInfoMenuController:
+    def __init__(self, players, tournaments, tournament):
+        self.players = players
+        self.tournaments = tournaments
+        self.tournament = tournament
+        self.menu_data = MenuData()
+
     def __call__(self):
-        print("Fermeture du programme")
-    pass
+        self.menu_data.add_header(self.tournament)
+        self.menu_data.add_header("tableau des scores")
+        self.menu_data.add_header("ligne 1")
+        self.menu_data.add_header("ligne 2")
+        self.menu_data.add_header("ligne 3")
+        self.menu_data.add_header("ligne 4")
+        self.menu_data.add_header("ligne 5")
+        self.menu_data.add_header("ligne 6")
+        self.menu_data.add_header("ligne 7")
+        self.menu_data.add_header("ligne 8")
+
+        self.menu_data.add_entry("auto", "rapport des rondes et matchs du tournoi", TournamentRoundsMenuController(self.players, self.tournaments))
+        # self.menu_data.add_entry("auto", "liste des joueurs du tournoi", TournamentPlayersMenuController(self.player, self.tournaments))
+        self.menu_data.add_entry("auto", "Création d'un nouveau tournoi", TournamentController(self.players, self.tournaments))
+        self.menu_data.add_entry("auto", "retour au menu des tournois", TournamentMenuController(self.players, self.tournaments))
+
+
+class TournamentRoundsMenuController:
+    def __init__(self, players, tournaments, tournament):
+        self.players = players
+        self.tournaments = tournaments
+        self.tournament = tournament
+
+    def __call__(self):
+        return TournamentInfoMenuController(self.players, self.tournaments, self.tournament)
 
 
 class TournamentController:
-    def __init__(self, tournament=None):
+    def __init__(self, players, tournaments, tournament=None):
         self.tournament = tournament
+
+class EndScreenController:
+    def __call__(self):
+        print("Fermeture du programme") # déléguer à la vue
+    pass
