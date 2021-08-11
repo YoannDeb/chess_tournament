@@ -44,7 +44,7 @@ class HomeMenuView:
             print("/!\\ Choix invalide /!\\")
 
 
-class PlayerMenuView:
+class PlayersMenuView:
     def __init__(self, menu_data):
         self.menu_data = menu_data
 
@@ -140,7 +140,25 @@ class TournamentMenuView:
             print("/!\\ Choix invalide /!\\")
 
 
+class TournamentInfoMenuView:
+    def __init__(self, menu_data):
+        self.menu_data = menu_data
 
+    def display_menu(self):
+        for header in self.menu_data.headers:
+            print(header)
+
+        for key in self.menu_data.entries:
+            print(f"{key}: {self.menu_data.entries[key][0]}")
+        print()
+
+    def get_user_choice(self):
+        self.display_menu()
+        while True:
+            choice = input("Saisissez votre choix >>")
+            if choice in self.menu_data.entries:
+                return self.menu_data.entries[choice][1]
+            print("/!\\ Choix invalide /!\\")
 
 
 
