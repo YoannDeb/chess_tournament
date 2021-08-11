@@ -44,7 +44,7 @@ class Tournament:
     # def get_players_elo_ranking(self):
     #     return [player.elo_ranking for player in self.get_players()]
 
-    def players_score(self):
+    def players_tournament_score(self):
         players_score = []
         for player_id in self.players_id:
             score = 0.0
@@ -68,14 +68,13 @@ class Tournament:
     def generate_following_round(self, database_file):
         self.rounds.append(Round(f"Round {len(self.rounds) + 1}"))
         print(self.rounds[-1].name)
-        self.rounds[-1].pair_by_score(self.players_id, self.players_score(), self.rounds, database_file)
+        self.rounds[-1].pair_by_score(self.players_id, self.players_tournament_score(), self.rounds, database_file)
         self.save(database_file)
         self.rounds[-1].input_round_results(database_file)
         self.save(database_file)
 
     def end_tournament(self):
         self.end_date = datetime.now().strftime("%d/%m/%Y")
-
 
     def serialize(self):
         serialized_rounds = []
@@ -119,9 +118,9 @@ class Tournament:
         """
         Take id and return instance of tournamnent from the tournaments table in database file.
         update the tournament id attribute
-        :param tournament_id:
-        :param database_file:
-        :return:
+        :param tournament_id: id of the tournament in the database
+        :param database_file: database file in json format
+        :return: instance of tournament as in database
         """
         tournament = cls.deserialize(TinyDB(database_file).table('tournaments').get(doc_id=tournament_id))
         tournament.id = tournament_id
