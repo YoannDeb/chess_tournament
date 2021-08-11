@@ -38,11 +38,22 @@ class Tournament:
             f"Description : {self.description}"
         )
 
-    def get_players(self, database_file):
-        return [Player.get(player_id, database_file) for player_id in self.players_id]
+    # def get_tournament_players(self, database_file):
+    #     return [Player.get(player_id, database_file) for player_id in self.players_id]
 
     # def get_players_elo_ranking(self):
-    #     return [player.elo_ranking for player in self.get_players()]
+    #     return [player.elo_ranking for player in self.get_tournament_players()]
+
+    def sort_players_id_by_rank(self, database_file):
+        players = [Player.get(player_id, database_file) for player_id in self.players_id]
+        players_score = self.players_tournament_score()
+        for player in players:
+            player.tournament_score = players_score.pop(0)
+        players.sort(key=lambda chess_player: chess_player.elo_ranking)
+        if len(self.rounds) != 1:
+            players.sort(key=lambda chess_player: chess_player.tournament_score)
+        players.reverse()
+        self.players_id = [player.id for player in players]
 
     def players_tournament_score(self):
         players_score = []
@@ -50,28 +61,20 @@ class Tournament:
             score = 0.0
             for chess_round in self.rounds:
                 for match in chess_round.matches:
-                    if None not in match:
-                        if player_id == match[0][0]:
-                            score += match[0][1]
-                        elif player_id == match[1][0]:
-                            score += match[1][1]
+                    if player_id == match[0][0]:
+                        score += match[0][1]
+                    elif player_id == match[1][0]:
+                        score += match[1][1]
             players_score.append(score)
         return players_score
 
-    def generate_first_round(self, database_file):
+    def generate_first_round(self):
         self.rounds.append(Round("Round 1"))
-        self.rounds[0].pair_by_elo(self.players_id, database_file)
-        self.save(database_file)
-        self.rounds[0].input_round_results(database_file)
-        self.save(database_file)
+        self.rounds[0].pair_by_elo(self.players_id)
 
     def generate_following_round(self, database_file):
         self.rounds.append(Round(f"Round {len(self.rounds) + 1}"))
-        print(self.rounds[-1].name)
-        self.rounds[-1].pair_by_score(self.players_id, self.players_tournament_score(), self.rounds, database_file)
-        self.save(database_file)
-        self.rounds[-1].input_round_results(database_file)
-        self.save(database_file)
+        self.rounds[-1].pair_by_score(self.players_id, self.rounds)
 
     def end_tournament(self):
         self.end_date = datetime.now().strftime("%d/%m/%Y")
@@ -129,11 +132,9 @@ class Tournament:
     @classmethod
     def get_all(cls, database_file):
         tournaments = []
-        print("TinyDB(database_file).table('tournaments').all()", TinyDB(database_file).table('tournaments').all())
         for tournament in TinyDB(database_file).table('tournaments').all():
             tournament_id = tournament.doc_id
             tournaments.append(cls.get(tournament_id, database_file))
-            print(f"get_all{tournaments}")
         return tournaments
 
     def store_in_database(self, database_file):
