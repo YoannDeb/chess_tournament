@@ -29,14 +29,17 @@ class Tournament:
 
     def __repr__(self):
         return repr(
-            f"name : {self.name} | "
-            f"location : {self.location} | "
-            f"total round number : {self.total_round_number} | "
-            f"tournament players : {self.get_players()}"
+            f"Nom : {self.name} | "
+            f"Lieu : {self.location} | "
+            f"Date de début : {self.begin_date} | "
+            f"Date de fin : {self.end_date} |"
+            f"Nombre de Rounds : {self.total_round_number} | "
+            f"Contrôle du temps : {self.time_control} | "
+            f"Description : {self.description}"
         )
 
-    def get_players(self):
-        return [Player.get(player_id, ) for player_id in self.players_id]
+    def get_players(self, database_file):
+        return [Player.get(player_id, database_file) for player_id in self.players_id]
 
     # def get_players_elo_ranking(self):
     #     return [player.elo_ranking for player in self.get_players()]
@@ -55,24 +58,24 @@ class Tournament:
             players_score.append(score)
         return players_score
 
-    def generate_first_round(self):
+    def generate_first_round(self, database_file):
         self.rounds.append(Round("Round 1"))
-        self.rounds[0].pair_by_elo(self.players_id)
-        self.save()
-        self.rounds[0].input_round_result()
-        self.save()
+        self.rounds[0].pair_by_elo(self.players_id, database_file)
+        self.save(database_file)
+        self.rounds[0].input_round_results(database_file)
+        self.save(database_file)
 
-    def generate_following_round(self):
+    def generate_following_round(self, database_file):
         self.rounds.append(Round(f"Round {len(self.rounds) + 1}"))
         print(self.rounds[-1].name)
-        self.rounds[-1].pair_by_score(self.players_id, self.players_score(), self.rounds)
-        self.save()
-        self.rounds[-1].input_round_result()
-        self.save()
+        self.rounds[-1].pair_by_score(self.players_id, self.players_score(), self.rounds, database_file)
+        self.save(database_file)
+        self.rounds[-1].input_round_results(database_file)
+        self.save(database_file)
 
     def end_tournament(self):
         self.end_date = datetime.now().strftime("%d/%m/%Y")
-        self.save()
+
 
     def serialize(self):
         serialized_rounds = []
@@ -127,9 +130,11 @@ class Tournament:
     @classmethod
     def get_all(cls, database_file):
         tournaments = []
+        print("TinyDB(database_file).table('tournaments').all()", TinyDB(database_file).table('tournaments').all())
         for tournament in TinyDB(database_file).table('tournaments').all():
             tournament_id = tournament.doc_id
             tournaments.append(cls.get(tournament_id, database_file))
+            print(f"get_all{tournaments}")
         return tournaments
 
     def store_in_database(self, database_file):
