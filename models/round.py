@@ -19,15 +19,15 @@ class Round:
         :param rounds: list of instances of rounds
         :return: True if a match occurred, False if not
         """
-        for index in range(0, (len(rounds) - 1)):
-            for match in rounds[index].matches:
+        for previous_round in rounds[:-1]:
+            for match in previous_round.matches:
                 if player1_id == match[0][0] and player2_id == match[1][0]:
                     return True
                 elif player2_id == match[0][0] and player1_id == match[1][0]:
                     return True
         return False
 
-    def pair_by_elo(self, players_id, database_file):
+    def pair_by_elo(self, players_id):
         """
         Matching for the first round of a swiss tournament, using elo ranking:
         - Order players by decreasing elo ranking, then reverse list.
@@ -37,20 +37,20 @@ class Round:
         If the number of players is odd, the last one will be in an unpaired solo match.
         :param players_id: List of players' id in the tournament.
         """
-        players = [Player.get(player_id, database_file) for player_id in players_id]  ## todo use constant
-        players.sort(key=lambda player: player.elo_ranking)
-        players.reverse()
+        # players = [Player.get(player_id, database_file) for player_id in players_id]
+        # players.sort(key=lambda player: player.elo_ranking)
+        # players.reverse()
 
-        list_middle = int(len(players) / 2)
-        first_half_players = players[:list_middle]
-        second_half_players = players[list_middle:]
+        list_middle = int(len(players_id) / 2)
+        first_half_players = players_id[:list_middle]
+        second_half_players = players_id[list_middle:]
 
         pairs = zip(first_half_players, second_half_players)
 
         for pair in pairs:
-            self.matches.append(([pair[0].id, None], [pair[1].id, None]))
+            self.matches.append(([pair[0], None], [pair[1], None]))
 
-    def pair_by_score(self, players_id, players_score, rounds, database_file):
+    def pair_by_score(self, players_id, rounds):
         """
         Matching for the second and following rounds, using current tournament score and then elo ranking:
         - Order players by decreasing elo, then order players by decreased elo ranking,
@@ -61,62 +61,62 @@ class Round:
         until the original odd player hasn't already played with his follower in the list.
         - Finally create a match with each pair of player (the odd and the following player) in the list.
         If the number of players is odd, the last one will be in an unpaired solo match.
-        :param players_id: list of instances of players' id in the tournament.
+        :param players_id: list of instances of players' id in the tournament, already sorted by tournament's rank tournament.
         :param players_score: list of players' score in tournament
         :param rounds: list of rounds in the tournament.
         """
-        players = [Player.get(player_id, database_file) for player_id in players_id]  # todo use constant
-        for item in players:
-            item.tournament_score = players_score.pop(0)
-        players.sort(key=lambda player: player.elo_ranking)
-        players.sort(key=lambda player: player.tournament_score)
-        players.reverse()
-        sorted_players_id = [player.id for player in players]
+        # players = [Player.get(player_id, database_file) for player_id in players_id]
+        # for player in players:
+        #     player.tournament_score = players_score.pop(0)
+        # players.sort(key=lambda chess_player: chess_player.elo_ranking)
+        # players.sort(key=lambda chess_player: chess_player.tournament_score)
+        # players.reverse()
+        # sorted_players_id = [player.id for player in players]
 
-        print(sorted_players_id)
+        print(players_id)
         last_players_not_pairable = False
-        for index in range(0, len(sorted_players_id), 2):
+        for index in range(0, len(players_id), 2):
             if last_players_not_pairable:
                 break
             index_of_player_to_switch_with = 2
-            print(f"checking player in position {index} id = {sorted_players_id[index]} with player in position {index + 1} id = {sorted_players_id[index + 1]}")
-            while self.check_if_previous_encounter(sorted_players_id[index], sorted_players_id[index + 1], rounds):
+            print(f"checking player in position {index} id = {players_id[index]} with player in position {index + 1} id = {players_id[index + 1]}")
+            while self.check_if_previous_encounter(players_id[index], players_id[index + 1], rounds):
                 print(f"existing match detected between those two players")
-                if index + index_of_player_to_switch_with == len(sorted_players_id):
+                if index + index_of_player_to_switch_with == len(players_id):
                     print("no more players to pair with")
-                    if index <= len(sorted_players_id) - 4:
-                        sorted_players_id[index + 1], sorted_players_id[index + index_of_player_to_switch_with - 1] = sorted_players_id[index + index_of_player_to_switch_with - 1], sorted_players_id[index + 1]
+                    if index <= len(players_id) - 4:
+                        players_id[index + 1], players_id[index + index_of_player_to_switch_with - 1] = players_id[index + index_of_player_to_switch_with - 1], players_id[index + 1]
                     last_players_not_pairable = True
-                    print(f"players before rearangement {sorted_players_id}")
+                    print(f"players before rearangement {players_id}")
                     break
-                sorted_players_id[index + 1], sorted_players_id[index + index_of_player_to_switch_with] = sorted_players_id[index + index_of_player_to_switch_with], sorted_players_id[index + 1]
-                print(f"nouvelle liste réarrangée : {sorted_players_id}")
+                players_id[index + 1], players_id[index + index_of_player_to_switch_with] = players_id[index + index_of_player_to_switch_with], players_id[index + 1]
+                print(f"nouvelle liste réarrangée : {players_id}")
                 index_of_player_to_switch_with += 1
                 print(index_of_player_to_switch_with)
             print("match ok")
-        print(f"final sorting {sorted_players_id}")
+        print(f"final sorting {players_id}")
 
         if last_players_not_pairable:
             print("reversing list for last players")
-            sorted_players_id.reverse()
-            for index in range(0, len(sorted_players_id), 2):
+            players_id.reverse()
+            for index in range(0, len(players_id), 2):
                 index_of_player_to_switch_with = 2
-                print(f"checking player in position {index} id = {sorted_players_id[index]} with player in position {index + 1} id = {sorted_players_id[index + 1]}")
-                while self.check_if_previous_encounter(sorted_players_id[index], sorted_players_id[index + 1], rounds):
+                print(f"checking player in position {index} id = {players_id[index]} with player in position {index + 1} id = {players_id[index + 1]}")
+                while self.check_if_previous_encounter(players_id[index], players_id[index + 1], rounds):
                     print(f"existing match detected between those two players")
-                    sorted_players_id[index + 1], sorted_players_id[index + index_of_player_to_switch_with] = sorted_players_id[index + index_of_player_to_switch_with], sorted_players_id[index + 1]
-                    print(f"nouvelle liste réarrangée : {sorted_players_id}")
+                    players_id[index + 1], players_id[index + index_of_player_to_switch_with] = players_id[index + index_of_player_to_switch_with], players_id[index + 1]
+                    print(f"nouvelle liste réarrangée : {players_id}")
                     index_of_player_to_switch_with += 1
                     print(index_of_player_to_switch_with)
                 print("match ok")
-            print(f"final reverse sorting {sorted_players_id}")
-            sorted_players_id.reverse()
-            print(f"final in order sorting {sorted_players_id}")
+            print(f"final reverse sorting {players_id}")
+            players_id.reverse()
+            print(f"final in order sorting {players_id}")
 
-        for index in range(0, len(sorted_players_id), 2):
-            self.matches.append(([sorted_players_id[index], None], [sorted_players_id[index + 1], None]))
+        for index in range(0, len(players_id), 2):
+            self.matches.append(([players_id[index], None], [players_id[index + 1], None]))
 
-    def input_round_results(self, database_file):
+    def input_scores(self, database_file):
         """ à modifier quand plus d'input dans le test"""
         for match in self.matches:
             player1_name = Player.get(match[0][0], database_file).name
