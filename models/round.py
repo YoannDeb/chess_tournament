@@ -27,7 +27,7 @@ class Round:
                     return True
         return False
 
-    def pair_by_elo(self, players_id):
+    def pair_by_elo(self, players_id, database_file):
         """
         Matching for the first round of a swiss tournament, using elo ranking:
         - Order players by decreasing elo ranking, then reverse list.
@@ -37,7 +37,7 @@ class Round:
         If the number of players is odd, the last one will be in an unpaired solo match.
         :param players_id: List of players' id in the tournament.
         """
-        players = [Player.get(player_id) for player_id in players_id]
+        players = [Player.get(player_id, database_file) for player_id in players_id]  ## todo use constant
         players.sort(key=lambda player: player.elo_ranking)
         players.reverse()
 
@@ -50,7 +50,7 @@ class Round:
         for pair in pairs:
             self.matches.append(([pair[0].id, None], [pair[1].id, None]))
 
-    def pair_by_score(self, players_id, players_score, rounds):
+    def pair_by_score(self, players_id, players_score, rounds, database_file):
         """
         Matching for the second and following rounds, using current tournament score and then elo ranking:
         - Order players by decreasing elo, then order players by decreased elo ranking,
@@ -65,7 +65,7 @@ class Round:
         :param players_score: list of players' score in tournament
         :param rounds: list of rounds in the tournament.
         """
-        players = [Player.get(player_id) for player_id in players_id]
+        players = [Player.get(player_id, database_file) for player_id in players_id]  # todo use constant
         for item in players:
             item.tournament_score = players_score.pop(0)
         players.sort(key=lambda player: player.elo_ranking)
@@ -116,11 +116,11 @@ class Round:
         for index in range(0, len(sorted_players_id), 2):
             self.matches.append(([sorted_players_id[index], None], [sorted_players_id[index + 1], None]))
 
-    def input_round_result(self):
+    def input_round_results(self, database_file):
         """ à modifier quand plus d'input dans le test"""
         for match in self.matches:
-            player1_name = Player.get(match[0][0]).name
-            player2_name = Player.get(match[1][0]).name
+            player1_name = Player.get(match[0][0], database_file).name
+            player2_name = Player.get(match[1][0], database_file).name
             print(f"Match {player1_name} vs {player2_name}")
             match[0][1] = float(input(f"result of {player1_name}"))
             match[1][1] = float(input(f"result of {player2_name}"))
