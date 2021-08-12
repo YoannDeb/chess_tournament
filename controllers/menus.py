@@ -6,7 +6,7 @@ from views.menus import (
     PlayerCreationConfirmationMenuView, ModifyPlayerMenuView,
     TournamentMenuView, TournamentInfoMenuView
 )
-from utils.utils import MenuData, get_player_tournament_info
+from core.utils import MenuData, get_player_tournament_info
 
 DATABASE_FILE = 'db.json'
 
@@ -154,7 +154,7 @@ class TournamentMenuController:
         for tournament in self.tournaments:
             self.menu_data.add_entry("auto", tournament, TournamentInfoMenuController(self.players, self.tournaments, tournament))
 
-        self.menu_data.add_entry("c", "Création d'un nouveau tournoi", TournamentController(self.players, self.tournaments))
+        self.menu_data.add_entry("c", "Création d'un nouveau tournoi", TournamentController(self.players, self.tournaments, HomeMenuController))
         self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
 
         return self.view.get_user_choice()
@@ -193,10 +193,6 @@ class TournamentRoundsMenuController:
         print("dans le menu Info Round") # todo finaliser la vue
         print()
         return TournamentInfoMenuController(self.players, self.tournaments, self.tournament)
-
-# see line 216
-# class TournamentPlayersMenuController:
-#     def __init__(self, players, tournaments, tournament):
 
 
 class EndScreenController:
