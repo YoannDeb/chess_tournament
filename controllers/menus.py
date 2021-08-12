@@ -1,11 +1,12 @@
 # from controllers.main import DATABASE_FILE
 from controllers.tournament import TournamentController
 from models.player import Player
-from views.views import (
-    MenuData, HomeMenuView, PlayersMenuView, PlayerCreationMenuView,
+from views.menus import (
+    HomeMenuView, PlayersMenuView, PlayerCreationMenuView,
     PlayerCreationConfirmationMenuView, ModifyPlayerMenuView,
     TournamentMenuView, TournamentInfoMenuView
 )
+from utils.utils import MenuData
 
 DATABASE_FILE = 'db.json'
 
@@ -35,6 +36,7 @@ class PlayersMenuController:
         self.parent_menu = HomeMenuController(self.players, self.tournaments)
 
     def __call__(self):
+        self.menu_data.add_header("MENU JOUEURS")
         if self.sorting == "surname":
             self.players.sort(key=lambda chess_player: chess_player.surname)
         elif self.sorting == "elo_ranking":
@@ -66,6 +68,7 @@ class PlayerCreationMenuController:
         self.confirmation_view = PlayerCreationConfirmationMenuView(self.confirmation_menu_data)
 
     def __call__(self):
+        self.main_menu_data.add_header("CREATION D'UN NOUVEAU JOUEUR")
         self.main_menu_data.add_query("Nom de famille")
         self.main_menu_data.add_query("Prénom")
         self.main_menu_data.add_query("Date de naissance")

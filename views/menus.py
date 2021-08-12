@@ -1,38 +1,3 @@
-class MenuData:
-    def __init__(self):
-        self.entries = {}
-        self.headers = []
-        self.queries = []
-        self.input_message = None
-        self.autokey = 1
-
-    def add_entry(self, key, menu_option, destination_controller):
-        if key == "auto":
-            key = self.autokey
-            self.autokey += 1
-
-        self.entries[str(key)] = (menu_option, destination_controller)
-
-    def add_header(self, text):
-        self.headers.append(text)
-
-    def add_query(self, text):
-        self.queries.append(text)
-
-    def add_input_message(self, text):
-        self.input_message = text
-
-    def clear_data(self):
-        self.entries = {}
-        self.headers = []
-        self.queries = []
-        self.input_message = None
-        self.autokey = 1
-
-    def add_row(self):
-        pass
-
-
 class HomeMenuView:
     def __init__(self, menu_data):
         self.menu_data = menu_data
@@ -44,6 +9,7 @@ class HomeMenuView:
         print("")
 
     def get_user_choice(self):
+        print()
         self.display_menu()
         while True:
             choice = input("Saisissez votre choix >>")
@@ -57,7 +23,6 @@ class PlayersMenuView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        print("MENU JOUEURS")
         for header in self.menu_data.headers:
             print(header)
         for key in self.menu_data.entries:
@@ -65,6 +30,7 @@ class PlayersMenuView:
         print()
 
     def get_user_choice(self):
+        print()
         self.display_menu()
         while True:
             if self.menu_data.input_message is not None:
@@ -84,10 +50,9 @@ class PlayerCreationMenuView:
     def display_menu(self):
         for header in self.menu_data.headers:
             print(header)
-        print()
 
     def get_user_choice(self):
-        print("CREATION D'UN NOUVEAU JOUEUR")
+        print()
         self.display_menu()
         for query in self.menu_data.queries:
             self.player_attributes.append(input(f"{query} >>"))
@@ -107,6 +72,7 @@ class PlayerCreationConfirmationMenuView:
             print(f"{key}: {self.menu_data.entries[key][0]}")
 
     def get_user_choice(self):
+        print()
         self.display_menu()
         while True:
             choice = input("Saisissez votre choix >>")
@@ -122,9 +88,9 @@ class ModifyPlayerMenuView:
     def display_menu(self):
         for header in self.menu_data.headers:
             print(header)
-        print()
 
     def get_user_choice(self):
+        print()
         self.display_menu()
         return input(f"{self.menu_data.queries[0]} >>")
 
@@ -143,6 +109,7 @@ class TournamentMenuView:
         print()
 
     def get_user_choice(self):
+        print()
         self.display_menu()
         while True:
             choice = input("Saisissez le numéro d'un tournoi pour plus d'informations, ou choisissez une autre option >>")
@@ -164,6 +131,7 @@ class TournamentInfoMenuView:
         print()
 
     def get_user_choice(self):
+        print()
         self.display_menu()
         while True:
             choice = input("Saisissez votre choix >>")
@@ -193,6 +161,7 @@ class TimeControlMenuView:
         print()
 
     def get_user_choice(self):
+        print()
         self.display_menu()
         while True:
             choice = input(f"{self.menu_data.input_message} >>")
