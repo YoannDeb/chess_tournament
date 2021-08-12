@@ -1,4 +1,4 @@
-from controllers.menu import HomeMenuController
+from controllers.menus import HomeMenuController
 from controllers.tournament import TournamentController
 from models.tournament import Tournament
 from models.player import Player

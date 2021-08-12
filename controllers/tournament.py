@@ -1,7 +1,7 @@
 from models.player import Player
 from models.tournament import Tournament
-from views.views import MenuData, TournamentView, InfoTournamentCreationView, PlayersMenuView, TimeControlMenuView
-
+from views.menus import TournamentView, InfoTournamentCreationView, PlayersMenuView, TimeControlMenuView
+from utils.utils import MenuData
 
 DATABASE_FILE = 'db.json'
 
@@ -47,6 +47,10 @@ class CreateTournament:
         self.menu_data_info.queries[0] = "Entrez le lieu du tournoi"
         return self.view_info.get_user_choice()
 
+    def rounds_number(self):
+        self.menu_data_info.queries[0] = "Entrez le nombre de rondes du tournoi (par défaut 4)"
+        return self.view_info.get_user_choice()
+
     def player_menu(self):
         # todo rajouter la possibilité d'enlever un joueur
         already_selected_name_list = [f"{Player.get(player_id, DATABASE_FILE).surname}, {Player.get(player_id, DATABASE_FILE).name}" for player_id in self.tournament_players_id]
@@ -88,10 +92,6 @@ class CreateTournament:
 
     def description(self):
         self.menu_data_info.queries[0] = "Entrez une description du tournoi"
-        return self.view_info.get_user_choice()
-
-    def rounds_number(self):
-        self.menu_data_info.queries[0] = "Entrez le nombre de rondes du tournoi (par défaut 4)"
         return self.view_info.get_user_choice()
 
 
@@ -141,6 +141,8 @@ class TournamentController:
         self.tournament.save(DATABASE_FILE)
 
         print("tournament", self.tournament)
+        input("Pressez entrée pour retourner à l'accueil")
+        return TournamentMenuController(self.players, self.tournaments)
 
 
 
