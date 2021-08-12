@@ -1,7 +1,7 @@
 from models.player import Player
 from models.tournament import Tournament
 from views.menus import TournamentView, InfoTournamentCreationView, PlayersMenuView, TimeControlMenuView
-from utils.utils import MenuData
+from core.utils import MenuData
 
 DATABASE_FILE = 'db.json'
 
@@ -74,9 +74,10 @@ class CreateTournament:
                 self.menu_data_players.add_entry("e", "Classer par Elo", "elo_ranking")
             elif self.sorting == "elo_ranking":
                 self.menu_data_players.add_entry("a", "Classer par ordre alphabétique", "surname")
-        else :
+        else:
             self.menu_data_players.add_header("Plus de joueur disponible dans la base")
 
+        # self.menu_data_players.add_entry("c", "Créer un nouveau joueur", PlayersMenuCreationController(self.players, self.tournaments))  # todo implement player creation in tournament creation
         self.menu_data_players.add_entry("t", "Terminer la selection", "end")
         self.menu_data_players.add_input_message(f"{len(self.tournament_players_id)} joueur(s) déjà sélectionné(s):\n {already_selected_name_list} \nSélectionnez un joueur supplémentaire ou choisissez une autre option")
 
@@ -96,9 +97,10 @@ class CreateTournament:
 
 
 class TournamentController:
-    def __init__(self, players, tournaments, tournament=None):
+    def __init__(self, players, tournaments, parent_controller, tournament=None):
         self.players = players
         self.tournaments = tournaments
+        self.parent_controller = parent_controller
         self.tournament = tournament
 
     def __call__(self):
@@ -110,6 +112,7 @@ class TournamentController:
 
         self.tournament.sort_players_id_by_rank(DATABASE_FILE)
         # todo reprise de tournoi en cours à vérifier /!\
+        # todo remplacer les input et les print par des vues
         if len(self.tournament.rounds) == 0:
             self.tournament.generate_first_round()
             self.tournament.save(DATABASE_FILE)
@@ -142,7 +145,7 @@ class TournamentController:
 
         print("tournament", self.tournament)
         input("Pressez entrée pour retourner à l'accueil")
-        return TournamentMenuController(self.players, self.tournaments)
+        return self.parent_controller(self.players, self.tournaments)
 
 
 
