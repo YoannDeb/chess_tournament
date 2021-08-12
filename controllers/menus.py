@@ -6,7 +6,7 @@ from views.menus import (
     PlayerCreationConfirmationMenuView, ModifyPlayerMenuView,
     TournamentMenuView, TournamentInfoMenuView
 )
-from utils.utils import MenuData
+from utils.utils import MenuData, get_player_tournament_info
 
 DATABASE_FILE = 'db.json'
 
@@ -168,22 +168,11 @@ class TournamentInfoMenuController:
         self.menu_data = MenuData()
         self.view = TournamentInfoMenuView(self.menu_data)
 
-    def get_player_tournament_info(self, player_id):
-        match_scores = []
-        tournament_score = 0
-        for chess_round in self.tournament.rounds:
-            for match in chess_round.matches:
-                if player_id == match[0][0]:
-                    match_scores.append(match[0][1])
-                elif player_id == match[1][0]:
-                    match_scores.append(match[1][1])
-        return f"{Player.get(player_id, DATABASE_FILE).surname}, {Player.get(player_id, DATABASE_FILE).name}, {match_scores}, total : {sum(match_scores)}"
-
     def __call__(self):
         self.menu_data.add_header(self.tournament)
         self.menu_data.add_header("TABLEAU DES SCORES")
         for player_id in self.tournament.players_id:
-            self.menu_data.add_header(self.get_player_tournament_info(player_id))
+            self.menu_data.add_header(get_player_tournament_info(player_id, self.tournament))
 
         self.menu_data.add_entry("c", "Consulter le rapport des rondes et matchs du tournoi", TournamentRoundsMenuController(self.players, self.tournaments, self.tournament))
         # todo determine if usefull if the tournament info shows a recapitulative table of scores you can order by score or name
@@ -201,7 +190,7 @@ class TournamentRoundsMenuController:
         self.tournament = tournament
 
     def __call__(self):
-        print("dans le menu Info Round")
+        print("dans le menu Info Round") # todo finaliser la vue
         print()
         return TournamentInfoMenuController(self.players, self.tournaments, self.tournament)
 

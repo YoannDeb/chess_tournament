@@ -1,3 +1,8 @@
+from models.player import Player
+
+DATABASE_FILE = 'db.json'
+
+
 class MenuData:
     def __init__(self):
         self.entries = {}
@@ -31,3 +36,14 @@ class MenuData:
 
     def add_row(self):
         pass
+
+
+def get_player_tournament_info(player_id, tournament):
+    match_scores = []
+    for chess_round in tournament.rounds:
+        for match in chess_round.matches:
+            if player_id == match[0][0]:
+                match_scores.append(match[0][1])
+            elif player_id == match[1][0]:
+                match_scores.append(match[1][1])
+    return f"{Player.get(player_id, DATABASE_FILE).surname}, {Player.get(player_id, DATABASE_FILE).name}, {match_scores}, total : {sum(match_scores)}"
