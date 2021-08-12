@@ -14,10 +14,10 @@ class MainController:
         self.database_file = database_file
         self.controller = None
 
-    def check_database_existence(self):
+    def check_database_exists(self):
         if self.database_file:  # todo really check file
-            return True
-        return False
+            return False
+        return True
 
     def load_database(self):
         self.players = Player.get_all(self.database_file)
@@ -30,12 +30,12 @@ class MainController:
         return None
 
     def run(self):
-        if self.check_database_existence():
+        if not self.check_database_exists():
             self.load_database()
 
         self.ongoing_tournament = self.check_ongoing_tournament()
         if self.ongoing_tournament is not None:
-            self.controller = TournamentController(self.players, self.tournaments, self.ongoing_tournament)
+            self.controller = TournamentController(self.players, self.tournaments, HomeMenuController, self.ongoing_tournament)
         else:
             self.controller = HomeMenuController(self.players, self.tournaments)
 
