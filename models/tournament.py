@@ -15,6 +15,7 @@ class Tournament:
             time_control,
             description,
             total_round_number=4):
+        # super().__init__()
         self.name = name
         self.location = location
         self.begin_date = datetime.now().strftime("%d/%m/%Y")
@@ -26,6 +27,7 @@ class Tournament:
         self.time_control = time_control
         self.description = description
         self.id = None
+        self._table = 'tournament'
 
     def __repr__(self):
         return repr(
@@ -125,7 +127,7 @@ class Tournament:
         :param database_file: database file in json format
         :return: instance of tournament as in database
         """
-        tournament = cls.deserialize(TinyDB(database_file).table('tournaments').get(doc_id=tournament_id))
+        tournament = cls.deserialize(TinyDB(database_file).table('tournament').get(doc_id=tournament_id))
         tournament.id = tournament_id
         return tournament
 
@@ -138,10 +140,10 @@ class Tournament:
         return tournaments
 
     def store_in_database(self, database_file):
-        return TinyDB(database_file).table('tournaments').insert(self.serialize())
+        return TinyDB(database_file).table(self._table).insert(self.serialize())
 
     def update_in_database(self, database_file):
-        TinyDB(database_file).table('tournaments').update(self.serialize(), doc_ids=[self.id])
+        TinyDB(database_file).table(self._table).update(self.serialize(), doc_ids=[self.id])
 
     def save(self, database_file):
         if self.id is None:
