@@ -40,10 +40,13 @@ class PlayersMenuController:
         elif self.sorting == "elo_ranking":
             self.players.sort(key=lambda chess_player: chess_player.elo_ranking)
             self.players.reverse()
-        self.menu_data.add_header("Index, Nom, Prénom, Date de naissance, Sexe, Classement Elo")  # todo adjust headers or decide not to show them or make a real table !
-        for player in self.players:
-            self.menu_data.add_entry("auto", player, ModifyPlayerEloMenuController(self.players, self.tournaments, player))
-
+        if len(self.players) != 0:
+            self.menu_data.add_header(
+                "Index, Nom, Prénom, Date de naissance, Sexe, Classement Elo")  # todo adjust headers or decide not to show them or make a real table !
+            for player in self.players:
+                self.menu_data.add_entry("auto", player, ModifyPlayerEloMenuController(self.players, self.tournaments, player))
+        else:
+            self.menu_data.add_header("Pas de joueur dans la base")
         self.menu_data.add_entry("c", "Créer un joueur", PlayerCreationMenuController(self.players, self.tournaments, self.sorting))
         if self.sorting == "surname":
             self.menu_data.add_entry("e", "Classer par Elo", PlayersMenuController(self.players, self.tournaments, "elo_ranking"))
@@ -134,13 +137,15 @@ class TournamentMenuController:
         self.tournaments.sort(key=lambda chess_tournament: chess_tournament.begin_date[3:5])
         self.tournaments.sort(key=lambda chess_tournament: chess_tournament.begin_date[6:])
 
-        self.menu_data.add_header(
-            "Index, Nom | Lieu | Date de début | Date de fin | Nombre de tours | "
-            "Contrôle du temps | Description"
-        )
-        for tournament in self.tournaments:
-            self.menu_data.add_entry("auto", tournament, TournamentInfoMenuController(self.players, self.tournaments, tournament))
-
+        if len(self.tournaments) != 0:
+            self.menu_data.add_header(
+                "Index, Nom | Lieu | Date de début | Date de fin | Nombre de tours | "
+                "Contrôle du temps | Description"
+            )
+            for tournament in self.tournaments:
+                self.menu_data.add_entry("auto", tournament, TournamentInfoMenuController(self.players, self.tournaments, tournament))
+        else:
+            self.menu_data.add_header("Pas de tournoi dans la base")
         self.menu_data.add_entry("c", "Création d'un nouveau tournoi", TournamentController(self.players, self.tournaments, HomeMenuController))
         self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
 
