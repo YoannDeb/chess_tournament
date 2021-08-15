@@ -45,3 +45,14 @@ def get_player_tournament_info(player_id, tournament):
             elif player_id == match[1][0]:
                 match_scores.append(match[1][1])
     return f"{Player.get(player_id).surname}, {Player.get(player_id).name}, {match_scores}, total : {sum(match_scores)}"
+
+
+def check_elo_format(elo):
+    try:
+        elo = int(elo)
+    except ValueError:
+        return False
+    if elo < 0:
+        return False
+    else:
+        return True

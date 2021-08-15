@@ -6,7 +6,7 @@ from views.menus import (
     PlayerCreationConfirmationMenuView, ModifyPlayerMenuView,
     TournamentMenuView, TournamentInfoMenuView
 )
-from core.utils import MenuData, get_player_tournament_info
+from core.utils import MenuData, get_player_tournament_info, check_elo_format
 
 
 class HomeMenuController:
@@ -111,7 +111,7 @@ class ModifyPlayerEloMenuController:
 
         while True:
             new_elo = self.view.get_user_choice()
-            if self.check_elo_format(new_elo):
+            if check_elo_format(new_elo):
                 break
             else:
                 self.menu_data.queries[0] = "Classement Elo invalide. Merci de renseigner un nombre entier positif"
@@ -120,17 +120,6 @@ class ModifyPlayerEloMenuController:
         self.player.save()
 
         return PlayersMenuController(self.players, self.tournaments)
-
-    @staticmethod
-    def check_elo_format(elo):
-        try:
-            elo = int(elo)
-        except ValueError:
-            return False
-        if elo < 0:
-            return False
-        else:
-            return True
 
 
 class TournamentMenuController:
