@@ -8,8 +8,6 @@ from views.menus import (
 )
 from core.utils import MenuData, get_player_tournament_info
 
-DATABASE_FILE = 'db.json'
-
 
 class HomeMenuController:
     def __init__(self, players, tournaments):
@@ -86,7 +84,7 @@ class PlayerCreationMenuController:
             int(players_attributes[4]),
         )
 
-        player.save(DATABASE_FILE)
+        player.save()
         self.players.append(player)
 
         self.confirmation_menu_data.add_header(f"Création du joueur")
@@ -119,7 +117,7 @@ class ModifyPlayerEloMenuController:
                 self.menu_data.queries[0] = "Classement Elo invalide. Merci de renseigner un nombre entier positif"
 
         self.player.modify_elo(int(new_elo))
-        self.player.save(DATABASE_FILE)
+        self.player.save()
 
         return PlayersMenuController(self.players, self.tournaments)
 

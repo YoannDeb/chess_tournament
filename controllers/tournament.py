@@ -1,9 +1,9 @@
 from models.player import Player
 from models.tournament import Tournament
-from views.menus import TournamentView, InfoTournamentCreationView, PlayersMenuView, TimeControlMenuView
+from views.menus import InfoTournamentCreationView, PlayersMenuView, TimeControlMenuView
 from core.utils import MenuData
 
-DATABASE_FILE = 'db.json'
+
 
 
 class CreateTournament:
@@ -53,7 +53,7 @@ class CreateTournament:
 
     def player_menu(self):
         # todo rajouter la possibilité d'enlever un joueur
-        already_selected_name_list = [f"{Player.get(player_id, DATABASE_FILE).surname}, {Player.get(player_id, DATABASE_FILE).name}" for player_id in self.tournament_players_id]
+        already_selected_name_list = [f"{Player.get(player_id).surname}, {Player.get(player_id).name}" for player_id in self.tournament_players_id]
         self.menu_data_players.clear_data()
         self.menu_data_players.add_header("SELECTION DES JOUEURS DU TOURNOI")
 
@@ -107,41 +107,41 @@ class TournamentController:
         if self.tournament is None:
             create_tournament = CreateTournament(self.players)
             self.tournament = create_tournament()
-            self.tournament.save(DATABASE_FILE)
+            self.tournament.save()
             self.tournaments.append(self.tournament)
 
-        self.tournament.sort_players_id_by_rank(DATABASE_FILE)
+        self.tournament.sort_players_id_by_rank()
         # todo reprise de tournoi en cours à vérifier /!\
         # todo remplacer les input et les print par des vues
         if len(self.tournament.rounds) == 0:
             self.tournament.generate_first_round()
-            self.tournament.save(DATABASE_FILE)
+            self.tournament.save()
             if None in self.tournament.rounds[0].matches[0][0]:
                 print(f"{self.tournament.rounds[-1].name} generated with following pairs :")
                 for match in self.tournament.rounds[-1].matches:
-                    print(f"{Player.get(match[0][0], DATABASE_FILE).name} vs {Player.get(match[1][0], DATABASE_FILE).name}")
+                    print(f"{Player.get(match[0][0]).name} vs {Player.get(match[1][0]).name}")
                 input("press enter to input scores")
-                self.tournament.rounds[-1].input_scores(DATABASE_FILE)
-                self.tournament.sort_players_id_by_rank(DATABASE_FILE)
-                self.tournament.save(DATABASE_FILE)
+                self.tournament.rounds[-1].input_scores()
+                self.tournament.sort_players_id_by_rank()
+                self.tournament.save()
 
         while len(self.tournament.rounds) < self.tournament.total_round_number:
-            self.tournament.generate_following_round(DATABASE_FILE)
-            self.tournament.save(DATABASE_FILE)
+            self.tournament.generate_following_round()
+            self.tournament.save()
             print(f"{self.tournament.rounds[-1].name} generated with following pairs :")
             for match in self.tournament.rounds[-1].matches:
                 print(
-                    f"{Player.get(match[0][0], DATABASE_FILE).name} vs {Player.get(match[1][0], DATABASE_FILE).name}")
+                    f"{Player.get(match[0][0]).name} vs {Player.get(match[1][0]).name}")
             input("press enter to input scores")
-            self.tournament.rounds[-1].input_scores(DATABASE_FILE)
-            self.tournament.sort_players_id_by_rank(DATABASE_FILE)
-            self.tournament.save(DATABASE_FILE)
+            self.tournament.rounds[-1].input_scores()
+            self.tournament.sort_players_id_by_rank()
+            self.tournament.save()
             print("end of ", self.tournament.rounds[-1].name)
             print(self.tournament.rounds[-1].matches)
             print(self.tournament)
 
         self.tournament.end_tournament()
-        self.tournament.save(DATABASE_FILE)
+        self.tournament.save()
 
         print("tournament", self.tournament)
         input("Pressez entrée pour retourner à l'accueil")

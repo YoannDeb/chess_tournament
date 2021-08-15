@@ -1,39 +1,31 @@
 from controllers.menus import HomeMenuController
 from controllers.tournament import TournamentController
 from models.tournament import Tournament
+from models.storage import check_database_exists
 from models.player import Player
-
-DATABASE_FILE = 'db.json'
 
 
 class MainController:
-    def __init__(self, database_file=DATABASE_FILE):
+    def __init__(self):
         self.players = []
         self.tournaments = []
         self.ongoing_tournament = None
-        self.database_file = database_file
         self.controller = None
 
-    def check_database_exists(self):
-        if self.database_file:  # todo really check file
-            return False
-        return True
-
     def load_database(self):
-        self.players = Player.get_all(self.database_file)
-        self.tournaments = Tournament.get_all(self.database_file)
+        self.players = Player.get_all()
+        self.tournaments = Tournament.get_all()
 
-    def check_ongoing_tournament(self):
+    def retrieve_ongoing_tournament(self):
         for tournament in self.tournaments:
             if tournament.end_date is None:
                 return tournament
         return None
 
     def run(self):
-        if not self.check_database_exists():
+        if check_database_exists():
             self.load_database()
-
-        self.ongoing_tournament = self.check_ongoing_tournament()
+            self.ongoing_tournament = self.retrieve_ongoing_tournament()
         if self.ongoing_tournament is not None:
             self.controller = TournamentController(self.players, self.tournaments, HomeMenuController, self.ongoing_tournament)
         else:
@@ -41,4 +33,3 @@ class MainController:
 
         while self.controller:
             self.controller = self.controller()
-

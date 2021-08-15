@@ -1,12 +1,11 @@
 from datetime import datetime
 
-from tinydb import TinyDB
-
 from models.round import Round
 from models.player import Player
+from models.storage import Model
 
 
-class Tournament:
+class Tournament(Model):
     def __init__(
             self,
             name,
@@ -27,7 +26,8 @@ class Tournament:
         self.time_control = time_control
         self.description = description
         self.id = None
-        self._table = 'tournament'
+
+    _table = 'tournament'
 
     def __repr__(self):
         return repr(
@@ -46,8 +46,8 @@ class Tournament:
     # def get_players_elo_ranking(self):
     #     return [player.elo_ranking for player in self.get_tournament_players()]
 
-    def sort_players_id_by_rank(self, database_file):
-        players = [Player.get(player_id, database_file) for player_id in self.players_id]
+    def sort_players_id_by_rank(self):
+        players = [Player.get(player_id) for player_id in self.players_id]
         players_score = self.players_tournament_score()
         for player in players:
             player.tournament_score = players_score.pop(0)
@@ -74,7 +74,7 @@ class Tournament:
         self.rounds.append(Round("Round 1"))
         self.rounds[0].pair_by_elo(self.players_id)
 
-    def generate_following_round(self, database_file):
+    def generate_following_round(self):
         self.rounds.append(Round(f"Round {len(self.rounds) + 1}"))
         self.rounds[-1].pair_by_score(self.players_id, self.rounds)
 
@@ -118,35 +118,35 @@ class Tournament:
         tournament.rounds = deserialized_rounds
         return tournament
 
-    @classmethod
-    def get(cls, tournament_id, database_file):
-        """
-        Take id and return instance of tournamnent from the tournaments table in database file.
-        update the tournament id attribute
-        :param tournament_id: id of the tournament in the database
-        :param database_file: database file in json format
-        :return: instance of tournament as in database
-        """
-        tournament = cls.deserialize(TinyDB(database_file).table('tournament').get(doc_id=tournament_id))
-        tournament.id = tournament_id
-        return tournament
-
-    @classmethod
-    def get_all(cls, database_file):
-        tournaments = []
-        for tournament in TinyDB(database_file).table('tournaments').all():
-            tournament_id = tournament.doc_id
-            tournaments.append(cls.get(tournament_id, database_file))
-        return tournaments
-
-    def store_in_database(self, database_file):
-        return TinyDB(database_file).table(self._table).insert(self.serialize())
-
-    def update_in_database(self, database_file):
-        TinyDB(database_file).table(self._table).update(self.serialize(), doc_ids=[self.id])
-
-    def save(self, database_file):
-        if self.id is None:
-            self.id = self.store_in_database(database_file)
-        else:
-            self.update_in_database(database_file)
+    # @classmethod
+    # def get(cls, tournament_id):
+    #     """
+    #     Take id and return instance of tournamnent from the tournaments table in database file.
+    #     update the tournament id attribute
+    #     :param tournament_id: id of the tournament in the database
+    #     :param database_file: database file in json format
+    #     :return: instance of tournament as in database
+    #     """
+    #     tournament = cls.deserialize(TinyDB(DATABASE_FILE).table(cls._table).get(doc_id=tournament_id))
+    #     tournament.id = tournament_id
+    #     return tournament
+    #
+    # @classmethod
+    # def get_all(cls):
+    #     tournaments = []
+    #     for tournament in TinyDB(DATABASE_FILE).table(cls._table).all():
+    #         tournament_id = tournament.doc_id
+    #         tournaments.append(cls.get(tournament_id))
+    #     return tournaments
+    #
+    # def store_in_database(self):
+    #     return TinyDB(DATABASE_FILE).table(self._table).insert(self.serialize())
+    #
+    # def update_in_database(self):
+    #     TinyDB(DATABASE_FILE).table(self._table).update(self.serialize(), doc_ids=[self.id])
+    #
+    # def save(self):
+    #     if self.id is None:
+    #         self.id = self.store_in_database()
+    #     else:
+    #         self.update_in_database()

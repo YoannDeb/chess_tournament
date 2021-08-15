@@ -116,11 +116,11 @@ class Round:
         for index in range(0, len(players_id), 2):
             self.matches.append(([players_id[index], None], [players_id[index + 1], None]))
 
-    def input_scores(self, database_file):
+    def input_scores(self):
         """ à modifier quand plus d'input dans le test"""
         for match in self.matches:
-            player1_name = Player.get(match[0][0], database_file).name
-            player2_name = Player.get(match[1][0], database_file).name
+            player1_name = Player.get(match[0][0]).name
+            player2_name = Player.get(match[1][0]).name
             print(f"Match {player1_name} vs {player2_name}")
             match[0][1] = float(input(f"result of {player1_name}"))
             match[1][1] = float(input(f"result of {player2_name}"))
