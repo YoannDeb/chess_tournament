@@ -46,7 +46,7 @@ class Tournament(Model):
     # def get_players_elo_ranking(self):
     #     return [player.elo_ranking for player in self.get_tournament_players()]
 
-    def sort_players_id_by_rank(self):
+    def sort_players_id_by_rank(self):  # todo à corriger ?
         players = [Player.get(player_id) for player_id in self.players_id]
         players_score = self.players_tournament_score()
         for player in players:
@@ -63,10 +63,13 @@ class Tournament(Model):
             score = 0.0
             for chess_round in self.rounds:
                 for match in chess_round.matches:
-                    if player_id == match[0][0]:
-                        score += match[0][1]
-                    elif player_id == match[1][0]:
-                        score += match[1][1]
+                    if match[0][1] is not None:
+                        if player_id == match[0][0]:
+                            score += match[0][1]
+                        elif player_id == match[1][0]:
+                            score += match[1][1]
+            if score % 1:
+                score = int(score)
             players_score.append(score)
         return players_score
 
