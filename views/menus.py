@@ -55,7 +55,7 @@ class PlayerCreationMenuView:
         print()
         self.display_menu()
         for query in self.menu_data.queries:
-            self.player_attributes.append(input(f"{query} >> ")).strip()
+            self.player_attributes.append(input(f"{query} >> ").strip())
         return self.player_attributes
 
 
