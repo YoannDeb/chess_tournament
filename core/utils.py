@@ -1,4 +1,10 @@
+import os
+
 from models.player import Player
+
+
+def clear_screen():
+    os.system('cls||clear') # todo test on linux
 
 
 class MenuData:
