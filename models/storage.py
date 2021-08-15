@@ -54,7 +54,5 @@ def check_database_exists():
         with open(DATABASE_FILE):
             pass
     except IOError:
-        print("no database file")
         return False
-    print("database_file exists")
     return True
