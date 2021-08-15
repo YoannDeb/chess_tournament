@@ -1,3 +1,12 @@
+import os
+
+
+def clear_screen():
+    os.system('cls||clear') # todo test on linux
+    # os.system('cls')
+    # os.system('cls' if os.name == 'nt' else 'clear')
+
+
 class HomeMenuView:
     def __init__(self, menu_data):
         self.menu_data = menu_data
@@ -6,15 +15,17 @@ class HomeMenuView:
         print("CHESS TOURNAMENT")
         for key in self.menu_data.entries:
             print(f"{key}: {self.menu_data.entries[key][0]}")
-        print("")
+        print()
 
     def get_user_choice(self):
-        print()
+        clear_screen()
         self.display_menu()
         while True:
             choice = input("Saisissez votre choix >> ").strip()
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
+            clear_screen()
+            self.display_menu()
             print("/!\\ Choix invalide /!\\")
 
 
@@ -30,7 +41,7 @@ class PlayersMenuView:
         print()
 
     def get_user_choice(self):
-        print()
+        clear_screen()
         self.display_menu()
         while True:
             if self.menu_data.input_message is not None:
@@ -39,6 +50,8 @@ class PlayersMenuView:
                 choice = input("Saisissez le numéro d'un joueur pour modifier son Elo, ou choisissez une autre option >> ").strip()
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
+            clear_screen()
+            self.display_menu()
             print("/!\\ Choix invalide /!\\")
 
 
@@ -52,7 +65,7 @@ class PlayerCreationMenuView:
             print(header)
 
     def get_user_choice(self):
-        print()
+        clear_screen()
         self.display_menu()
         for query in self.menu_data.queries:
             self.player_attributes.append(input(f"{query} >> ").strip())
@@ -72,12 +85,14 @@ class PlayerCreationConfirmationMenuView:
             print(f"{key}: {self.menu_data.entries[key][0]}")
 
     def get_user_choice(self):
-        print()
+        clear_screen()
         self.display_menu()
         while True:
             choice = input("Saisissez votre choix >> ").strip()
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
+            clear_screen()
+            self.display_menu()
             print("/!\\ Choix invalide /!\\")
 
 
@@ -90,7 +105,7 @@ class ModifyPlayerMenuView:
             print(header)
 
     def get_user_choice(self):
-        print()
+        clear_screen()
         self.display_menu()
         return input(f"{self.menu_data.queries[0]} >> ").strip()
 
@@ -109,12 +124,14 @@ class TournamentMenuView:
         print()
 
     def get_user_choice(self):
-        print()
+        clear_screen()
         self.display_menu()
         while True:
             choice = input("Saisissez le numéro d'un tournoi pour plus d'informations, ou choisissez une autre option >> ").strip()
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
+            clear_screen()
+            self.display_menu()
             print("/!\\ Choix invalide /!\\")
 
 
@@ -131,12 +148,14 @@ class TournamentInfoMenuView:
         print()
 
     def get_user_choice(self):
-        print()
+        clear_screen()
         self.display_menu()
         while True:
             choice = input("Saisissez votre choix >> ").strip()
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
+            clear_screen()
+            self.display_menu()
             print("/!\\ Choix invalide /!\\")
 
 
@@ -145,6 +164,7 @@ class InfoTournamentCreationView:
         self.menu_data = menu_data
 
     def get_user_choice(self):
+        clear_screen()
         return input(f"{self.menu_data.queries[0]} >> ").strip()
 
 
@@ -161,12 +181,14 @@ class TimeControlMenuView:
         print()
 
     def get_user_choice(self):
-        print()
+        clear_screen()
         self.display_menu()
         while True:
             choice = input(f"{self.menu_data.input_message} >> ").strip()
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
+            clear_screen()
+            self.display_menu()
             print("/!\\ Choix invalide /!\\")
 
 
