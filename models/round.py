@@ -1,7 +1,5 @@
 from datetime import datetime
 
-from models.player import Player
-
 
 class Round:
     def __init__(self, name):
@@ -116,15 +114,14 @@ class Round:
         for index in range(0, len(players_id), 2):
             self.matches.append(([players_id[index], None], [players_id[index + 1], None]))
 
-    def input_scores(self):
-        """ à modifier quand plus d'input dans le test"""
-        for match in self.matches:
-            player1_name = Player.get(match[0][0]).name
-            player2_name = Player.get(match[1][0]).name
-            print(f"Match {player1_name} vs {player2_name}")
-            match[0][1] = float(input(f"result of {player1_name}"))
-            match[1][1] = float(input(f"result of {player2_name}"))
-        self.end_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    # def input_scores(self, match):
+    #     for match in self.matches:
+    #         player1_name = Player.get(match[0][0]).name
+    #         player2_name = Player.get(match[1][0]).name
+    #         print(f"Match {player1_name} vs {player2_name}")
+    #         match[0][1] = float(input(f"result of {player1_name}"))
+    #         match[1][1] = float(input(f"result of {player2_name}"))
+    #     self.end_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
     def serialize(self):
         serialized_round = {
