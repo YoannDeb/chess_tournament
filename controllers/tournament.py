@@ -4,8 +4,6 @@ from views.menus import InfoTournamentCreationView, PlayersMenuView, TimeControl
 from core.utils import MenuData
 
 
-
-
 class CreateTournament:
     def __init__(self, players, sorting="surname"):
         self.players = players
