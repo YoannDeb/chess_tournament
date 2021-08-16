@@ -35,9 +35,6 @@ class Round:
         If the number of players is odd, the last one will be in an unpaired solo match.
         :param players_id: List of players' id in the tournament.
         """
-        # players = [Player.get(player_id, database_file) for player_id in players_id]
-        # players.sort(key=lambda player: player.elo_ranking)
-        # players.reverse()
 
         list_middle = int(len(players_id) / 2)
         first_half_players = players_id[:list_middle]
@@ -59,17 +56,9 @@ class Round:
         until the original odd player hasn't already played with his follower in the list.
         - Finally create a match with each pair of player (the odd and the following player) in the list.
         If the number of players is odd, the last one will be in an unpaired solo match.
-        :param players_id: list of instances of players' id in the tournament, already sorted by tournament's rank tournament.
-        :param players_score: list of players' score in tournament
+        :param players_id: copy of the list of instances of players' id in the tournament, already sorted by tournament's rank tournament.
         :param rounds: list of rounds in the tournament.
         """
-        # players = [Player.get(player_id, database_file) for player_id in players_id]
-        # for player in players:
-        #     player.tournament_score = players_score.pop(0)
-        # players.sort(key=lambda chess_player: chess_player.elo_ranking)
-        # players.sort(key=lambda chess_player: chess_player.tournament_score)
-        # players.reverse()
-        # sorted_players_id = [player.id for player in players]
 
         print(players_id)
         last_players_not_pairable = False
@@ -114,14 +103,8 @@ class Round:
         for index in range(0, len(players_id), 2):
             self.matches.append(([players_id[index], None], [players_id[index + 1], None]))
 
-    # def input_scores(self, match):
-    #     for match in self.matches:
-    #         player1_name = Player.get(match[0][0]).name
-    #         player2_name = Player.get(match[1][0]).name
-    #         print(f"Match {player1_name} vs {player2_name}")
-    #         match[0][1] = float(input(f"result of {player1_name}"))
-    #         match[1][1] = float(input(f"result of {player2_name}"))
-    #     self.end_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    def register_end_time(self):
+        self.end_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
     def serialize(self):
         serialized_round = {
