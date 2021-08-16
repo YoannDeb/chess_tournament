@@ -1,6 +1,11 @@
+import os
+import pathlib
+
 from tinydb import TinyDB
 
-DATABASE_FILE = 'db.json'
+DATABASE_FILE_NAME = 'db.json'
+DATABASE_FILE = pathlib.Path.cwd() / 'database' / DATABASE_FILE_NAME
+os.makedirs(pathlib.Path.cwd() / 'database', exist_ok=True)
 
 
 class Model:
@@ -47,6 +52,11 @@ class Model:
             self.id = self.store_in_database()
         else:
             self.update_in_database()
+
+
+def change_database_file(database_file):
+    global DATABASE_FILE
+    DATABASE_FILE = database_file
 
 
 def check_database_exists():
