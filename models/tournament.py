@@ -27,7 +27,7 @@ class Tournament(Model):
         self.description = description
         self.id = None
 
-    _table = 'tournament'
+    _table = 'tournaments'
 
     def __repr__(self):
         return repr(
@@ -51,10 +51,10 @@ class Tournament(Model):
         players_score = self.players_tournament_score()
         for player in players:
             player.tournament_score = players_score.pop(0)
-        players.sort(key=lambda chess_player: chess_player.elo_ranking)
-        if len(self.rounds) != 1:
-            players.sort(key=lambda chess_player: chess_player.tournament_score)
-        players.reverse()
+            print(player.tournament_score)
+        input()
+        players.sort(key=lambda chess_player: chess_player.elo_ranking, reverse=True)
+        players.sort(key=lambda chess_player: chess_player.tournament_score, reverse=True)
         self.players_id = [player.id for player in players]
 
     def players_tournament_score(self):
@@ -68,8 +68,6 @@ class Tournament(Model):
                             score += match[0][1]
                         elif player_id == match[1][0]:
                             score += match[1][1]
-            if score % 1:
-                score = int(score)
             players_score.append(score)
         return players_score
 
@@ -79,7 +77,7 @@ class Tournament(Model):
 
     def generate_following_round(self):
         self.rounds.append(Round(f"Round {len(self.rounds) + 1}"))
-        self.rounds[-1].pair_by_score(self.players_id, self.rounds)
+        self.rounds[-1].pair_by_score(self.players_id.copy(), self.rounds)
 
     def end_tournament(self):
         self.end_date = datetime.now().strftime("%d/%m/%Y")
@@ -121,35 +119,3 @@ class Tournament(Model):
         tournament.rounds = deserialized_rounds
         return tournament
 
-    # @classmethod
-    # def get(cls, tournament_id):
-    #     """
-    #     Take id and return instance of tournamnent from the tournaments table in database file.
-    #     update the tournament id attribute
-    #     :param tournament_id: id of the tournament in the database
-    #     :param database_file: database file in json format
-    #     :return: instance of tournament as in database
-    #     """
-    #     tournament = cls.deserialize(TinyDB(DATABASE_FILE).table(cls._table).get(doc_id=tournament_id))
-    #     tournament.id = tournament_id
-    #     return tournament
-    #
-    # @classmethod
-    # def get_all(cls):
-    #     tournaments = []
-    #     for tournament in TinyDB(DATABASE_FILE).table(cls._table).all():
-    #         tournament_id = tournament.doc_id
-    #         tournaments.append(cls.get(tournament_id))
-    #     return tournaments
-    #
-    # def store_in_database(self):
-    #     return TinyDB(DATABASE_FILE).table(self._table).insert(self.serialize())
-    #
-    # def update_in_database(self):
-    #     TinyDB(DATABASE_FILE).table(self._table).update(self.serialize(), doc_ids=[self.id])
-    #
-    # def save(self):
-    #     if self.id is None:
-    #         self.id = self.store_in_database()
-    #     else:
-    #         self.update_in_database()
