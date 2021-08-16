@@ -76,7 +76,7 @@ class CreateTournament:
         else:
             self.menu_data_players.add_header("Plus de joueur disponible dans la base")
 
-        # self.menu_data_players.add_entry("c", "Créer un nouveau joueur", PlayersMenuCreationController(self.players, self.tournaments))  # todo implement player creation in tournament creation
+        # todo self.menu_data_players.add_entry("c", "Créer un nouveau joueur", PlayersMenuCreationController(self.players, self.tournaments))  # todo implement player creation in tournament creation
         self.menu_data_players.add_entry("t", "Terminer la selection", "end")
         self.menu_data_players.add_input_message(f"{len(self.tournament_players_id)} joueur(s) déjà sélectionné(s):\n {already_selected_name_list} \nSélectionnez un joueur supplémentaire ou choisissez une autre option")
 
@@ -111,12 +111,15 @@ class TournamentController:
             self.tournaments.append(self.tournament)
             self.view = None
 
+        print(self.tournament.players_id)
         self.tournament.sort_players_id_by_rank()
-        # todo reprise de tournoi en cours à vérifier /!\
+        print(self.tournament.players_id)
+        input()
+
         if len(self.tournament.rounds) == 0:
             self.tournament.generate_first_round()
             self.tournament.save()
-        else:  # todo ne s'affiche pas
+        else:
             self.menu_data.add_header("REPRISE DU TOURNOI PRECEDEMMENT INTERROMPU:")
             self.menu_data.add_header(f"{self.tournament}")
             self.menu_data.add_input_message("Appuyez sur Entrée pour poursuivre le tournoi")
@@ -158,20 +161,23 @@ class TournamentController:
                         choice[1][1] = scores[1]
                         self.tournament.save()
 
+                self.tournament.rounds[round_index].register_end_time()
+                print(self.tournament.players_id)
                 self.tournament.sort_players_id_by_rank()
+                print(self.tournament.players_id)
+                input()
                 self.menu_data.clear_data()  # todo apparemment non classés + score 1.0 moches ou alors tout en 1 chiffre après la virgule
                 self.menu_data.add_header("TABLEAU DES SCORES")
                 for player_id in self.tournament.players_id:
                     self.menu_data.add_header(get_player_tournament_info(player_id, self.tournament))
                 if round_index == self.tournament.total_round_number - 1:
                     self.tournament.end_tournament()
-                    self.tournament.save()
                     self.menu_data.add_header("Le tournoi est terminé")
                     self.menu_data.add_input_message("Appuyez sur Entrée pour revenir au menu principal")
                 else:
                     self.menu_data.add_input_message("Appuyez sur Entrée pour passer à la ronde suivante")
                     self.tournament.generate_following_round()
-                    self.tournament.save()
+                self.tournament.save()
                 TournamentRankingView(self.menu_data).get_user_choice()
 
         return self.parent_controller(self.players, self.tournaments)
