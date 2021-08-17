@@ -30,14 +30,14 @@ class Tournament(Model):
     _table = 'tournaments'
 
     def __repr__(self):
-        return repr(
-            f"Nom : {self.name} | "
-            f"Lieu : {self.location} | "
-            f"Date de début : {self.begin_date} | "
-            f"Date de fin : {self.end_date} |"
-            f"Nombre de Rounds : {self.total_round_number} | "
-            f"Contrôle du temps : {self.time_control} | "
-            f"Description : {self.description}"
+        return str(
+            f"|{self.name.center(35)}|"
+            f"{self.location.center(15)}|"
+            f"{self.begin_date.center(10)}|"
+            f"{self.end_date.center(10)}|"
+            f"{str(self.total_round_number).center(6)}|"
+            f"{self.time_control.center(13)}|"
+            f"{self.description.center(50)}|"
         )
 
     # def get_tournament_players(self, database_file):

@@ -14,11 +14,12 @@ class Player(Model):
     _table = 'players'
 
     def __repr__(self):
-        return repr(
-            f"{self.surname}, {self.name}, "
-            f"né le : {self.birth_date}, "
-            f"sexe : {self.sex}, "
-            f"classement Elo : {self.elo_ranking}"
+        return str(
+            f"|{self.surname.center(30)}|"
+            f"{self.name.center(30)}|"
+            f"{self.birth_date.center(15)}|"
+            f"{self.sex.center(9)}|"
+            f"{str(self.elo_ranking).center(10)}|"
         )
 
     def modify_elo(self, new_elo):
