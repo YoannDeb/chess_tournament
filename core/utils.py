@@ -4,13 +4,13 @@ from models.player import Player
 
 
 def clear_screen():
-    os.system('cls||clear') # todo test on linux
+    os.system('cls||clear')  # todo test on linux
 
 
 class MenuData:
     def __init__(self):
         self.entries = {}
-        self.headers = []
+        self.lines = []
         self.queries = []
         self.input_message = None
         self.autokey = 1
@@ -19,11 +19,12 @@ class MenuData:
         if key == "auto":
             key = self.autokey
             self.autokey += 1
+            self.entries[str(key)] = (menu_option, destination_controller, "top_menu")
+        else:
+            self.entries[str(key)] = (menu_option, destination_controller, "bottom_menu")
 
-        self.entries[str(key)] = (menu_option, destination_controller)
-
-    def add_header(self, text):
-        self.headers.append(text)
+    def add_line(self, text):
+        self.lines.append(text)
 
     def add_query(self, text):
         self.queries.append(text)
@@ -33,7 +34,7 @@ class MenuData:
 
     def clear_data(self):
         self.entries = {}
-        self.headers = []
+        self.lines = []
         self.queries = []
         self.input_message = None
         self.autokey = 1
@@ -42,7 +43,7 @@ class MenuData:
         pass
 
 
-def get_player_tournament_info(player_id, tournament):
+def get_player_tournament_scores(player_id, tournament):
     match_scores = []
     for chess_round in tournament.rounds:
         for match in chess_round.matches:
@@ -50,7 +51,7 @@ def get_player_tournament_info(player_id, tournament):
                 match_scores.append(match[0][1])
             elif player_id == match[1][0]:
                 match_scores.append(match[1][1])
-    return f"{Player.get(player_id).surname}, {Player.get(player_id).name}, {match_scores}, total : {sum(match_scores)}"
+    return match_scores
 
 
 def check_elo_format(elo):
