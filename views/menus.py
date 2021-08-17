@@ -6,7 +6,9 @@ class HomeMenuView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        print("                                      CHESS TOURNAMENT")
+        print("                                    ####################")
+        print("                                    # CHESS TOURNAMENT #")
+        print("                                    ####################")
         print()
         print("                                             @")
         print("                                          &@@@@@(")
@@ -34,8 +36,14 @@ class HomeMenuView:
         print("                                          /@@@@@,")
         print("                                             @")
         print()
+
         for key in self.menu_data.entries:
-            print(f"{key}: {self.menu_data.entries[key][0]}")
+            if self.menu_data.entries[key][2] == "top_menu":
+                print(f"{key} : {self.menu_data.entries[key][0]}")
+        print()
+        for key in self.menu_data.entries:
+            if self.menu_data.entries[key][2] == "bottom_menu":
+                print(f"{key} : {self.menu_data.entries[key][0]}")
         print()
 
     def get_user_choice(self):
@@ -55,10 +63,16 @@ class PlayersMenuView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        for header in self.menu_data.headers:
-            print(header)
+        for line in self.menu_data.lines:
+            print(line)
+
         for key in self.menu_data.entries:
-            print(f"{key}: {self.menu_data.entries[key][0]}")
+            if self.menu_data.entries[key][2] == "top_menu":
+                print(f"{key.center(4)}{self.menu_data.entries[key][0]}")
+        print()
+        for key in self.menu_data.entries:
+            if self.menu_data.entries[key][2] == "bottom_menu":
+                print(f"{key} : {self.menu_data.entries[key][0]}")
         print()
 
     def get_user_choice(self):
@@ -82,8 +96,8 @@ class PlayerCreationMenuView:
         self.player_attributes = []
 
     def display_menu(self):
-        for header in self.menu_data.headers:
-            print(header)
+        for line in self.menu_data.lines:
+            print(line)
 
     def get_user_choice(self):
         clear_screen()
@@ -98,12 +112,18 @@ class PlayerCreationConfirmationMenuView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        for header in self.menu_data.headers:
-            print(header)
+        for line in self.menu_data.lines:
+            print(line)
         print()
 
         for key in self.menu_data.entries:
-            print(f"{key}: {self.menu_data.entries[key][0]}")
+            if self.menu_data.entries[key][2] == "top_menu":
+                print(f"{key} : {self.menu_data.entries[key][0]}")
+        print()
+        for key in self.menu_data.entries:
+            if type(key) is not int:
+                print(f"{key} : {self.menu_data.entries[key][0]}")
+        print()
 
     def get_user_choice(self):
         clear_screen()
@@ -122,8 +142,8 @@ class ModifyPlayerMenuView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        for header in self.menu_data.headers:
-            print(header)
+        for line in self.menu_data.lines:
+            print(line)
 
     def get_user_choice(self):
         clear_screen()
@@ -136,12 +156,16 @@ class TournamentMenuView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        print("MENU TOURNOIS")
-        for header in self.menu_data.headers:
-            print(header)
+        for line in self.menu_data.lines:
+            print(line)
 
         for key in self.menu_data.entries:
-            print(f"{key}: {self.menu_data.entries[key][0]}")
+            if self.menu_data.entries[key][2] == "top_menu":
+                print(f"{key.center(3)}{self.menu_data.entries[key][0]}")
+        print()
+        for key in self.menu_data.entries:
+            if self.menu_data.entries[key][2] == "bottom_menu":
+                print(f"{key} : {self.menu_data.entries[key][0]}")
         print()
 
     def get_user_choice(self):
@@ -161,11 +185,16 @@ class TournamentInfoMenuView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        for header in self.menu_data.headers:
-            print(header)
+        for line in self.menu_data.lines:
+            print(line)
 
         for key in self.menu_data.entries:
-            print(f"{key}: {self.menu_data.entries[key][0]}")
+            if self.menu_data.entries[key][2] == "top_menu":
+                print(f"{key} : {self.menu_data.entries[key][0]}")
+        print()
+        for key in self.menu_data.entries:
+            if self.menu_data.entries[key][2] == "bottom_menu":
+                print(f"{key} : {self.menu_data.entries[key][0]}")
         print()
 
     def get_user_choice(self):

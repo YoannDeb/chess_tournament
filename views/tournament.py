@@ -15,7 +15,7 @@ class TimeControlMenuView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        for header in self.menu_data.headers:
+        for header in self.menu_data.lines:
             print(header)
 
         for key in self.menu_data.entries:
@@ -39,7 +39,7 @@ class TournamentRecoveryView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        for header in self.menu_data.headers:
+        for header in self.menu_data.lines:
             print(header)
 
     def get_user_choice(self):
@@ -53,7 +53,7 @@ class FillRoundView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        for header in self.menu_data.headers:
+        for header in self.menu_data.lines:
             print(header)
 
         for key in self.menu_data.entries:
@@ -77,7 +77,7 @@ class FillMatchView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        for header in self.menu_data.headers:
+        for header in self.menu_data.lines:
             print(header)
 
         for key in self.menu_data.entries:
@@ -101,7 +101,7 @@ class TournamentRankingView:
         self.menu_data = menu_data
 
     def display_menu(self):
-        for header in self.menu_data.headers:
+        for header in self.menu_data.lines:
             print(header)
 
     def get_user_choice(self):

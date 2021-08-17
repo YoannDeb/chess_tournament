@@ -2,7 +2,7 @@ from models.player import Player
 from models.tournament import Tournament
 from views.menus import PlayersMenuView
 from views.tournament import InfoTournamentCreationView, TimeControlMenuView, TournamentRecoveryView, FillRoundView, FillMatchView, TournamentRankingView
-from core.utils import MenuData, get_player_tournament_info
+from core.utils import MenuData, get_player_tournament_scores
 
 
 class CreateTournament:
@@ -54,7 +54,7 @@ class CreateTournament:
         # todo rajouter la possibilité d'enlever un joueur
         already_selected_name_list = [f"{Player.get(player_id).surname}, {Player.get(player_id).name}" for player_id in self.tournament_players_id]
         self.menu_data_players.clear_data()
-        self.menu_data_players.add_header("SELECTION DES JOUEURS DU TOURNOI")
+        self.menu_data_players.add_line("SELECTION DES JOUEURS DU TOURNOI")
 
         if self.sorting == "surname":
             self.players.sort(key=lambda chess_player: chess_player.surname)
@@ -66,7 +66,7 @@ class CreateTournament:
             if player.id not in self.tournament_players_id:
                 self.menu_data_players.add_entry("auto", player, player.id)
         if len(self.menu_data_players.entries) != 0:
-            self.menu_data_players.add_header(
+            self.menu_data_players.add_line(
                 "Index, Nom, Prénom, Date de naissance, Sexe, Classement Elo"
             )  # todo adjust header or decide not to show them or make a real table !
             if self.sorting == "surname":
@@ -74,7 +74,7 @@ class CreateTournament:
             elif self.sorting == "elo_ranking":
                 self.menu_data_players.add_entry("a", "Classer par ordre alphabétique", "surname")
         else:
-            self.menu_data_players.add_header("Plus de joueur disponible dans la base")
+            self.menu_data_players.add_line("Plus de joueur disponible dans la base")
 
         # todo self.menu_data_players.add_entry("c", "Créer un nouveau joueur", PlayersMenuCreationController(self.players, self.tournaments))  # todo implement player creation in tournament creation
         self.menu_data_players.add_entry("t", "Terminer la selection", "end")
@@ -83,7 +83,7 @@ class CreateTournament:
         return self.view_players.get_user_choice()
 
     def time_control(self):
-        self.menu_data_time_control.add_header("Choix de la cadence (Contrôle du temps):")
+        self.menu_data_time_control.add_line("Choix de la cadence (Contrôle du temps):")
         self.menu_data_time_control.add_entry("auto", "Bullet", "Bullet")
         self.menu_data_time_control.add_entry("auto", "Blitz", "Blitz")
         self.menu_data_time_control.add_entry("auto", "Coup rapide", "Coup rapide")
@@ -120,8 +120,8 @@ class TournamentController:
             self.tournament.generate_first_round()
             self.tournament.save()
         else:
-            self.menu_data.add_header("REPRISE DU TOURNOI PRECEDEMMENT INTERROMPU:")
-            self.menu_data.add_header(f"{self.tournament}")
+            self.menu_data.add_line("REPRISE DU TOURNOI PRECEDEMMENT INTERROMPU:")
+            self.menu_data.add_line(f"{self.tournament}")
             self.menu_data.add_input_message("Appuyez sur Entrée pour poursuivre le tournoi")
             TournamentRecoveryView(self.menu_data).get_user_choice()
 
@@ -129,7 +129,7 @@ class TournamentController:
             if round_index == len(self.tournament.rounds) - 1:
                 while True:
                     self.menu_data.clear_data()
-                    self.menu_data.add_header(f"APPARIEMENTS {self.tournament.rounds[round_index].name} :")
+                    self.menu_data.add_line(f"APPARIEMENTS {self.tournament.rounds[round_index].name} :")
                     match_number = 0
                     all_matches_filled = True
                     for match in self.tournament.rounds[round_index].matches:
@@ -151,7 +151,7 @@ class TournamentController:
                         break
                     else:
                         self.menu_data.clear_data()
-                        self.menu_data.add_header(f"Résultat du match {Player.get(choice[0][0]).surname} vs {Player.get(choice[1][0]).surname}")
+                        self.menu_data.add_line(f"Résultat du match {Player.get(choice[0][0]).surname} vs {Player.get(choice[1][0]).surname}")
                         self.menu_data.add_entry("auto", f"Victoire de {Player.get(choice[0][0]).surname}", (1, 0))
                         self.menu_data.add_entry("auto", f"Victoire de {Player.get(choice[1][0]).surname}", (0, 1))
                         self.menu_data.add_entry("auto", "Match nul", (0.5, 0.5))
@@ -167,12 +167,12 @@ class TournamentController:
                 print(self.tournament.players_id)
                 input()
                 self.menu_data.clear_data()  # todo apparemment non classés + score 1.0 moches ou alors tout en 1 chiffre après la virgule
-                self.menu_data.add_header("TABLEAU DES SCORES")
+                self.menu_data.add_line("TABLEAU DES SCORES")
                 for player_id in self.tournament.players_id:
-                    self.menu_data.add_header(get_player_tournament_info(player_id, self.tournament))
+                    self.menu_data.add_line(get_player_tournament_scores(player_id, self.tournament))
                 if round_index == self.tournament.total_round_number - 1:
                     self.tournament.end_tournament()
-                    self.menu_data.add_header("Le tournoi est terminé")
+                    self.menu_data.add_line("Le tournoi est terminé")
                     self.menu_data.add_input_message("Appuyez sur Entrée pour revenir au menu principal")
                 else:
                     self.menu_data.add_input_message("Appuyez sur Entrée pour passer à la ronde suivante")

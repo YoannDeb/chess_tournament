@@ -1,4 +1,3 @@
-# from controllers.main import DATABASE_FILE
 from controllers.tournament import TournamentController
 from models.player import Player
 from views.menus import (
@@ -6,7 +5,7 @@ from views.menus import (
     PlayerCreationConfirmationMenuView, ModifyPlayerMenuView,
     TournamentMenuView, TournamentInfoMenuView
 )
-from core.utils import MenuData, get_player_tournament_info, check_elo_format
+from core.utils import MenuData, get_player_tournament_scores, check_elo_format
 
 
 class HomeMenuController:
@@ -34,19 +33,34 @@ class PlayersMenuController:
         self.parent_menu = HomeMenuController(self.players, self.tournaments)
 
     def __call__(self):
-        self.menu_data.add_header("MENU JOUEURS")
+        self.menu_data.add_line(f"{'################'.center(105)}")
+        self.menu_data.add_line(f"{'# MENU JOUEURS #'.center(105)}")
+        self.menu_data.add_line(f"{'################'.center(105)}")
+        self.menu_data.add_line("")
         if self.sorting == "surname":
             self.players.sort(key=lambda chess_player: chess_player.surname)
         elif self.sorting == "elo_ranking":
             self.players.sort(key=lambda chess_player: chess_player.elo_ranking)
             self.players.reverse()
         if len(self.players) != 0:
-            self.menu_data.add_header(
-                "Index, Nom, Prénom, Date de naissance, Sexe, Classement Elo")  # todo adjust headers or decide not to show them or make a real table !
+            self.menu_data.add_line(
+                f"    |{'Nom'.center(30)}|"
+                f"{'Prénom'.center(30)}|"
+                f"{'Né le'.center(15)}|"
+                f"{'Sexe'.center(9)}|"
+                f"{'Elo'.center(10)}|"
+            )
+            self.menu_data.add_line(
+                f"----|{'-' * 30}|"
+                f"{'-' * 30}|"
+                f"{'-' * 15}|"
+                f"{'-' * 9}|"
+                f"{'-' * 10}|"
+            )
             for player in self.players:
                 self.menu_data.add_entry("auto", player, ModifyPlayerEloMenuController(self.players, self.tournaments, player))
         else:
-            self.menu_data.add_header("Pas de joueur dans la base")
+            self.menu_data.add_line("Pas de joueur dans la base")
         self.menu_data.add_entry("c", "Créer un joueur", PlayerCreationMenuController(self.players, self.tournaments, self.sorting))
         if self.sorting == "surname":
             self.menu_data.add_entry("e", "Classer par Elo", PlayersMenuController(self.players, self.tournaments, "elo_ranking"))
@@ -69,7 +83,7 @@ class PlayerCreationMenuController:
         self.confirmation_view = PlayerCreationConfirmationMenuView(self.confirmation_menu_data)
 
     def __call__(self):
-        self.main_menu_data.add_header("CREATION D'UN NOUVEAU JOUEUR")
+        self.main_menu_data.add_line("CREATION D'UN NOUVEAU JOUEUR")
         self.main_menu_data.add_query("Nom de famille")
         self.main_menu_data.add_query("Prénom")
         self.main_menu_data.add_query("Date de naissance")
@@ -90,9 +104,9 @@ class PlayerCreationMenuController:
         player.save()
         self.players.append(player)
 
-        self.confirmation_menu_data.add_header(f"Création du joueur")
-        self.confirmation_menu_data.add_header(player)
-        self.confirmation_menu_data.add_header("réalisée avec succès")
+        self.confirmation_menu_data.add_line(f"Création du joueur")
+        self.confirmation_menu_data.add_line(player)
+        self.confirmation_menu_data.add_line("réalisée avec succès")
         self.confirmation_menu_data.add_entry("c", "Créer un autre joueur", PlayerCreationMenuController(self.players, self.tournaments, self.sorting))
         self.confirmation_menu_data.add_entry("j", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournaments, self.sorting))
         self.confirmation_menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
@@ -109,7 +123,7 @@ class ModifyPlayerEloMenuController:
         self.view = ModifyPlayerMenuView(self.menu_data)
 
     def __call__(self):
-        self.menu_data.add_header(f"Nom : {self.player.surname}, {self.player.name} | Elo actuel {self.player.elo_ranking}")
+        self.menu_data.add_line(f"Nom : {self.player.surname}, {self.player.name} | Elo actuel {self.player.elo_ranking}")
         self.menu_data.add_query("Veuillez renseigner le nouveau classement Elo du joueur")
 
         while True:
@@ -137,15 +151,26 @@ class TournamentMenuController:
         self.tournaments.sort(key=lambda chess_tournament: chess_tournament.begin_date[3:5])
         self.tournaments.sort(key=lambda chess_tournament: chess_tournament.begin_date[6:])
 
+        self.menu_data.add_line(f"{'#################'.center(150)}")
+        self.menu_data.add_line(f"{'# MENU TOURNOIS #'.center(150)}")
+        self.menu_data.add_line(f"{'#################'.center(150)}")
+        self.menu_data.add_line("")
         if len(self.tournaments) != 0:
-            self.menu_data.add_header(
-                "Index, Nom | Lieu | Date de début | Date de fin | Nombre de tours | "
-                "Contrôle du temps | Description"
+            self.menu_data.add_line(
+                f"   |{'Nom'.center(35)}|{'Lieu'.center(15)}|{'Début'.center(10)}|"
+                f"{'Fin'.center(10)}|{'Rounds'.center(6)}|"
+                f"{'Cadence'.center(13)}|{'Description'.center(50)}|"
+            )
+            self.menu_data.add_line(
+                f"---|{'-' * 35}|{'-' * 15}|{'-' * 10}|"
+                f"{'-' * 10}|{'-' * 6}|"
+                f"{'-' * 13}|{'-' * 50}|"
             )
             for tournament in self.tournaments:
                 self.menu_data.add_entry("auto", tournament, TournamentInfoMenuController(self.players, self.tournaments, tournament))
         else:
-            self.menu_data.add_header("Pas de tournoi dans la base")
+            self.menu_data.add_line("Pas de tournoi dans la base")
+
         self.menu_data.add_entry("c", "Création d'un nouveau tournoi", TournamentController(self.players, self.tournaments, HomeMenuController))
         self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
 
@@ -161,10 +186,45 @@ class TournamentInfoMenuController:
         self.view = TournamentInfoMenuView(self.menu_data)
 
     def __call__(self):
-        self.menu_data.add_header(self.tournament)
-        self.menu_data.add_header("TABLEAU DES SCORES")
+        self.menu_data.add_line(f"{'######################'.center(150)}")
+        self.menu_data.add_line(f"{'# TABLEAU DES SCORES #'.center(150)}")
+        self.menu_data.add_line(f"{'######################'.center(150)}")
+        self.menu_data.add_line("")
+        self.menu_data.add_line(
+            f"|{'Nom'.center(35)}|{'Lieu'.center(15)}|{'Début'.center(10)}|"
+            f"{'Fin'.center(10)}|{'Rounds'.center(6)}|"
+            f"{'Cadence'.center(13)}|{'Description'.center(50)}|"
+        )
+        self.menu_data.add_line(
+            f"|{'-' * 35}|{'-' * 15}|{'-' * 10}|"
+            f"{'-' * 10}|{'-' * 6}|"
+            f"{'-' * 13}|{'-' * 50}|"
+        )
+        self.menu_data.add_line(self.tournament)
+        self.menu_data.add_line("")
+        self.menu_data.add_line(f"{'*' * 150}")
+        self.menu_data.add_line("")
+
+        self.menu_data.add_line(
+            f"|{'Classement'.center(12)}|"
+            f"{'Nom'.center(30)}|"
+            f"{'Prénom'.center(30)}|"
+            f"{'Scores des matchs'.center(50)}|"
+            f"{'Total'.center(15)}|")
+
+        self.menu_data.add_line(
+            f"|{'-' * 12}|"
+            f"{'-' * 30}|"
+            f"{'-' * 30}|"
+            f"{'-' * 50}|"
+            f"{'-' * 15}|")
+
+        position = 0
         for player_id in self.tournament.players_id:
-            self.menu_data.add_header(get_player_tournament_info(player_id, self.tournament))
+            position += 1
+            player = Player.get(player_id)
+            player_scores = get_player_tournament_scores(player_id, self.tournament)
+            self.menu_data.add_line(f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(50)}|{str(sum(player_scores)).center(15)}|")
 
         self.menu_data.add_entry("c", "Consulter le rapport des rondes et matchs du tournoi", TournamentRoundsMenuController(self.players, self.tournaments, self.tournament))
         # todo determine if usefull if the tournament info shows a recapitulative table of scores you can order by score or name
