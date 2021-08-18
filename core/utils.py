@@ -1,7 +1,5 @@
 import os
 
-from models.player import Player
-
 
 def clear_screen():
     os.system('cls||clear')  # todo test on linux
@@ -54,12 +52,3 @@ def get_player_tournament_scores(player_id, tournament):
     return match_scores
 
 
-def check_elo_format(elo):
-    try:
-        elo = int(elo)
-    except ValueError:
-        return False
-    if elo < 0:
-        return False
-    else:
-        return True
