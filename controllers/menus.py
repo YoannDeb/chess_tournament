@@ -37,11 +37,12 @@ class PlayersMenuController:
         self.menu_data.add_line(f"{'# MENU JOUEURS #'.center(105)}")
         self.menu_data.add_line(f"{'################'.center(105)}")
         self.menu_data.add_line("")
+
         if self.sorting == "surname":
             self.players.sort(key=lambda chess_player: chess_player.surname)
         elif self.sorting == "elo_ranking":
-            self.players.sort(key=lambda chess_player: chess_player.elo_ranking)
-            self.players.reverse()
+            self.players.sort(key=lambda chess_player: chess_player.elo_ranking, reverse=True)
+
         if len(self.players) != 0:
             self.menu_data.add_line(
                 f"    |{'Nom'.center(30)}|"
@@ -69,7 +70,6 @@ class PlayersMenuController:
 
         self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", self.parent_menu)
         self.menu_data.add_input_message("Saisissez le numéro d'un joueur pour modifier son Elo, ou choisissez une autre option")
-
 
         return self.view.get_user_choice()
 
