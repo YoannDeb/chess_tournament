@@ -1,11 +1,11 @@
 from controllers.tournament import TournamentController
 from models.player import Player
 from views.menus import (
-    HomeMenuView, PlayersMenuView, PlayerCreationMenuView,
-    PlayerCreationConfirmationMenuView, ModifyPlayerMenuView,
+    HomeMenuView, PlayersMenuView, PlayerCreationMenuView, ModifyPlayerMenuView,
     TournamentMenuView, TournamentInfoMenuView, TournamentRoundsMenuView, EndScreenView
 )
-from core.utils import MenuData, get_player_tournament_scores, check_elo_format
+from core.utils import MenuData, get_player_tournament_scores
+from controllers.verification import check_elo_format, check_name_format, check_date_format
 
 
 class HomeMenuController:
@@ -68,6 +68,8 @@ class PlayersMenuController:
             self.menu_data.add_entry("a", "Classer par ordre alphabétique", PlayersMenuController(self.players, self.tournaments, "surname"))
 
         self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", self.parent_menu)
+        self.menu_data.add_input_message("Saisissez le numéro d'un joueur pour modifier son Elo, ou choisissez une autre option")
+
 
         return self.view.get_user_choice()
 
@@ -77,41 +79,105 @@ class PlayerCreationMenuController:
         self.players = players
         self.tournaments = tournaments
         self.sorting = sorting
-        self.main_menu_data = MenuData()
-        self.confirmation_menu_data = MenuData()
-        self.main_view = PlayerCreationMenuView(self.main_menu_data)
-        self.confirmation_view = PlayerCreationConfirmationMenuView(self.confirmation_menu_data)
+        self.menu_data = MenuData()
+        self.view = PlayerCreationMenuView(self.menu_data)
 
     def __call__(self):
-        self.main_menu_data.add_line("CREATION D'UN NOUVEAU JOUEUR")
-        self.main_menu_data.add_query("Nom de famille")
-        self.main_menu_data.add_query("Prénom")
-        self.main_menu_data.add_query("Date de naissance")
-        self.main_menu_data.add_query("Sexe")
-        self.main_menu_data.add_query("Classement Elo")
+        self.menu_data.add_line(f"{'########################'.center(105)}")
+        self.menu_data.add_line(f"{'# MENU CREATION JOUEUR #'.center(105)}")
+        self.menu_data.add_line(f"{'########################'.center(105)}")
+        self.menu_data.add_line("")
+        self.menu_data.add_query("Veuillez entrer le nom de famille")
+        while True:
+            surname = self.view.get_user_choice()
+            if check_name_format(surname):
+                surname = surname.strip().capitalize()
+                break
+            else:
+                self.menu_data.add_line(
+                    f"/!\\ Nom de famille '{surname}' invalide, le nom de famille ne peut pas"
+                    f" être vide et doit commencer par une lettre /!\\"
+                )
 
-        players_attributes = self.main_view.get_user_choice()
+        self.menu_data.clear_data()
+        self.menu_data.add_line(f"{'########################'.center(105)}")
+        self.menu_data.add_line(f"{'# MENU CREATION JOUEUR #'.center(105)}")
+        self.menu_data.add_line(f"{'########################'.center(105)}")
+        self.menu_data.add_line("")
+        self.menu_data.add_query("Veuillez entrer le prénom")
+        while True:
+            name = self.view.get_user_choice()
+            if check_name_format(name):
+                name = name.strip().capitalize()
+                break
+            else:
+                self.menu_data.add_line(
+                    f"/!\\ Prénom '{name}' invalide, le prénom ne peut pas"
+                    f" être vide et doit commencer par une lettre /!\\"
+                )
 
-        # todo create data verification before player creation
+        self.menu_data.clear_data()
+        self.menu_data.add_line(f"{'########################'.center(105)}")
+        self.menu_data.add_line(f"{'# MENU CREATION JOUEUR #'.center(105)}")
+        self.menu_data.add_line(f"{'########################'.center(105)}")
+        self.menu_data.add_line("")
+        self.menu_data.add_query("Veuillez entrer la date de naissance au format JJ/MM/AAAA")
+        while True:
+            birth_date = self.view.get_user_choice()
+            if check_date_format(birth_date):
+                break
+            else:
+                self.menu_data.add_line(f"/!\\ Date '{birth_date}' invalide /!\\")
+
+        self.menu_data.clear_data()
+        self.menu_data.add_line(f"{'########################'.center(105)}")
+        self.menu_data.add_line(f"{'# MENU CREATION JOUEUR #'.center(105)}")
+        self.menu_data.add_line(f"{'########################'.center(105)}")
+        self.menu_data.add_line("")
+        self.menu_data.add_entry("M", "Masculin", "M")
+        self.menu_data.add_entry("F", "Féminin", "F")
+        self.menu_data.add_input_message("Saisissez votre choix")
+        sex = self.view.get_user_choice()
+
+        self.menu_data.clear_data()
+        self.menu_data.add_line(f"{'########################'.center(105)}")
+        self.menu_data.add_line(f"{'# MENU CREATION JOUEUR #'.center(105)}")
+        self.menu_data.add_line(f"{'########################'.center(105)}")
+        self.menu_data.add_line("")
+        self.menu_data.add_query("Veuillez renseigner le classement Elo du joueur")
+        while True:
+            elo = self.view.get_user_choice()
+            if check_elo_format(elo):
+                break
+            else:
+                self.menu_data.add_line(f"/!\\ Classement Elo '{elo}' invalide /!\\")
+
         player = Player(
-            players_attributes[0].capitalize(),
-            players_attributes[1].capitalize(),
-            players_attributes[2],
-            players_attributes[3],
-            int(players_attributes[4]),
+            surname.capitalize(),
+            name.capitalize(),
+            birth_date,
+            sex,
+            elo,
         )
 
         player.save()
         self.players.append(player)
 
-        self.confirmation_menu_data.add_line(f"Création du joueur")
-        self.confirmation_menu_data.add_line(player)
-        self.confirmation_menu_data.add_line("réalisée avec succès")
-        self.confirmation_menu_data.add_entry("c", "Créer un autre joueur", PlayerCreationMenuController(self.players, self.tournaments, self.sorting))
-        self.confirmation_menu_data.add_entry("j", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournaments, self.sorting))
-        self.confirmation_menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
+        self.menu_data.clear_data()
+        self.menu_data.add_line(f"{'########################'.center(105)}")
+        self.menu_data.add_line(f"{'# MENU CREATION JOUEUR #'.center(105)}")
+        self.menu_data.add_line(f"{'########################'.center(105)}")
+        self.menu_data.add_line("")
+        self.menu_data.add_line(player)
+        self.menu_data.add_line("")
+        self.menu_data.add_line("Ajouté à la base de donnée")
+        self.menu_data.add_line("")
+        self.menu_data.add_entry("c", "Créer un autre joueur", PlayerCreationMenuController(self.players, self.tournaments, self.sorting))
+        self.menu_data.add_entry("j", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournaments, self.sorting))
+        self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
+        self.menu_data.add_input_message("Saisissez votre choix")
 
-        return self.confirmation_view.get_user_choice()
+        return self.view.get_user_choice()
 
 
 class ModifyPlayerEloMenuController:
@@ -123,7 +189,12 @@ class ModifyPlayerEloMenuController:
         self.view = ModifyPlayerMenuView(self.menu_data)
 
     def __call__(self):
-        self.menu_data.add_line(f"Nom : {self.player.surname}, {self.player.name} | Elo actuel {self.player.elo_ranking}")
+        self.menu_data.add_line(f"{'##################################'.center(105)}")
+        self.menu_data.add_line(f"{'# MODIFICATION DU CLASSEMENT ELO #'.center(105)}")
+        self.menu_data.add_line(f"{'##################################'.center(105)}")
+        self.menu_data.add_line("")
+        self.menu_data.add_line(f"{self.player.surname}, {self.player.name} | Elo actuel : {self.player.elo_ranking}")
+        self.menu_data.add_line("")
         self.menu_data.add_query("Veuillez renseigner le nouveau classement Elo du joueur")
 
         while True:
@@ -131,7 +202,10 @@ class ModifyPlayerEloMenuController:
             if check_elo_format(new_elo):
                 break
             else:
-                self.menu_data.queries[0] = "Classement Elo invalide. Merci de renseigner un nombre entier positif"
+                self.menu_data.add_line(
+                    f"/!\\ Classement Elo '{new_elo}' invalide. Merci de "
+                    f"renseigner un nombre entier positif /!\\"
+                )
 
         self.player.modify_elo(int(new_elo))
         self.player.save()
