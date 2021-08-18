@@ -172,7 +172,7 @@ class TournamentMenuView:
         clear_screen()
         self.display_menu()
         while True:
-            choice = input("Saisissez le numéro d'un tournoi pour plus d'informations, ou choisissez une autre option >> ").strip()
+            choice = input(f"{self.menu_data.input_message} >> ").strip()
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
             clear_screen()
@@ -207,3 +207,32 @@ class TournamentInfoMenuView:
             clear_screen()
             self.display_menu()
             print("/!\\ Choix invalide /!\\")
+
+
+class TournamentRoundsMenuView:
+    def __init__(self, menu_data):
+        self.menu_data = menu_data
+
+    def display_menu(self):
+        for line in self.menu_data.lines:
+            print(line)
+
+        print()
+
+    def get_user_choice(self):
+        clear_screen()
+        self.display_menu()
+        return input(f"{self.menu_data.queries[0]} >> ").strip()
+
+
+class EndScreenView:
+    def __init__(self, menu_data):
+        self.menu_data = menu_data
+
+    def display_menu(self):
+        clear_screen()
+
+        for line in self.menu_data.lines:
+            print(line)
+
+
