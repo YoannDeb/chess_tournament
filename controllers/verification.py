@@ -27,3 +27,14 @@ def check_date_format(birth_date):
         return True
     else:
         return False
+
+
+def check_rounds_number_format(rounds_number):
+    try:
+        rounds_number = int(rounds_number)
+    except ValueError:
+        return False
+    if rounds_number <= 3:
+        return False
+    else:
+        return True
