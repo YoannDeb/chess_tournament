@@ -68,7 +68,7 @@ class Round:
             for index in range(0, len(players_id), 2):
                 if one_of_last_matches_impossible:
                     break
-                input()
+                # input()
                 index_of_player_to_switch_with = 2
                 print(f"checking player in position {index} id = {players_id[index]} with player in position {index + 1} id = {players_id[index + 1]}")
                 while self.check_if_previous_encounter(players_id[index], players_id[index + 1], rounds):
@@ -92,7 +92,7 @@ class Round:
         if reversed_order:
             players_id.reverse()
         print(f"final sorting {players_id}")
-        input()
+        # input()
 
         for index in range(0, len(players_id), 2):
             self.matches.append(([players_id[index], None], [players_id[index + 1], None]))
