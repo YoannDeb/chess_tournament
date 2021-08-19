@@ -19,6 +19,7 @@ class HomeMenuController:
         self.menu_data.add_entry("j", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournaments))
         self.menu_data.add_entry("t", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentMenuController(self.players, self.tournaments))
         self.menu_data.add_entry("q", "Quitter le programme (tous les changements sont automatiquement enregistrés au fur et à mesure)", EndScreenController())
+        self.menu_data.add_input_message("Saisissez votre choix")
 
         return self.view.get_user_choice()
 
@@ -59,7 +60,7 @@ class PlayersMenuController:
                 f"{'-' * 10}|"
             )
             for player in self.players:
-                self.menu_data.add_entry("auto", player, ModifyPlayerEloMenuController(self.players, self.tournaments, player))
+                self.menu_data.add_entry("auto", player, ModifyPlayerEloMenuController(self.players, self.tournaments, player, self.sorting))
         else:
             self.menu_data.add_line("Pas de joueur dans la base")
         self.menu_data.add_entry("c", "Créer un joueur", PlayerCreationMenuController(self.players, self.tournaments, self.sorting))
@@ -134,8 +135,8 @@ class PlayerCreationMenuController:
         self.menu_data.add_line(f"{'# MENU CREATION JOUEUR #'.center(105)}")
         self.menu_data.add_line(f"{'########################'.center(105)}")
         self.menu_data.add_line("")
-        self.menu_data.add_entry("M", "Masculin", "M")
-        self.menu_data.add_entry("F", "Féminin", "F")
+        self.menu_data.add_entry("m", "Masculin", "M")
+        self.menu_data.add_entry("f", "Féminin", "F")
         self.menu_data.add_input_message("Saisissez votre choix")
         sex = self.view.get_user_choice()
 
@@ -181,12 +182,13 @@ class PlayerCreationMenuController:
 
 
 class ModifyPlayerEloMenuController:
-    def __init__(self, players, tournaments, player):
+    def __init__(self, players, tournaments, player, sorting):
         self.players = players
         self.tournaments = tournaments
         self.player = player
         self.menu_data = MenuData()
         self.view = ModifyPlayerMenuView(self.menu_data)
+        self.sorting = sorting
 
     def __call__(self):
         self.menu_data.add_line(f"{'##################################'.center(105)}")
@@ -210,7 +212,7 @@ class ModifyPlayerEloMenuController:
         self.player.modify_elo(int(new_elo))
         self.player.save()
 
-        return PlayersMenuController(self.players, self.tournaments)
+        return PlayersMenuController(self.players, self.tournaments, self.sorting)
 
 
 class TournamentMenuController:
@@ -319,6 +321,7 @@ class TournamentInfoMenuController:
             self.menu_data.add_entry("s", "Classer les joueurs par score du tournoi", TournamentInfoMenuController(self.players, self.tournaments, self.tournament, "score"))
         self.menu_data.add_entry("t", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentMenuController(self.players, self.tournaments))
         self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
+        self.menu_data.add_input_message("Saisissez votre choix")
 
         return self.view.get_user_choice()
 

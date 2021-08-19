@@ -50,7 +50,7 @@ class HomeMenuView:
         clear_screen()
         self.display_menu()
         while True:
-            choice = input("Saisissez votre choix >> ").strip()
+            choice = input(f"{self.menu_data.input_message} >> ").strip().lower()
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
             clear_screen()
@@ -79,7 +79,7 @@ class PlayersMenuView:
         clear_screen()
         self.display_menu()
         while True:
-            choice = input(f"{self.menu_data.input_message} >> ").strip()
+            choice = input(f"{self.menu_data.input_message} >> ").strip().lower()
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
             clear_screen()
@@ -105,7 +105,7 @@ class PlayerCreationMenuView:
         self.display_menu()
         if self.menu_data.entries:
             while True:
-                choice = input(f"{self.menu_data.input_message} >> ").strip()
+                choice = input(f"{self.menu_data.input_message} >> ").strip().lower()
                 if choice in self.menu_data.entries:
                     return self.menu_data.entries[choice][1]
                 clear_screen()
@@ -151,7 +151,7 @@ class TournamentMenuView:
         clear_screen()
         self.display_menu()
         while True:
-            choice = input(f"{self.menu_data.input_message} >> ").strip()
+            choice = input(f"{self.menu_data.input_message} >> ").strip().lower()
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
             clear_screen()
@@ -180,7 +180,7 @@ class TournamentInfoMenuView:
         clear_screen()
         self.display_menu()
         while True:
-            choice = input("Saisissez votre choix >> ").strip()
+            choice = input(f"{self.menu_data.input_message} >> ").strip().lower()
             if choice in self.menu_data.entries:
                 return self.menu_data.entries[choice][1]
             clear_screen()
