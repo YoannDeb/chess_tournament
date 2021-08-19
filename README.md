@@ -34,7 +34,7 @@ python chess_tournament.py
 ### Create players:
 
 - In the main menu, type "j" then "Enter to enter "Menu joueurs" (Players menu).
-You will see a list of already created players. You can select a player to modify it's elo ranking
+You will see a list of already created players. You can select a player to modify it's elo ranking.
 
 - Type "c" then "Enter" to enter "Création de joueur" ("Player creation) menu.
 
@@ -49,17 +49,17 @@ You will see a list of all past tournaments. You can select a tournament to show
 
 - Fill the required fields.
 
-- The tournament will begin. The programm will show the matches for the first round.
+- The tournament will begin. The program will show the matches for the first round.
 
 - You can enter the results by selecting a match.
 
-- Once all results have been filled, you can finish the round by typing "t" then press "Enter"
+- Once all results have been filled, you can finish the round by typing "t" then press "Enter".
 
-- It will show the ranking at this stage of the tournament
+- It will show the ranking at this stage of the tournament.
 
 - You can press enter to repeat the process for the next round till the final one.
 
-- At the end of the last rond the programm will show the definitive ranking.
+- At the end of the last round the programm will show the definitive ranking.
 You can press "Enter" to return to the main menu.
 
 ### Save state and database:
