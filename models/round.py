@@ -90,7 +90,7 @@ class Round:
                         break
                 print("match ok")
         if reversed_order:
-            players_id.reverse
+            players_id.reverse()
         print(f"final sorting {players_id}")
         input()
 
