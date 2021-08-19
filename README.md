@@ -40,7 +40,7 @@ You will see a list of already created players. You can select a player to modif
 
 - Fill the required fields.
 
-###Create a tournament:
+### Create a tournament:
 
 - In the main menu, type "t" then "Enter" to enter "Menu tournois" (Tournaments menu).
 You will see a list of all past tournaments. You can select a tournament to show details about it.
