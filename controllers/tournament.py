@@ -355,6 +355,9 @@ class TournamentController:
                 self.menu_data.add_line(f"{'*' * 147}")
                 self.menu_data.add_line("")
 
+                self.menu_data.add_line(f"Classement à la ronde : {self.tournament.rounds[-1].name}")
+                self.menu_data.add_line("")
+
                 self.menu_data.add_line(
                     f"|{'Classement'.center(12)}|"
                     f"{'Nom'.center(30)}|"
@@ -383,8 +386,8 @@ class TournamentController:
                     self.menu_data.add_line("")
                     self.menu_data.add_input_message("Appuyez sur Entrée pour revenir au menu principal")
                 else:
-                    self.menu_data.add_input_message(f"Appuyez sur Entrée pour passer à la ronde suivante : {self.tournament.rounds[-1].name}")
                     self.tournament.generate_following_round()
+                    self.menu_data.add_input_message(f"Appuyez sur Entrée pour passer à la ronde suivante : {self.tournament.rounds[-1].name}")
                 self.tournament.save()
                 TournamentRankingView(self.menu_data).get_user_choice()
 
