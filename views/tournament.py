@@ -88,8 +88,10 @@ class FillRoundView:
             print(line)
 
         for key in self.menu_data.entries:
-            print(f"{key}: {self.menu_data.entries[key][0]}")
+            if self.menu_data.entries[key][2] == "top_menu":
+                print(f"{key} : {self.menu_data.entries[key][0]}")
         print()
+
 
     def get_user_choice(self):
         clear_screen()
