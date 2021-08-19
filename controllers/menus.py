@@ -262,9 +262,9 @@ class TournamentInfoMenuController:
         self.sorting = sorting
 
     def __call__(self):
-        self.menu_data.add_line(f"{'######################'.center(150)}")
-        self.menu_data.add_line(f"{'# TABLEAU DES SCORES #'.center(150)}")
-        self.menu_data.add_line(f"{'######################'.center(150)}")
+        self.menu_data.add_line(f"{'######################'.center(147)}")
+        self.menu_data.add_line(f"{'# TABLEAU DES SCORES #'.center(147)}")
+        self.menu_data.add_line(f"{'######################'.center(147)}")
         self.menu_data.add_line("")
         self.menu_data.add_line(
             f"|{'Nom'.center(35)}|{'Lieu'.center(15)}|{'Début'.center(10)}|"
@@ -285,14 +285,14 @@ class TournamentInfoMenuController:
             f"|{'Classement'.center(12)}|"
             f"{'Nom'.center(30)}|"
             f"{'Prénom'.center(30)}|"
-            f"{'Scores des matchs'.center(50)}|"
+            f"{'Scores des matchs'.center(60)}|"
             f"{'Total'.center(15)}|"
         )
         self.menu_data.add_line(
             f"|{'-' * 12}|"
             f"{'-' * 30}|"
             f"{'-' * 30}|"
-            f"{'-' * 50}|"
+            f"{'-' * 60}|"
             f"{'-' * 15}|"
         )
 
@@ -380,4 +380,4 @@ class EndScreenController:
         self.menu_data.add_line("Tous les changements on été sauvegardés au fur et à mesure")
         self.menu_data.add_line("Fermeture du programme")
 
-        self.view.display_menu()
+        self.view.get_user_choice()
