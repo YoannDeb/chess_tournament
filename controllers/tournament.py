@@ -1,8 +1,9 @@
 from models.player import Player
 from models.tournament import Tournament
 from views.menus import PlayersMenuView
-from views.tournament import InfoTournamentCreationView, TimeControlMenuView, TooMuchRoundsView, TournamentRecoveryView, FillRoundView, FillMatchView, TournamentRankingView
-from controllers.verification import check_name_format, check_rounds_number_format, check_elo_format, check_date_format
+from views.tournament import InfoTournamentCreationView, TimeControlMenuView, TooMuchRoundsView,\
+    TournamentRecoveryView, FillRoundView, FillMatchView, TournamentRankingView
+from controllers.verification import check_name_format, check_rounds_number_format
 from core.utils import MenuData, get_player_tournament_scores
 
 
@@ -106,15 +107,20 @@ class CreateTournament:
                 )
 
     def player_menu(self, rounds_number):
-        already_selected_name_list = [f"{Player.get(player_id).surname}, {Player.get(player_id).name}" for player_id in self.tournament_players_id]
+        already_selected_name_list = []
+        for player_id in self.tournament_players_id:
+            already_selected_name_list.append(f"{Player.get(player_id).surname}, {Player.get(player_id).name}")
+
         self.menu_data.clear_data()
         self.menu_data.add_line(f"{'#########################'.center(105)}")
         self.menu_data.add_line(f"{'# MENU CREATION TOURNOI #'.center(105)}")
         self.menu_data.add_line(f"{'#########################'.center(105)}")
         self.menu_data.add_line("")
-        self.menu_data.add_line(f"/!\\ Il doit y avoir au moins trois joueurs de plus que le nombre de rondes du tournoi, et le nombre de joueurs doit être pair /!\\")
+        self.menu_data.add_line(f"/!\\ Il doit y avoir au moins trois joueurs de plus que le"
+                                f" nombre de rondes du tournoi, et le nombre de joueurs doit être pair /!\\")
         self.menu_data.add_line("")
-        self.menu_data.add_line(f"{len(self.tournament_players_id)} joueur(s) déjà sélectionné(s) pour {rounds_number} rondes")
+        self.menu_data.add_line(f"{len(self.tournament_players_id)} joueur(s) déjà"
+                                f" sélectionné(s) pour {rounds_number} rondes")
         if len(self.tournament_players_id) != 0:
             self.menu_data.add_line(f"{already_selected_name_list}")
             self.menu_data.add_line("")
@@ -290,12 +296,17 @@ class TournamentController:
                             match_score = f"  ( {match[0][1]} - {match[1][1]} )  "
                         else:
                             match_score = f"    ( {match[0][1]} - {match[1][1]} )    "
-                        self.menu_data.add_entry("auto", f"Échiquier {match_number} : {player1.center(40)} {match_score.center(13)} {player2.center(40)}", match)
+                        self.menu_data.add_entry("auto", f"Échiquier {match_number} : {player1.center(40)} "
+                                                         f"{match_score.center(13)} {player2.center(40)}", match)
                     if all_matches_filled:
                         self.menu_data.add_entry("t", "Terminer la ronde et afficher le classement", "end")
-                        self.menu_data.add_input_message("Choisissez un match pour modifier son résultat ou bien entrez \"t\" pour terminer la ronde et afficher le classement")
+                        self.menu_data.add_input_message(
+                            "Choisissez un match pour modifier son résultat ou bien entrez "
+                            "\"t\" pour terminer la ronde et afficher le classement"
+                        )
                     else:
-                        self.menu_data.add_input_message("Choisissez un match pour renseigner ou modifier son résultat")
+                        self.menu_data.add_input_message("Choisissez un match pour renseigner"
+                                                         " ou modifier son résultat")
 
                     choice = FillRoundView(self.menu_data).get_user_choice()
                     if choice == "end":
@@ -378,7 +389,9 @@ class TournamentController:
                     player = Player.get(player_id)
                     player_scores = get_player_tournament_scores(player_id, self.tournament)
                     self.menu_data.add_line(
-                        f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(54)}|{str(sum(player_scores)).center(15)}|")
+                        f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|"
+                        f"{str(player_scores).center(54)}|{str(sum(player_scores)).center(15)}|"
+                    )
                 self.menu_data.add_line("")
                 if round_index == self.tournament.total_round_number - 1:
                     self.tournament.end_tournament()
@@ -387,7 +400,8 @@ class TournamentController:
                     self.menu_data.add_input_message("Appuyez sur Entrée pour revenir au menu principal")
                 else:
                     self.tournament.generate_following_round()
-                    self.menu_data.add_input_message(f"Appuyez sur Entrée pour passer à la ronde suivante : {self.tournament.rounds[-1].name}")
+                    self.menu_data.add_input_message(f"Appuyez sur Entrée pour passer à la ronde"
+                                                     f" suivante : {self.tournament.rounds[-1].name}")
                 self.tournament.save()
                 TournamentRankingView(self.menu_data).get_user_choice()
 
