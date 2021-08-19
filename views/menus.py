@@ -214,4 +214,8 @@ class EndScreenView:
         for line in self.menu_data.lines:
             print(line)
 
+    def get_user_choice(self):
+        self.display_menu()
+
+
 
