@@ -1,13 +1,15 @@
 # chess_tournament
 
 Training Project to create and handle chess tournaments with Swiss pairing.
+
 The interface is in french langage.
 
 Part of [Open Classrooms](/https://openclassrooms.com) "DA Python" formation, 4th Project.
 
 ## Creating Virtual environment, downloading and running the program
 
-You need Python 3 (tested on 3.9.5) and git installed on your machine. 
+You need Python 3 (tested on 3.9.5) and git installed on your machine.
+
 Open a terminal and navigate into the folder you want chess_tournament to be downloaded, and run the following commands:
 
 * On Linux or MacOS:
@@ -67,11 +69,13 @@ You can press "Enter" to return to the main menu.
 By default the database file will be registered in a db.json file in a databse folder at the root of the main program.
 
 You can change the name of the database file with the --databse or -d argument.
-Example: Python chess_tournament.py -d db2.json
+
+Example: python chess_tournament.py -d db2.json
 
 if the database file (and folder) does not exist, it will be created.
 
-All changes (Player creation, player modification, tournament creation, end of a round...) are directly saved to the database.
+All changes (Player creation, player modification, tournament creation, end of a round...) are immediately saved to the database.
+
 If a tournament was not finished and the program closed, the tournament will be recovered where it was after last entry (typically a match result).
 
 ### Flake 8
