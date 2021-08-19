@@ -285,14 +285,14 @@ class TournamentInfoMenuController:
             f"|{'Classement'.center(12)}|"
             f"{'Nom'.center(30)}|"
             f"{'Prénom'.center(30)}|"
-            f"{'Scores des matchs'.center(60)}|"
+            f"{'Scores des matchs'.center(54)}|"
             f"{'Total'.center(15)}|"
         )
         self.menu_data.add_line(
             f"|{'-' * 12}|"
             f"{'-' * 30}|"
             f"{'-' * 30}|"
-            f"{'-' * 60}|"
+            f"{'-' * 54}|"
             f"{'-' * 15}|"
         )
 
@@ -302,7 +302,7 @@ class TournamentInfoMenuController:
                 position += 1
                 player = Player.get(player_id)
                 player_scores = get_player_tournament_scores(player_id, self.tournament)
-                self.menu_data.add_line(f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(50)}|{str(sum(player_scores)).center(15)}|")
+                self.menu_data.add_line(f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(54)}|{str(sum(player_scores)).center(15)}|")
 
         if self.sorting == "name":
             name_sorted_players_id = sorted(self.tournament.players_id, key=lambda chess_player_id: Player.get(chess_player_id).surname)
@@ -310,7 +310,7 @@ class TournamentInfoMenuController:
                 player = Player.get(player_id)
                 player_scores = get_player_tournament_scores(player_id, self.tournament)
                 position = self.tournament.players_id.index(player_id) + 1
-                self.menu_data.add_line(f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(50)}|{str(sum(player_scores)).center(15)}|")
+                self.menu_data.add_line(f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(54)}|{str(sum(player_scores)).center(15)}|")
 
         self.menu_data.add_entry("c", "Consulter le rapport des rondes et matchs du tournoi", TournamentRoundsMenuController(self.players, self.tournaments, self.tournament, self.sorting))
         if self.sorting == "score":
@@ -349,13 +349,14 @@ class TournamentRoundsMenuController:
         )
         self.menu_data.add_line(self.tournament)
         self.menu_data.add_line("")
-        # self.menu_data.add_line(f"{'*' * 147}")
+        self.menu_data.add_line(f"{'*' * 147}")
+        self.menu_data.add_line("")
         self.menu_data.add_line(f"{'-' * 93}")
 
         for chess_round in self.tournament.rounds:
 
             self.menu_data.add_line(f"{chess_round.name}")
-            # self.menu_data.add_line("")
+            self.menu_data.add_line("")
             for match in chess_round.matches:
                 player1 = f"{Player.get(match[0][0]).surname}, {Player.get(match[0][0]).name}"
                 player2 = f"{Player.get(match[1][0]).surname}, {Player.get(match[1][0]).name}"
@@ -377,7 +378,7 @@ class EndScreenController:
 
     def __call__(self):
         self.menu_data.add_line("Merci d'avoir utilisé Chess Tournament")
-        self.menu_data.add_line("Tous les changements on été sauvegardés au fur et à mesure")
+        self.menu_data.add_line("Tous les changements ont été sauvegardés au fur et à mesure")
         self.menu_data.add_line("Fermeture du programme")
 
         self.view.get_user_choice()

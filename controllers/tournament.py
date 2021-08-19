@@ -359,14 +359,14 @@ class TournamentController:
                     f"|{'Classement'.center(12)}|"
                     f"{'Nom'.center(30)}|"
                     f"{'Prénom'.center(30)}|"
-                    f"{'Scores des matchs'.center(60)}|"
+                    f"{'Scores des matchs'.center(54)}|"
                     f"{'Total'.center(15)}|"
                 )
                 self.menu_data.add_line(
                     f"|{'-' * 12}|"
                     f"{'-' * 30}|"
                     f"{'-' * 30}|"
-                    f"{'-' * 60}|"
+                    f"{'-' * 54}|"
                     f"{'-' * 15}|"
                 )
                 position = 0
@@ -375,7 +375,7 @@ class TournamentController:
                     player = Player.get(player_id)
                     player_scores = get_player_tournament_scores(player_id, self.tournament)
                     self.menu_data.add_line(
-                        f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(60)}|{str(sum(player_scores)).center(15)}|")
+                        f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(54)}|{str(sum(player_scores)).center(15)}|")
                 self.menu_data.add_line("")
                 if round_index == self.tournament.total_round_number - 1:
                     self.tournament.end_tournament()
@@ -383,7 +383,7 @@ class TournamentController:
                     self.menu_data.add_line("")
                     self.menu_data.add_input_message("Appuyez sur Entrée pour revenir au menu principal")
                 else:
-                    self.menu_data.add_input_message("Appuyez sur Entrée pour passer à la ronde suivante")
+                    self.menu_data.add_input_message(f"Appuyez sur Entrée pour passer à la ronde suivante : {self.tournament.rounds[-1].name}")
                     self.tournament.generate_following_round()
                 self.tournament.save()
                 TournamentRankingView(self.menu_data).get_user_choice()
