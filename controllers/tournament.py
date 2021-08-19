@@ -29,11 +29,11 @@ class CreateTournament:
             choice = self.player_menu(rounds_number)
             if choice == "surname" or choice == "elo_ranking":
                 self.sorting = choice
-            if choice == "rounds":
+            elif choice == "rounds":
                 self.menu_data.clear_data()
                 rounds_number = int(self.rounds_number())
             elif choice == "end":
-                if len(self.tournament_players_id) <= rounds_number + 3:
+                if len(self.tournament_players_id) < (rounds_number + 3):
                     self.menu_data.clear_data()
                     choice2 = self.too_much_rounds()
                     if choice2 == "rounds":
@@ -112,11 +112,12 @@ class CreateTournament:
         self.menu_data.add_line(f"{'# MENU CREATION TOURNOI #'.center(105)}")
         self.menu_data.add_line(f"{'#########################'.center(105)}")
         self.menu_data.add_line("")
-        self.menu_data.add_line(f"/!\\ Il doit y avoir au moins deux joueurs de plus que le nombre de rondes du tournoi, et le nombre de joueurs doit être pair /!\\")
+        self.menu_data.add_line(f"/!\\ Il doit y avoir au moins trois joueurs de plus que le nombre de rondes du tournoi, et le nombre de joueurs doit être pair /!\\")
         self.menu_data.add_line("")
-        self.menu_data.add_line(f"{len(self.tournament_players_id)} joueur(s) déjà sélectionné(s) pour {rounds_number} rondes:")
-        self.menu_data.add_line("")
-        self.menu_data.add_line(f"{already_selected_name_list}")
+        self.menu_data.add_line(f"{len(self.tournament_players_id)} joueur(s) déjà sélectionné(s) pour {rounds_number} rondes")
+        if len(self.tournament_players_id) != 0:
+            self.menu_data.add_line(f"{already_selected_name_list}")
+            self.menu_data.add_line("")
         self.menu_data.add_line("")
 
         if self.sorting == "surname":
@@ -150,7 +151,7 @@ class CreateTournament:
             self.menu_data.add_line("Plus de joueur disponible dans la base")
         self.menu_data.add_entry("r", "Changer le nombre de rondes", "rounds")
         self.menu_data.add_entry("t", "Terminer la selection", "end")
-        self.menu_data.add_input_message("Sélectionnez un joueur supplémentaire ou choisissez une autre option")
+        self.menu_data.add_input_message("Sélectionnez un joueur à ajouter au tournoi ou choisissez une autre option")
 
         return self.view_players.get_user_choice()
 
@@ -173,8 +174,8 @@ class CreateTournament:
         self.menu_data.add_line("")
         self.menu_data.add_line("Nombre de joueurs impair !")
         self.menu_data.add_line("")
-        self.menu_data.add_input_message("Appuyez sur Entrée pour ajouter des joueurs")
-        return self.view_too_much_rounds.get_user_choice()
+        self.menu_data.add_query("Appuyez sur Entrée pour ajouter des joueurs")
+        return self.view_info.get_user_choice()
 
     def time_control(self):
         self.menu_data.add_line(f"{'#########################'.center(105)}")
@@ -227,29 +228,72 @@ class TournamentController:
             self.tournament.generate_first_round()
             self.tournament.save()
         else:
-            self.menu_data.add_line("REPRISE DU TOURNOI PRECEDEMMENT INTERROMPU:")
-            self.menu_data.add_line(f"{self.tournament}")
+            self.menu_data.add_line(f"{'######################'.center(147)}")
+            self.menu_data.add_line(f"{'# REPRISE DU TOURNOI #'.center(147)}")
+            self.menu_data.add_line(f"{'######################'.center(147)}")
+            self.menu_data.add_line("")
+            self.menu_data.add_line(
+                f"|{'Nom'.center(35)}|{'Lieu'.center(15)}|{'Début'.center(10)}|"
+                f"{'Fin'.center(10)}|{'Rondes'.center(6)}|"
+                f"{'Cadence'.center(13)}|{'Description'.center(50)}|"
+            )
+            self.menu_data.add_line(
+                f"|{'-' * 35}|{'-' * 15}|{'-' * 10}|"
+                f"{'-' * 10}|{'-' * 6}|"
+                f"{'-' * 13}|{'-' * 50}|"
+            )
+            self.menu_data.add_line(self.tournament)
+            self.menu_data.add_line("")
+            self.menu_data.add_line(f"{'*' * 147}")
+            self.menu_data.add_line("")
             self.menu_data.add_input_message("Appuyez sur Entrée pour poursuivre le tournoi")
+
             TournamentRecoveryView(self.menu_data).get_user_choice()
 
         for round_index in range(self.tournament.total_round_number):
             if round_index == len(self.tournament.rounds) - 1:
                 while True:
                     self.menu_data.clear_data()
-                    self.menu_data.add_line(f"APPARIEMENTS {self.tournament.rounds[round_index].name} :")
+                    title = f"# APPARIEMENTS {self.tournament.rounds[round_index].name.upper()} #"
+                    title_frame = f"{'#' * len(title)}"
+                    self.menu_data.add_line(f"{title_frame.center(147)}")
+                    self.menu_data.add_line(f"{title.center(147)}")
+                    self.menu_data.add_line(f"{title_frame.center(147)}")
+                    self.menu_data.add_line("")
+                    self.menu_data.add_line(
+                        f"|{'Nom'.center(35)}|{'Lieu'.center(15)}|{'Début'.center(10)}|"
+                        f"{'Fin'.center(10)}|{'Rondes'.center(6)}|"
+                        f"{'Cadence'.center(13)}|{'Description'.center(50)}|"
+                    )
+                    self.menu_data.add_line(
+                        f"|{'-' * 35}|{'-' * 15}|{'-' * 10}|"
+                        f"{'-' * 10}|{'-' * 6}|"
+                        f"{'-' * 13}|{'-' * 50}|"
+                    )
+                    self.menu_data.add_line(self.tournament)
+                    self.menu_data.add_line("")
+                    self.menu_data.add_line(f"{'*' * 147}")
+                    self.menu_data.add_line("")
+
+                    self.menu_data.add_line(f"Appariements {self.tournament.rounds[round_index].name} :")
+                    self.menu_data.add_line("")
                     match_number = 0
                     all_matches_filled = True
                     for match in self.tournament.rounds[round_index].matches:
                         match_number += 1
+                        player1 = f"{Player.get(match[0][0]).surname}, {Player.get(match[0][0]).name}"
+                        player2 = f"{Player.get(match[1][0]).surname}, {Player.get(match[1][0]).name}"
                         if match[0][1] is None:
-                            match_score = "Non renseigné"
+                            match_score = "( Non renseigné )"
                             all_matches_filled = False
+                        elif match[0][1] == 0.5:
+                            match_score = f"  ( {match[0][1]} - {match[1][1]} )  "
                         else:
-                            match_score = f"{match[0][1]} - {match[1][1]}"
-                        self.menu_data.add_entry("auto", f"Échiquier {match_number} : {Player.get(match[0][0]).surname} vs {Player.get(match[1][0]).surname} | Résultat : {match_score}", match)
+                            match_score = f"    ( {match[0][1]} - {match[1][1]} )    "
+                        self.menu_data.add_entry("auto", f"Échiquier {match_number} : {player1.center(40)} {match_score.center(13)} {player2.center(40)}", match)
                     if all_matches_filled:
-                        self.menu_data.add_entry("t", "Terminer le Round et afficher le classement", "end")
-                        self.menu_data.add_input_message("Choisissez un match pour modifier son résultat ou bien entrez \"t\" pour terminer le Round")
+                        self.menu_data.add_entry("t", "Terminer la ronde et afficher le classement", "end")
+                        self.menu_data.add_input_message("Choisissez un match pour modifier son résultat ou bien entrez \"t\" pour terminer la ronde et afficher le classement")
                     else:
                         self.menu_data.add_input_message("Choisissez un match pour renseigner ou modifier son résultat")
 
@@ -258,9 +302,30 @@ class TournamentController:
                         break
                     else:
                         self.menu_data.clear_data()
-                        self.menu_data.add_line(f"Résultat du match {Player.get(choice[0][0]).surname} vs {Player.get(choice[1][0]).surname}")
-                        self.menu_data.add_entry("auto", f"Victoire de {Player.get(choice[0][0]).surname}", (1, 0))
-                        self.menu_data.add_entry("auto", f"Victoire de {Player.get(choice[1][0]).surname}", (0, 1))
+                        self.menu_data.add_line(f"{'##########################'.center(147)}")
+                        self.menu_data.add_line(f"{'# RENSEIGNEMENT DU SCORE #'.center(147)}")
+                        self.menu_data.add_line(f"{'##########################'.center(147)}")
+                        self.menu_data.add_line("")
+                        self.menu_data.add_line(
+                            f"|{'Nom'.center(35)}|{'Lieu'.center(15)}|{'Début'.center(10)}|"
+                            f"{'Fin'.center(10)}|{'Rondes'.center(6)}|"
+                            f"{'Cadence'.center(13)}|{'Description'.center(50)}|"
+                        )
+                        self.menu_data.add_line(
+                            f"|{'-' * 35}|{'-' * 15}|{'-' * 10}|"
+                            f"{'-' * 10}|{'-' * 6}|"
+                            f"{'-' * 13}|{'-' * 50}|"
+                        )
+                        self.menu_data.add_line(self.tournament)
+                        self.menu_data.add_line("")
+                        self.menu_data.add_line(f"{'*' * 147}")
+                        self.menu_data.add_line("")
+                        player1 = f"{Player.get(choice[0][0]).surname}, {Player.get(choice[0][0]).name}"
+                        player2 = f"{Player.get(choice[1][0]).surname}, {Player.get(choice[1][0]).name}"
+                        self.menu_data.add_line(f"Résultat du match : {player1} | {player2}")
+                        self.menu_data.add_line("")
+                        self.menu_data.add_entry("auto", f"Victoire de : {player1}", (1, 0))
+                        self.menu_data.add_entry("auto", f"Victoire de : {player2}", (0, 1))
                         self.menu_data.add_entry("auto", "Match nul", (0.5, 0.5))
                         self.menu_data.add_input_message("Choisissez le résultat du match")
                         scores = FillMatchView(self.menu_data).get_user_choice()
@@ -271,12 +336,51 @@ class TournamentController:
                 self.tournament.rounds[round_index].register_end_time()
                 self.tournament.sort_players_id_by_rank()
                 self.menu_data.clear_data()
-                self.menu_data.add_line("TABLEAU DES SCORES")
+                self.menu_data.add_line(f"{'######################'.center(147)}")
+                self.menu_data.add_line(f"{'# TABLEAU DES SCORES #'.center(147)}")
+                self.menu_data.add_line(f"{'######################'.center(147)}")
+                self.menu_data.add_line("")
+                self.menu_data.add_line(
+                    f"|{'Nom'.center(35)}|{'Lieu'.center(15)}|{'Début'.center(10)}|"
+                    f"{'Fin'.center(10)}|{'Rondes'.center(6)}|"
+                    f"{'Cadence'.center(13)}|{'Description'.center(50)}|"
+                )
+                self.menu_data.add_line(
+                    f"|{'-' * 35}|{'-' * 15}|{'-' * 10}|"
+                    f"{'-' * 10}|{'-' * 6}|"
+                    f"{'-' * 13}|{'-' * 50}|"
+                )
+                self.menu_data.add_line(self.tournament)
+                self.menu_data.add_line("")
+                self.menu_data.add_line(f"{'*' * 147}")
+                self.menu_data.add_line("")
+
+                self.menu_data.add_line(
+                    f"|{'Classement'.center(12)}|"
+                    f"{'Nom'.center(30)}|"
+                    f"{'Prénom'.center(30)}|"
+                    f"{'Scores des matchs'.center(60)}|"
+                    f"{'Total'.center(15)}|"
+                )
+                self.menu_data.add_line(
+                    f"|{'-' * 12}|"
+                    f"{'-' * 30}|"
+                    f"{'-' * 30}|"
+                    f"{'-' * 60}|"
+                    f"{'-' * 15}|"
+                )
+                position = 0
                 for player_id in self.tournament.players_id:
-                    self.menu_data.add_line(get_player_tournament_scores(player_id, self.tournament))
+                    position += 1
+                    player = Player.get(player_id)
+                    player_scores = get_player_tournament_scores(player_id, self.tournament)
+                    self.menu_data.add_line(
+                        f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(60)}|{str(sum(player_scores)).center(15)}|")
+                self.menu_data.add_line("")
                 if round_index == self.tournament.total_round_number - 1:
                     self.tournament.end_tournament()
                     self.menu_data.add_line("Le tournoi est terminé")
+                    self.menu_data.add_line("")
                     self.menu_data.add_input_message("Appuyez sur Entrée pour revenir au menu principal")
                 else:
                     self.menu_data.add_input_message("Appuyez sur Entrée pour passer à la ronde suivante")
