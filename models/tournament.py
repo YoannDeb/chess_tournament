@@ -28,11 +28,16 @@ class Tournament(Model):
     _table = 'tournaments'
 
     def __repr__(self):
+        if self.end_date is None:
+            end_date = "En cours"
+        else:
+            end_date = self.end_date
+
         return str(
             f"|{self.name.center(35)}|"
             f"{self.location.center(15)}|"
             f"{self.begin_date.center(10)}|"
-            f"{self.end_date.center(10)}|"
+            f"{end_date.center(10)}|"
             f"{str(self.total_round_number).center(6)}|"
             f"{self.time_control.center(13)}|"
             f"{self.description.center(50)}|"
