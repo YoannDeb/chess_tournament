@@ -37,11 +37,12 @@ class PlayersMenuController:
         self.menu_data.add_line(f"{'# MENU JOUEURS #'.center(105)}")
         self.menu_data.add_line(f"{'################'.center(105)}")
         self.menu_data.add_line("")
+
         if self.sorting == "surname":
             self.players.sort(key=lambda chess_player: chess_player.surname)
         elif self.sorting == "elo_ranking":
-            self.players.sort(key=lambda chess_player: chess_player.elo_ranking)
-            self.players.reverse()
+            self.players.sort(key=lambda chess_player: chess_player.elo_ranking, reverse=True)
+
         if len(self.players) != 0:
             self.menu_data.add_line(
                 f"    |{'Nom'.center(30)}|"
@@ -69,7 +70,6 @@ class PlayersMenuController:
 
         self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", self.parent_menu)
         self.menu_data.add_input_message("Saisissez le numéro d'un joueur pour modifier son Elo, ou choisissez une autre option")
-
 
         return self.view.get_user_choice()
 
@@ -262,9 +262,9 @@ class TournamentInfoMenuController:
         self.sorting = sorting
 
     def __call__(self):
-        self.menu_data.add_line(f"{'######################'.center(150)}")
-        self.menu_data.add_line(f"{'# TABLEAU DES SCORES #'.center(150)}")
-        self.menu_data.add_line(f"{'######################'.center(150)}")
+        self.menu_data.add_line(f"{'######################'.center(147)}")
+        self.menu_data.add_line(f"{'# TABLEAU DES SCORES #'.center(147)}")
+        self.menu_data.add_line(f"{'######################'.center(147)}")
         self.menu_data.add_line("")
         self.menu_data.add_line(
             f"|{'Nom'.center(35)}|{'Lieu'.center(15)}|{'Début'.center(10)}|"
@@ -285,14 +285,14 @@ class TournamentInfoMenuController:
             f"|{'Classement'.center(12)}|"
             f"{'Nom'.center(30)}|"
             f"{'Prénom'.center(30)}|"
-            f"{'Scores des matchs'.center(50)}|"
+            f"{'Scores des matchs'.center(60)}|"
             f"{'Total'.center(15)}|"
         )
         self.menu_data.add_line(
             f"|{'-' * 12}|"
             f"{'-' * 30}|"
             f"{'-' * 30}|"
-            f"{'-' * 50}|"
+            f"{'-' * 60}|"
             f"{'-' * 15}|"
         )
 
@@ -380,4 +380,4 @@ class EndScreenController:
         self.menu_data.add_line("Tous les changements on été sauvegardés au fur et à mesure")
         self.menu_data.add_line("Fermeture du programme")
 
-        self.view.display_menu()
+        self.view.get_user_choice()

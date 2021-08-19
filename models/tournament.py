@@ -14,7 +14,6 @@ class Tournament(Model):
             time_control,
             description,
             total_round_number=4):
-        # super().__init__()
         self.name = name
         self.location = location
         self.begin_date = datetime.now().strftime("%d/%m/%Y")
@@ -22,7 +21,6 @@ class Tournament(Model):
         self.rounds = []
         self.total_round_number = total_round_number
         self.players_id = tournament_players_id
-        # self.players_elo_ranking = []
         self.time_control = time_control
         self.description = description
         self.id = None
@@ -30,29 +28,26 @@ class Tournament(Model):
     _table = 'tournaments'
 
     def __repr__(self):
+        if self.end_date is None:
+            end_date = "En cours"
+        else:
+            end_date = self.end_date
+
         return str(
             f"|{self.name.center(35)}|"
             f"{self.location.center(15)}|"
             f"{self.begin_date.center(10)}|"
-            f"{self.end_date.center(10)}|"
+            f"{end_date.center(10)}|"
             f"{str(self.total_round_number).center(6)}|"
             f"{self.time_control.center(13)}|"
             f"{self.description.center(50)}|"
         )
 
-    # def get_tournament_players(self, database_file):
-    #     return [Player.get(player_id, database_file) for player_id in self.players_id]
-
-    # def get_players_elo_ranking(self):
-    #     return [player.elo_ranking for player in self.get_tournament_players()]
-
-    def sort_players_id_by_rank(self):  # todo à corriger ?
+    def sort_players_id_by_rank(self):
         players = [Player.get(player_id) for player_id in self.players_id]
         players_score = self.players_tournament_score()
         for player in players:
             player.tournament_score = players_score.pop(0)
-            print(player.tournament_score)
-        input()
         players.sort(key=lambda chess_player: chess_player.elo_ranking, reverse=True)
         players.sort(key=lambda chess_player: chess_player.tournament_score, reverse=True)
         self.players_id = [player.id for player in players]
