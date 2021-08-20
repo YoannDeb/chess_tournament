@@ -56,7 +56,8 @@ class Round:
         until the original odd player hasn't already played with his follower in the list.
         - Finally create a match with each pair of player (the odd and the following player) in the list.
         If the number of players is odd, the last one will be in an unpaired solo match.
-        :param players_id: copy of the list of instances of players' id in the tournament, already sorted by tournament's rank tournament.
+        :param players_id: copy of the list of instances of players' id in the tournament, already sorted
+         by tournament's rank tournament.
         :param rounds: list of rounds in the tournament.
         """
 
