@@ -300,18 +300,18 @@ class TournamentInfoMenuController:
 
         if self.sorting == "score":
             position = 0
-            for player_id in self.tournament.players_id:
+            for player_id in self.tournament.players_ids:
                 position += 1
                 player = Player.get(player_id)
                 player_scores = get_player_tournament_scores(player_id, self.tournament)
                 self.menu_data.add_line(f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(54)}|{str(sum(player_scores)).center(15)}|")
 
         if self.sorting == "name":
-            name_sorted_players_id = sorted(self.tournament.players_id, key=lambda chess_player_id: Player.get(chess_player_id).surname)
+            name_sorted_players_id = sorted(self.tournament.players_ids, key=lambda chess_player_id: Player.get(chess_player_id).surname)
             for player_id in name_sorted_players_id:
                 player = Player.get(player_id)
                 player_scores = get_player_tournament_scores(player_id, self.tournament)
-                position = self.tournament.players_id.index(player_id) + 1
+                position = self.tournament.players_ids.index(player_id) + 1
                 self.menu_data.add_line(f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(54)}|{str(sum(player_scores)).center(15)}|")
 
         self.menu_data.add_entry("c", "Consulter le rapport des rondes et matchs du tournoi", TournamentRoundsMenuController(self.players, self.tournaments, self.tournament, self.sorting))

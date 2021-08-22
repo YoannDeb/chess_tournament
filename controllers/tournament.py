@@ -228,7 +228,7 @@ class TournamentController:
             self.tournaments.append(self.tournament)
             self.view = None
 
-        self.tournament.sort_players_id_by_rank()
+        self.tournament.sort_players_ids_by_rank()
 
         if len(self.tournament.rounds) == 0:
             self.tournament.generate_first_round()
@@ -346,7 +346,7 @@ class TournamentController:
 
                 self.tournament.rounds[round_index].register_end_time()
                 self.tournament.rounds[round_index].normalize_score_signifiance()
-                self.tournament.sort_players_id_by_rank()
+                self.tournament.sort_players_ids_by_rank()
                 self.menu_data.clear_data()
                 self.menu_data.add_line(f"{'######################'.center(147)}")
                 self.menu_data.add_line(f"{'# TABLEAU DES SCORES #'.center(147)}")
@@ -385,7 +385,7 @@ class TournamentController:
                     f"{'-' * 15}|"
                 )
                 position = 0
-                for player_id in self.tournament.players_id:
+                for player_id in self.tournament.players_ids:
                     position += 1
                     player = Player.get(player_id)
                     player_scores = get_player_tournament_scores(player_id, self.tournament)
