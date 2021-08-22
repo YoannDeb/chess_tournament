@@ -345,6 +345,7 @@ class TournamentController:
                         self.tournament.save()
 
                 self.tournament.rounds[round_index].register_end_time()
+                self.tournament.rounds[round_index].normalize_score_signifiance()
                 self.tournament.sort_players_id_by_rank()
                 self.menu_data.clear_data()
                 self.menu_data.add_line(f"{'######################'.center(147)}")

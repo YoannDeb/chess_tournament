@@ -101,6 +101,11 @@ class Round:
     def register_end_time(self):
         self.end_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
+    def normalize_score_signifiance(self):
+        for match in self.matches:
+            match[0][1] += 0.0
+            match[1][1] += 0.0
+
     def serialize(self):
         serialized_round = {
             'name': self.name,
