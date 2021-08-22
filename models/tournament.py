@@ -10,7 +10,7 @@ class Tournament(Model):
             self,
             name,
             location,
-            tournament_players_id,
+            tournament_players_ids,
             time_control,
             description,
             total_round_number=4):
@@ -20,7 +20,7 @@ class Tournament(Model):
         self.end_date = None
         self.rounds = []
         self.total_round_number = total_round_number
-        self.players_id = tournament_players_id
+        self.players_ids = tournament_players_ids
         self.time_control = time_control
         self.description = description
         self.id = None
@@ -43,19 +43,28 @@ class Tournament(Model):
             f"{self.description.center(50)}|"
         )
 
-    def sort_players_id_by_rank(self):
-        players = [Player.get(player_id) for player_id in self.players_id]
+    def sort_players_ids_by_rank(self):
+        """
+        Sort tournament players IDs list by rank in the tournament.
+        If they have the same rank they will be sorted by Elo ranking.
+        The ranking sorting is conserved in self.players_id list.
+        """
+        players = [Player.get(player_id) for player_id in self.players_ids]
         players_score = self.players_tournament_score()
         for player in players:
             player.tournament_score = players_score.pop(0)
         players.sort(key=lambda chess_player: chess_player.elo_ranking, reverse=True)
         players.sort(key=lambda chess_player: chess_player.tournament_score, reverse=True)
-        self.players_id = [player.id for player in players]
+        self.players_ids = [player.id for player in players]
 
     def players_tournament_score(self):
+        """
+        Calculate scores of each player in the tournament.
+        :return: A list with all scores in the same order than the list self.players_ids.
+        """
         players_score = []
-        for player_id in self.players_id:
-            score = 0.0
+        for player_id in self.players_ids:
+            score = 0
             for chess_round in self.rounds:
                 for match in chess_round.matches:
                     if match[0][1] is not None:
@@ -67,17 +76,32 @@ class Tournament(Model):
         return players_score
 
     def generate_first_round(self):
+        """
+        Creates the first Round of a tournament using pair_by_elo for the pairing.
+        """
         self.rounds.append(Round("Round 1"))
-        self.rounds[0].pair_by_elo(self.players_id)
+        self.rounds[0].pair_by_elo(self.players_ids)
 
     def generate_following_round(self):
+        """
+        Creates a round in the tournaments witch is not the first one.
+        Uses pair_by_score() to pair players, on a copy of players_id
+        (We don't want to mess with ordered self.players_ids).
+        """
         self.rounds.append(Round(f"Round {len(self.rounds) + 1}"))
-        self.rounds[-1].pair_by_score(self.players_id.copy(), self.rounds)
+        self.rounds[-1].pair_by_score(self.players_ids.copy(), self.rounds)
 
     def end_tournament(self):
+        """
+        Change the end date for the actual date.
+        """
         self.end_date = datetime.now().strftime("%d/%m/%Y")
 
     def serialize(self):
+        """
+        Serialize a tournament in a manageable form for TinyDb.
+        :return: A dictionary with tournament information serialized.
+        """
         serialized_rounds = []
         for chess_round in self.rounds:
             serialized_rounds.append(chess_round.serialize())
@@ -89,7 +113,7 @@ class Tournament(Model):
             'end_date': self.end_date,
             'rounds': serialized_rounds,
             'total_round_number': self.total_round_number,
-            'players_id': self.players_id,
+            'players_id': self.players_ids,
             'time_control': self.time_control,
             'description': self.description
         }
@@ -97,6 +121,11 @@ class Tournament(Model):
 
     @classmethod
     def deserialize(cls, serialized_tournament):
+        """
+        Take a serialized tournament and deserialize it.
+        :param serialized_tournament: A dictionary with tournament information serialized.
+        :return: An instance of Tournament class.
+        """
         deserialized_rounds = []
         for chess_round in serialized_tournament['rounds']:
             deserialized_rounds.append(Round.deserialize(chess_round))
@@ -113,4 +142,3 @@ class Tournament(Model):
         tournament.end_date = serialized_tournament['end_date']
         tournament.rounds = deserialized_rounds
         return tournament
-

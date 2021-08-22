@@ -28,9 +28,17 @@ class Player(Model):
         )
 
     def modify_elo(self, new_elo):
+        """
+        Change previous Elo ranking by new Elo
+        :param new_elo: The new elo ranking
+        """
         self.elo_ranking = new_elo
 
     def serialize(self):
+        """
+        Serialize a player in a manageable form for TinyDb.
+        :return: A dictionary with player information serialized.
+        """
         serialized_player = {
             'surname': self.surname,
             'name': self.name,
@@ -42,6 +50,11 @@ class Player(Model):
 
     @classmethod
     def deserialize(cls, serialized_player):
+        """
+        Take a serialized player and deserialize it.
+        :param serialized_player: A dictionary with player information serialized.
+        :return: An instance of Player class.
+        """
         player = cls(
             serialized_player['surname'],
             serialized_player['name'],
