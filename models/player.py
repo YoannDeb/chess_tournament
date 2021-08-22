@@ -7,7 +7,7 @@ class Player(Model):
         self.name = name
         self.birth_date = birth_date
         self.sex = sex
-        self.elo_ranking = int(elo_ranking)
+        self.elo_ranking = elo_ranking
         self.tournament_score = None
         self.id = None
 
