@@ -14,12 +14,17 @@ class Player(Model):
     _table = 'players'
 
     def __repr__(self):
+        str_elo = str(self.elo_ranking)
+        if len(str_elo) < 4:
+            zeros = 4 - len(str_elo)
+        else:
+            zeros = 0
         return str(
             f"|{self.surname.center(30)}|"
             f"{self.name.center(30)}|"
             f"{self.birth_date.center(15)}|"
             f"{self.sex.center(9)}|"
-            f"{str(self.elo_ranking).center(10)}|"
+            f"{(('0' * zeros) + str_elo).center(10)}|"
         )
 
     def modify_elo(self, new_elo):
