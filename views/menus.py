@@ -1,4 +1,4 @@
-from core.utils import clear_screen
+from views.utils import clear_screen
 
 
 class HomeMenuView:
@@ -96,8 +96,7 @@ class PlayerCreationMenuView:
             print(line)
 
         for key in self.menu_data.entries:
-            if type(key) is not int:
-                print(f"{key} : {self.menu_data.entries[key][0]}")
+            print(f"{key} : {self.menu_data.entries[key][0]}")
         print()
 
     def get_user_choice(self):
@@ -140,7 +139,7 @@ class TournamentMenuView:
 
         for key in self.menu_data.entries:
             if self.menu_data.entries[key][2] == "top_menu":
-                print(f"{key.center(3)}{self.menu_data.entries[key][0]}")
+                print(f"{key.center(4)}{self.menu_data.entries[key][0]}")
         print()
         for key in self.menu_data.entries:
             if self.menu_data.entries[key][2] == "bottom_menu":
@@ -216,6 +215,3 @@ class EndScreenView:
 
     def get_user_choice(self):
         self.display_menu()
-
-
-

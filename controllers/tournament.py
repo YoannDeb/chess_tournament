@@ -3,8 +3,8 @@ from models.tournament import Tournament
 from views.menus import PlayersMenuView
 from views.tournament import InfoTournamentCreationView, TimeControlMenuView, TooMuchRoundsView,\
     TournamentRecoveryView, FillRoundView, FillMatchView, TournamentRankingView
-from controllers.verification import check_name_format, check_rounds_number_format
-from core.utils import MenuData, get_player_tournament_scores
+from controllers.utils import check_name_format, check_rounds_number_format, get_player_tournament_scores
+from core.utils import MenuData
 
 
 class CreateTournament:

@@ -1,3 +1,6 @@
+"""
+Main controller module.
+"""
 from controllers.menus import HomeMenuController
 from controllers.tournament import TournamentController
 from models.tournament import Tournament
@@ -15,6 +18,13 @@ class MainController:
     - Launch HomeMenuController if not.
     """
     def __init__(self):
+        """
+        Init method of the main controller.
+        - self.players: A list of instances of all players from the database.
+        - self.tournaments: A list of instances of all tournaments from the database.
+        - self.ongoing_tournament: An instance of unfinished tournament if found at the start in database.
+        - self.controller: the controller "loaded" in the loop.
+        """
         self.players = []
         self.tournaments = []
         self.ongoing_tournament = None
@@ -42,8 +52,9 @@ class MainController:
         - Checks database existence.
         - Load data if exists.
         - Check if there is an unfinished tournament.
-        - Launch TournamentController if so.
-        - Launch HomeMenuController if not.
+        - "Loads" TournamentController if so.
+        - "Loads" HomeMenuController if not.
+        - Launch the loop with "loaded" controller.
         """
         if check_database_exists():
             self.load_database()

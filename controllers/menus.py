@@ -4,8 +4,8 @@ from views.menus import (
     HomeMenuView, PlayersMenuView, PlayerCreationMenuView, ModifyPlayerMenuView,
     TournamentMenuView, TournamentInfoMenuView, TournamentRoundsMenuView, EndScreenView
 )
-from core.utils import MenuData, get_player_tournament_scores
-from controllers.verification import check_elo_format, check_name_format, check_date_format
+from core.utils import MenuData
+from controllers.utils import check_elo_format, check_name_format, check_date_format, get_player_tournament_scores
 
 
 class HomeMenuController:
@@ -233,12 +233,12 @@ class TournamentMenuController:
         self.menu_data.add_line("")
         if len(self.tournaments) != 0:
             self.menu_data.add_line(
-                f"   |{'Nom'.center(35)}|{'Lieu'.center(15)}|{'Début'.center(10)}|"
+                f"    |{'Nom'.center(35)}|{'Lieu'.center(15)}|{'Début'.center(10)}|"
                 f"{'Fin'.center(10)}|{'Rondes'.center(6)}|"
                 f"{'Cadence'.center(13)}|{'Description'.center(50)}|"
             )
             self.menu_data.add_line(
-                f"---|{'-' * 35}|{'-' * 15}|{'-' * 10}|"
+                f"----|{'-' * 35}|{'-' * 15}|{'-' * 10}|"
                 f"{'-' * 10}|{'-' * 6}|"
                 f"{'-' * 13}|{'-' * 50}|"
             )

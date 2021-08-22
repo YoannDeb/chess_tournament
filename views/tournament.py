@@ -1,4 +1,4 @@
-from core.utils import clear_screen
+from views.utils import clear_screen
 
 
 class InfoTournamentCreationView:
