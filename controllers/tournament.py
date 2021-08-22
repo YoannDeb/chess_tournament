@@ -34,7 +34,7 @@ class CreateTournament:
                 self.menu_data.clear_data()
                 rounds_number = int(self.rounds_number())
             elif choice == "end":
-                if len(self.tournament_players_id) < (rounds_number + 3):
+                if len(self.tournament_players_id) < (rounds_number + 4):
                     self.menu_data.clear_data()
                     choice2 = self.too_much_rounds()
                     if choice2 == "rounds":
@@ -116,7 +116,7 @@ class CreateTournament:
         self.menu_data.add_line(f"{'# MENU CREATION TOURNOI #'.center(105)}")
         self.menu_data.add_line(f"{'#########################'.center(105)}")
         self.menu_data.add_line("")
-        self.menu_data.add_line(f"/!\\ Il doit y avoir au moins trois joueurs de plus que le"
+        self.menu_data.add_line(f"/!\\ Il doit y avoir au moins quatre joueurs de plus que le"
                                 f" nombre de rondes du tournoi, et le nombre de joueurs doit être pair /!\\")
         self.menu_data.add_line("")
         self.menu_data.add_line(f"{len(self.tournament_players_id)} joueur(s) déjà"
