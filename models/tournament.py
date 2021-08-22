@@ -1,3 +1,6 @@
+"""
+Module for Tournament class.
+"""
 from datetime import datetime
 
 from models.round import Round
@@ -6,6 +9,9 @@ from models.storage import Model
 
 
 class Tournament(Model):
+    """
+    Class representing a tournament.
+    """
     def __init__(
             self,
             name,
@@ -14,6 +20,16 @@ class Tournament(Model):
             time_control,
             description,
             total_round_number=4):
+        """
+        Init method of a tournament.
+        self.begin_date is the date when the tournament is instantiated for the first time.
+        :param name: Name of the tournament.
+        :param location: Location of the tournament.
+        :param tournament_players_ids: List of all  IDs of the players of the tournament.
+        :param time_control: Time control type of the tournament.
+        :param description: Descritpion of the tournament.
+        :param total_round_number: Total round number of the tournament.
+        """
         self.name = name
         self.location = location
         self.begin_date = datetime.now().strftime("%d/%m/%Y")
@@ -28,6 +44,9 @@ class Tournament(Model):
     _table = 'tournaments'
 
     def __repr__(self):
+        """
+        Repr method for easier printing of a tournament informations.
+        """
         if self.end_date is None:
             end_date = "En cours"
         else:

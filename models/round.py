@@ -1,8 +1,22 @@
+"""
+Module for class Round.
+"""
 from datetime import datetime
 
 
 class Round:
+    """
+    Class representing a Round.
+    """
     def __init__(self, name):
+        """
+        Init method of a round.
+        Matches are stored as a list of tuples :
+        - Each tuple is a match composed of two lists.
+        - Each list contains two elements: A players' ID and it's score.
+        begin_time is the date and time at the first instantiation of the round.
+        :param name: Name of the round.
+        """
         self.name = name
         self.matches = []
         self.begin_time = datetime.now().strftime("%d/%m/%Y %H:%M:%S")

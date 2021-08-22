@@ -1,7 +1,13 @@
+"""
+Module for class Player.
+"""
 from models.storage import Model
 
 
 class Player(Model):
+    """
+    Class representing a chess player.
+    """
     def __init__(self, surname, name, birth_date, sex, elo_ranking):
         self.surname = surname
         self.name = name
