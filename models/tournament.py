@@ -84,7 +84,7 @@ class Tournament(Model):
 
     def generate_following_round(self):
         """
-        Creates a round in the tournaments witch is not the first one.
+        Creates a round in the tournaments which is not the first one.
         Uses pair_by_score() to pair players, on a copy of players_id
         (We don't want to mess with ordered self.players_ids).
         """
