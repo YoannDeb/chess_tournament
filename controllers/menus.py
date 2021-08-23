@@ -5,7 +5,7 @@ from controllers.tournament import TournamentController
 from models.player import Player
 from views.menus import (
     HomeMenuView, PlayersMenuView, PlayerCreationMenuView, ModifyPlayerEloMenuView,
-    TournamentMenuView, TournamentInfoMenuView, RoundsInfoMenuView, EndScreenView
+    TournamentsMenuView, TournamentInfoMenuView, RoundsInfoMenuView, EndScreenView
 )
 from core.utils import MenuData
 from controllers.utils import check_elo_format, check_name_format, check_date_format, get_player_tournament_scores
@@ -35,7 +35,7 @@ class HomeMenuController:
         :return: An instance of the next controller, depending on the choice gathered by the view.
         """
         self.menu_data.add_entry("j", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournaments))
-        self.menu_data.add_entry("t", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentMenuController(self.players, self.tournaments))
+        self.menu_data.add_entry("t", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentsMenuController(self.players, self.tournaments))
         self.menu_data.add_entry("q", "Quitter le programme (tous les changements sont automatiquement enregistrés au fur et à mesure)", EndScreenController())
         self.menu_data.add_input_message("Saisissez votre choix")
 
@@ -305,7 +305,7 @@ class ModifyPlayerEloMenuController:
         return PlayersMenuController(self.players, self.tournaments, self.sorting)
 
 
-class TournamentMenuController:
+class TournamentsMenuController:
     """
     Controller for tournaments menu, interacting particularly with TournamentsMenuView.
     A MenuData instance is used to transmit informations to the view.
@@ -321,7 +321,7 @@ class TournamentMenuController:
         self.players = players
         self.tournaments = tournaments
         self.menu_data = MenuData()
-        self.view = TournamentMenuView(self.menu_data)
+        self.view = TournamentsMenuView(self.menu_data)
 
     def __call__(self):
         """
@@ -450,7 +450,7 @@ class TournamentInfoMenuController:
             self.menu_data.add_entry("a", "Classer les joueurs par ordre alphabétique", TournamentInfoMenuController(self.players, self.tournaments, self.tournament, "name"))
         elif self.sorting == "name":
             self.menu_data.add_entry("s", "Classer les joueurs par score du tournoi", TournamentInfoMenuController(self.players, self.tournaments, self.tournament, "score"))
-        self.menu_data.add_entry("t", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentMenuController(self.players, self.tournaments))
+        self.menu_data.add_entry("t", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentsMenuController(self.players, self.tournaments))
         self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
         self.menu_data.add_input_message("Saisissez votre choix")
 
