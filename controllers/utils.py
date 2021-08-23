@@ -1,7 +1,15 @@
+"""
+Module for utils used by controllers.
+"""
 import re
 
 
 def check_elo_format(elo):
+    """
+    Checks if Elo entered by user is valid, ie a positive number.
+    :param elo: Elo entered by user.
+    :return: True if Elo is valid, False if not.
+    """
     try:
         elo = int(elo)
     except ValueError:
@@ -13,6 +21,11 @@ def check_elo_format(elo):
 
 
 def check_name_format(name):
+    """
+    Checks if a name or description is valid, ie begins with a letter, and is not empty.
+    :param name: A string entered by a user.
+    :return: True if the string is valid, False if not.
+    """
     if len(name) == 0:
         return False
 
@@ -23,6 +36,12 @@ def check_name_format(name):
 
 
 def check_date_format(birth_date):
+    """
+    Checks if a date is valid, ie in JJ/MM/AAAA format, and plausible:
+    Day between 1 and 31, month between 1 and 12, year between 1800 and 2099
+    :param birth_date: Date entered by user.
+    :return: True if the date is valide, False if not.
+    """
     if re.match(r'(0[1-9]|[12][\d]|3[01])/(0[1-9]|1[0-2])/[12][089]\d{2}$', birth_date):
         return True
     else:
@@ -30,6 +49,11 @@ def check_date_format(birth_date):
 
 
 def check_rounds_number_format(rounds_number):
+    """
+    Checks if rounds number is valid, ie a number greater than 3.
+    :param rounds_number: number given by a user.
+    :return: True if rounds number is valid, False if not.
+    """
     try:
         rounds_number = int(rounds_number)
     except ValueError:

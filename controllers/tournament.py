@@ -1,3 +1,6 @@
+"""
+Controller classes for tournament management.
+"""
 from models.player import Player
 from models.tournament import Tournament
 from views.menus import PlayersMenuView
@@ -8,6 +11,9 @@ from core.utils import MenuData
 
 
 class CreateTournament:
+    """
+    Controller for tournament creation interface.
+    """
     def __init__(self, players, sorting="surname"):
         self.players = players
         self.sorting = sorting
@@ -213,6 +219,9 @@ class CreateTournament:
 
 
 class TournamentController:
+    """
+    Controller for ongoing tournament (match making, scores filling).
+    """
     def __init__(self, players, tournaments, parent_controller, tournament=None):
         self.players = players
         self.tournaments = tournaments
@@ -407,9 +416,3 @@ class TournamentController:
                 TournamentRankingView(self.menu_data).get_user_choice()
 
         return self.parent_controller(self.players, self.tournaments)
-
-
-
-
-
-

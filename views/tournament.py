@@ -1,3 +1,6 @@
+"""
+Views classes for tournament management.
+"""
 from views.utils import clear_screen
 
 
@@ -92,7 +95,6 @@ class FillRoundView:
                 print(f"{key} : {self.menu_data.entries[key][0]}")
         print()
 
-
     def get_user_choice(self):
         clear_screen()
         self.display_menu()
@@ -141,5 +143,3 @@ class TournamentRankingView:
         clear_screen()
         self.display_menu()
         input(f"{self.menu_data.input_message} >> ")
-
-
