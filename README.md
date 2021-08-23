@@ -1,19 +1,21 @@
 # chess_tournament
 
-Training Project to create and handle chess tournaments with Swiss pairing.
+English readme : [README_EN.md](https://github.com/YoannDeb/chess_tournament/blob/master/README_EN.md)
 
-The interface is in french langage.
+Projet exercice pour créer et gérer des tournois en utilisant le sytème suisse d'appariement.
 
-Part of [Open Classrooms](/https://openclassrooms.com) "DA Python" formation, 4th Project.
+L'interface est en français.
 
-## Creating Virtual environment, downloading and running the program
+Ceci est le projet n°4 de la formation Open Classrooms "DA Python".
 
-You need Python 3 (tested on 3.9.5) and git installed on your machine.
+## Création de l'environnement virtuel, téléchargement et execution du programme
 
-Open a terminal and navigate into the folder you want chess_tournament to be downloaded, and run the following commands:
+Python 3 (testé sur 3.9.5) et git doivent être installés.
 
-* On Linux or MacOS:
-```
+Ouvrir un terminal, se placer dans le dossier voulu et lancer les commandes suivantes :
+
+* Sur Linux ou MacOS:
+```bash
 git clone https://github.com/YoannDeb/chess_tournament.git
 cd chess_tournament
 python3 -m venv env
@@ -22,8 +24,8 @@ pip install -r requirements.txt
 python chess_tournament.py
 ```
 
-* On Windows:
-```
+* Sur Windows:
+```bash
 git clone https://github.com/YoannDeb/chess_tournament.git
 cd chess_tournament
 python -m venv env
@@ -32,51 +34,50 @@ pip install -r requirements.txt
 python chess_tournament.py
 ```
 
-## How to use chess_tournament?
-### Create players:
+## Comment utiliser chess_tournament?
+### Créer des joueurs:
 
-- In the main menu, type "j" then "Enter to enter "Menu joueurs" (Players menu).
-You will see a list of already created players. You can select a player to modify it's elo ranking.
+- Dans le menu principal, tapez `j` et pressez `Entrée` pour entrer dans le "Menu joueurs".
+Vous verrez alors une liste des joueurs déjà créés. Vous pouvez selectionner un joueur pour modifier son classement Elo.
 
-- Type "c" then "Enter" to enter "Création de joueur" ("Player creation) menu.
+- Tapez `c` et pressez `Entrée` pour entrer dans le menu "Création joueur".
 
-- Fill the required fields.
+- Renseignez les champs requis.
 
-### Create a tournament:
+### Créer un tournoi:
 
-- In the main menu, type "t" then "Enter" to enter "Menu tournois" (Tournaments menu).
-You will see a list of all past tournaments. You can select a tournament to show details about it.
+- Dans le menu principal, tapez `t` et pressez `Entrée` pour entrer dans le "Menu tournois".
+Vous verrez alors une liste des tournois passés. Vous pouvez selectionner un tournoi pour afficher plus de renseignements sur celui-ci.
 
-- Type "c" then "Enter" to enter "Création de tournoi" (Tournamnent creation) menu.
+- Tapez `c` et pressez `Entrée` pour entrer dans le menu "Création tournoi".
 
-- Fill the required fields.
+- Renseignez les champs requis.
 
-- The tournament will begin. The program will show the matches for the first round.
+- Le tournoi va commencer. Le programme va montrer les matchs de la première ronde.
 
-- You can enter the results by selecting a match.
+- Vous pouvez entrer le resultat d'un match en le sélectionnant.
 
-- Once all results have been filled, you can finish the round by typing "t" then press "Enter".
+- Une fois que tous les résultats ont été renseignés, vous pouvez terminer la ronde en tapant `t` puis `Entrée`.
 
-- It will show the ranking at this stage of the tournament.
+- Le programme va afficher le classement à ce stade du tournoi.
 
-- You can press enter to repeat the process for the next round till the final one.
+- Vous pouvez alors presser la touche `Entrée` pour répéter le processus pour la ronde suivante.
 
-- At the end of the last round the programm will show the definitive ranking.
-You can press "Enter" to return to the main menu.
+- A la fin de la dernière ronde, le classement final sera affiché. Vous pourrez alors presser la touche `Entrée` pour revenir au menu principal.
 
-### Save state and database:
- 
-By default the database file will be registered in a db.json file in a databse folder at the root of the main program.
+### Sauvegarde et base de données:
 
-You can change the name of the database file with the --databse or -d argument.
+Par défaut, la base de donnée sera enregistrée dans un fichier `db.json`, dans un dossier `database` à la racine du programme.
 
-Example: python chess_tournament.py -d db2.json
+Vous pouvez changer le nom du fichier de base de données utilisé avec l'argument `--database` ou `-d`.
 
-if the database file (and folder) does not exist, it will be created.
+Exemple: `python chess_tournament.py -d db2.json`
 
-All changes (Player creation, player modification, tournament creation, end of a round...) are immediately saved to the database.
+Si le fichier de base de données (et le dossier database) n'existent pas, il sera créé.
 
-If a tournament was not finished and the program closed, the tournament will be recovered where it was after last entry (typically a match result).
+Tous les changements (Création d'un joueur, modification d'un joueur, création d'un tournoi, fin d'une ronde...) seront sauveagardés automatiquement dans la base de donnée.
+
+Si le programme est fermé alors qu'un tournoi n'était pas terminé, le tournoi reprendra après la dernière entrée (typiquement le résultat d'un match) à sa reprise. 
 
 ### Flake 8
 TODO
