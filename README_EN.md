@@ -8,7 +8,7 @@ Part of [Open Classrooms](/https://openclassrooms.com) "DA Python" formation, 4t
 
 ## Creating Virtual environment, downloading and running the program:
 
-You need Python 3 (tested on 3.9.5) and git installed on your machine.
+You need Python 3 (tested on 3.9.5), git and venv installed on your machine.
 
 Open a terminal and navigate into the folder you want chess_tournament to be downloaded, and run the following commands:
 
