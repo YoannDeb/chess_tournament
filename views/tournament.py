@@ -159,12 +159,17 @@ class FillRoundView:
 
     def display_menu(self):
         """
-        Displays self.menu_data's lines then entries.
+        Displays self.menu_data's lines, top_menu entries, then bottom_menu entries.
         """
         for line in self.menu_data.lines:
             print(line)
         for key in self.menu_data.entries:
-            print(f"{key} : {self.menu_data.entries[key][0]}")
+            if self.menu_data.entries[key][2] == "top_menu":
+                print(f"{key.center(4)}{self.menu_data.entries[key][0]}")
+        print()
+        for key in self.menu_data.entries:
+            if self.menu_data.entries[key][2] == "bottom_menu":
+                print(f"{key} : {self.menu_data.entries[key][0]}")
         print()
 
     def get_user_choice(self):
