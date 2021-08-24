@@ -78,9 +78,9 @@ All changes (Player creation, player modification, tournament creation, end of a
 
 If a tournament was not finished and the program closed, the tournament will be recovered where it was after last entry (typically a match result).
 
-### Flake8 and flake8-html report
+## Flake8 and flake8-html report
 
-## Setup
+### Setup:
 
 * Open a terminal in chess_tournament folder and make sure virtual environement is activated.
 * To install flake8: 
@@ -95,13 +95,13 @@ pip install flake8
 pip install flake8-html
 ```
 
-* Alternative way using requirements_flake8.txt to install the exacts version I used:
+* Alternative way of installing both modules using requirements_flake8.txt to install the exacts version I used:
 
 ```bash
 pip install -r requirements_flake8.txt
 ```
 
-## Generate an html report:
+### Generate an html report:
 
 * Always in a terminal in chess_tournament folder and with virtual environement activated:
 
