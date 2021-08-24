@@ -108,3 +108,5 @@ pip install -r requirements_flake8.txt
 ```bash
 flake8 --format=html --htmldir=flake8 --max-line-length=119 --exclude=winenv/,env/
 ```
+
+* Report will be generated in flake8 folder.
