@@ -6,7 +6,7 @@ The interface is in french langage.
 
 Part of [Open Classrooms](/https://openclassrooms.com) "DA Python" formation, 4th Project.
 
-## Creating Virtual environment, downloading and running the program
+## Creating Virtual environment, downloading and running the program:
 
 You need Python 3 (tested on 3.9.5) and git installed on your machine.
 
@@ -78,5 +78,33 @@ All changes (Player creation, player modification, tournament creation, end of a
 
 If a tournament was not finished and the program closed, the tournament will be recovered where it was after last entry (typically a match result).
 
-### Flake 8
-TODO
+### Flake8 and flake8-html report
+
+## Setup
+
+* Open a terminal in chess_tournament folder and make sure virtual environement is activated.
+* To install flake8: 
+
+```bash
+pip install flake8
+```
+
+* To install flake8-html:
+
+```bash
+pip install flake8-html
+```
+
+* Alternative way using requirements_flake8.txt to install the exacts version I used:
+
+```bash
+pip install -r requirements_flake8.txt
+```
+
+## Generate an html report:
+
+* Always in a terminal in chess_tournament folder and with virtual environement activated:
+
+```bash
+flake8 --format=html --htmldir=flake8 --max-line-length=119 --exclude=winenv/,env/
+```
