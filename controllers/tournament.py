@@ -167,8 +167,8 @@ class CreateTournament:
         self.menu_data.add_line(f"{'# MENU CREATION TOURNOI #'.center(105)}")
         self.menu_data.add_line(f"{'#########################'.center(105)}")
         self.menu_data.add_line("")
-        self.menu_data.add_line(f"/!\\ Il doit y avoir au moins quatre joueurs de plus que le"
-                                f" nombre de rondes du tournoi, et le nombre de joueurs doit être pair /!\\")
+        self.menu_data.add_line("/!\\ Il doit y avoir au moins quatre joueurs de plus que le"
+                                " nombre de rondes du tournoi, et le nombre de joueurs doit être pair /!\\")
         self.menu_data.add_line("")
         self.menu_data.add_line(f"{len(self.tournament_players_ids)} joueur(s) déjà"
                                 f" sélectionné(s) pour {rounds_number} rondes")

@@ -69,4 +69,3 @@ class Player(Model):
             serialized_player['elo_ranking'],
         )
         return player
-
