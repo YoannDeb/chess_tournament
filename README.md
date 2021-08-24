@@ -10,7 +10,7 @@ Ceci est le projet n°4 de la formation Open Classrooms "DA Python".
 
 ## Création de l'environnement virtuel, téléchargement et execution du programme
 
-Python 3 (testé sur 3.9.5) et git doivent être installés.
+Python 3 (testé sur 3.9.5) et git et venv doivent être installés.
 
 Ouvrir un terminal, se placer dans le dossier voulu et lancer les commandes suivantes :
 
