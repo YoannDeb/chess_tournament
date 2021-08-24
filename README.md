@@ -79,5 +79,35 @@ Tous les changements (Création d'un joueur, modification d'un joueur, création
 
 Si le programme est fermé alors qu'un tournoi n'était pas terminé, le tournoi reprendra après la dernière entrée (typiquement le résultat d'un match) à sa reprise. 
 
-### Flake 8
-TODO
+## Rapport flake8 et flake8-html
+
+### Installation:
+
+* Ouvrez un terminal dans le dossier chess_tournament et assurez-vous d'avoir activé l'environnement virtuel.
+* installer flake8: 
+
+```bash
+pip install flake8
+```
+
+* Install flake8-html:
+
+```bash
+pip install flake8-html
+```
+
+* Méthode alternative pour installer ces deux modules en utilisant requirements_flake8.txt pour avoir les versions que j'ai utilisées:
+
+```bash
+pip install -r requirements_flake8.txt
+```
+
+### Générer un rapport au format html:
+
+* Toujours dans un terminal dans le dossier chess_tournament avec l'environnement virtuel activé:
+
+```bash
+flake8 --format=html --htmldir=flake8 --max-line-length=119 --exclude=winenv/,env/
+```
+
+* Le rapport est consultable dans le dossier flake8 nouvellement créé.
