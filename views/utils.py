@@ -8,4 +8,4 @@ def clear_screen():
     """
     Clears screen either on unix or windows system
     """
-    os.system('cls||clear')  # todo test on linux
+    os.system('cls||clear')
