@@ -19,8 +19,8 @@ class HomeMenuController:
     def __init__(self, players, tournaments):
         """
         Init method.
-        self.menu_data is an instance of MenuData
-        self.view is an instance of HomeMenuView taking self.menu_data as parameter.
+        self.menu_data: An instance of MenuData
+        self.view: An instance of HomeMenuView taking self.menu_data as parameter.
         :param players: A list of instances of all players registered in database.
         :param tournaments: A list of instances of all tournaments registered in database.
         """
@@ -34,9 +34,21 @@ class HomeMenuController:
         Defines informations in self.menu_data
         :return: An instance of the next controller, depending on the choice gathered by the view.
         """
-        self.menu_data.add_entry("j", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournaments))
-        self.menu_data.add_entry("t", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentsMenuController(self.players, self.tournaments))
-        self.menu_data.add_entry("q", "Quitter le programme (tous les changements sont automatiquement enregistrés au fur et à mesure)", EndScreenController())
+        self.menu_data.add_entry(
+            "j",
+            "MENU JOUEURS : Consulter, modifier et créer les joueurs",
+            PlayersMenuController(self.players, self.tournaments)
+        )
+        self.menu_data.add_entry(
+            "t",
+            "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau",
+            TournamentsMenuController(self.players, self.tournaments)
+        )
+        self.menu_data.add_entry(
+            "q",
+            "Quitter le programme (tous les changements sont automatiquement enregistrés au fur et à mesure)",
+            EndScreenController()
+        )
         self.menu_data.add_input_message("Saisissez votre choix")
 
         return self.view.get_user_choice()
@@ -50,9 +62,9 @@ class PlayersMenuController:
     def __init__(self, players, tournaments, sorting="surname"):
         """
         Init method.
-        self.menu_data is an instance of MenuData
-        self.view is an instance of PlayersMenuView taking self.menu_data as parameter.
-        self.parent_menu is used to recall HomeMenuController.
+        self.menu_data: An instance of MenuData
+        self.view: An instance of PlayersMenuView taking self.menu_data as parameter.
+        self.parent_menu: Used to recall HomeMenuController.
         :param players: A list of instances of all players registered in database.
         :param tournaments: A list of instances of all tournaments registered in database.
         :param sorting: Stores the choice of sorting type of the user. Default is sorting by surname.
@@ -96,18 +108,35 @@ class PlayersMenuController:
                 f"{'-' * 10}|"
             )
             for player in self.players:
-                self.menu_data.add_entry("auto", player, ModifyPlayerEloMenuController(self.players, self.tournaments, player, self.sorting))
+                self.menu_data.add_entry(
+                    "auto",
+                    player,
+                    ModifyPlayerEloMenuController(self.players, self.tournaments, player, self.sorting)
+                )
         else:
             self.menu_data.add_line("Pas de joueur dans la base")
-        self.menu_data.add_entry("c", "Créer un joueur", PlayerCreationMenuController(self.players, self.tournaments, self.sorting))
+        self.menu_data.add_entry(
+            "c",
+            "Créer un joueur",
+            PlayerCreationMenuController(self.players, self.tournaments, self.sorting)
+        )
         if self.sorting == "surname":
-            self.menu_data.add_entry("e", "Classer par Elo", PlayersMenuController(self.players, self.tournaments, "elo_ranking"))
+            self.menu_data.add_entry(
+                "e",
+                "Classer par Elo",
+                PlayersMenuController(self.players, self.tournaments, "elo_ranking")
+            )
         elif self.sorting == "elo_ranking":
-            self.menu_data.add_entry("a", "Classer par ordre alphabétique", PlayersMenuController(self.players, self.tournaments, "surname"))
+            self.menu_data.add_entry(
+                "a",
+                "Classer par ordre alphabétique",
+                PlayersMenuController(self.players, self.tournaments, "surname")
+            )
 
         self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", self.parent_menu)
-        self.menu_data.add_input_message("Saisissez le numéro d'un joueur pour modifier son Elo, "
-                                         "ou choisissez une autre option")
+        self.menu_data.add_input_message(
+            "Saisissez le numéro d'un joueur pour modifier son Elo, ou choisissez une autre option"
+        )
 
         return self.view.get_user_choice()
 
@@ -120,8 +149,8 @@ class PlayerCreationMenuController:
     def __init__(self, players, tournaments, sorting):
         """
         Init method.
-        self.menu_data is an instance of MenuData
-        self.view is an instance of PlayersMenuView taking self.menu_data as parameter.
+        self.menu_data: An instance of MenuData
+        self.view: An instance of PlayersMenuView taking self.menu_data as parameter.
         :param players: A list of instances of all players registered in database.
         :param tournaments: A list of instances of all tournaments registered in database.
         :param sorting: Stores the choice of sorting type of the user.
@@ -241,9 +270,21 @@ class PlayerCreationMenuController:
         self.menu_data.add_line("")
         self.menu_data.add_line("Ajouté à la base de donnée")
         self.menu_data.add_line("")
-        self.menu_data.add_entry("c", "Créer un autre joueur", PlayerCreationMenuController(self.players, self.tournaments, self.sorting))
-        self.menu_data.add_entry("j", "MENU JOUEURS : Consulter, modifier et créer les joueurs", PlayersMenuController(self.players, self.tournaments, self.sorting))
-        self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
+        self.menu_data.add_entry(
+            "c",
+            "Créer un autre joueur",
+            PlayerCreationMenuController(self.players, self.tournaments, self.sorting)
+        )
+        self.menu_data.add_entry(
+            "j",
+            "MENU JOUEURS : Consulter, modifier et créer les joueurs",
+            PlayersMenuController(self.players, self.tournaments, self.sorting)
+        )
+        self.menu_data.add_entry(
+            "r",
+            "ACCUEIL : Retourner au menu de démarrage",
+            HomeMenuController(self.players, self.tournaments)
+        )
         self.menu_data.add_input_message("Saisissez votre choix")
 
         return self.view.get_user_choice()
@@ -257,8 +298,8 @@ class ModifyPlayerEloMenuController:
     def __init__(self, players, tournaments, player, sorting):
         """
         Init method.
-        self.menu_data is an instance of MenuData
-        self.view is an instance of PlayersMenuView taking self.menu_data as parameter.
+        self.menu_data: An instance of MenuData
+        self.view: An instance of PlayersMenuView taking self.menu_data as parameter.
         :param players: A list of instances of all players registered in database.
         :param tournaments: A list of instances of all tournaments registered in database.
         :param sorting: Stores the choice of sorting type of the user.
@@ -313,8 +354,8 @@ class TournamentsMenuController:
     def __init__(self, players, tournaments):
         """
         Init method.
-        self.menu_data is an instance of MenuData
-        self.view is an instance of TournamentsMenuView taking self.menu_data as parameter.
+        self.menu_data: An instance of MenuData
+        self.view: An instance of TournamentsMenuView taking self.menu_data as parameter.
         :param players: A list of instances of all players registered in database.
         :param tournaments: A list of instances of all tournaments registered in database.
         """
@@ -352,13 +393,27 @@ class TournamentsMenuController:
                 f"{'-' * 13}|{'-' * 50}|"
             )
             for tournament in self.tournaments:
-                self.menu_data.add_entry("auto", tournament, TournamentInfoMenuController(self.players, self.tournaments, tournament))
+                self.menu_data.add_entry(
+                    "auto",
+                    tournament,
+                    TournamentInfoMenuController(self.players, self.tournaments, tournament)
+                )
         else:
             self.menu_data.add_line("Pas de tournoi dans la base")
 
-        self.menu_data.add_entry("c", "Création d'un nouveau tournoi", TournamentController(self.players, self.tournaments, HomeMenuController))
-        self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
-        self.menu_data.add_input_message("Saisissez le numéro d'un tournoi pour plus d'informations sur celui-ci, ou choisissez une autre option")
+        self.menu_data.add_entry(
+            "c",
+            "Création d'un nouveau tournoi",
+            TournamentController(self.players, self.tournaments, HomeMenuController)
+        )
+        self.menu_data.add_entry(
+            "r",
+            "ACCUEIL : Retourner au menu de démarrage",
+            HomeMenuController(self.players, self.tournaments)
+        )
+        self.menu_data.add_input_message(
+            "Saisissez le numéro d'un tournoi pour plus d'informations sur celui-ci, ou choisissez une autre option"
+        )
 
         return self.view.get_user_choice()
 
@@ -372,8 +427,8 @@ class TournamentInfoMenuController:
     def __init__(self, players, tournaments, tournament, sorting="score"):
         """
         Init method.
-        self.menu_data is an instance of MenuData
-        self.view is an instance of PlayersMenuView taking self.menu_data as parameter.
+        self.menu_data: An instance of MenuData
+        self.view: An instance of PlayersMenuView taking self.menu_data as parameter.
         :param players: A list of instances of all players registered in database.
         :param tournaments: A list of instances of all tournaments registered in database.
         :param tournament: the instance of tournament detailed in this menu.
@@ -435,23 +490,52 @@ class TournamentInfoMenuController:
                 position += 1
                 player = Player.get(player_id)
                 player_scores = get_player_tournament_scores(player_id, self.tournament)
-                self.menu_data.add_line(f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(54)}|{str(sum(player_scores)).center(15)}|")
+                self.menu_data.add_line(
+                    f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|"
+                    f"{str(player_scores).center(54)}|{str(sum(player_scores)).center(15)}|"
+                )
 
         if self.sorting == "name":
-            name_sorted_players_id = sorted(self.tournament.players_ids, key=lambda chess_player_id: Player.get(chess_player_id).surname)
+            name_sorted_players_id = sorted(
+                self.tournament.players_ids,
+                key=lambda chess_player_id: Player.get(chess_player_id).surname
+            )
             for player_id in name_sorted_players_id:
                 player = Player.get(player_id)
                 player_scores = get_player_tournament_scores(player_id, self.tournament)
                 position = self.tournament.players_ids.index(player_id) + 1
-                self.menu_data.add_line(f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|{str(player_scores).center(54)}|{str(sum(player_scores)).center(15)}|")
+                self.menu_data.add_line(
+                    f"|{str(position).center(12)}|{player.surname.center(30)}|{player.name.center(30)}|"
+                    f"{str(player_scores).center(54)}|{str(sum(player_scores)).center(15)}|"
+                )
 
-        self.menu_data.add_entry("c", "Consulter le rapport des rondes et matchs du tournoi", RoundsInfoMenuController(self.players, self.tournaments, self.tournament, self.sorting))
+        self.menu_data.add_entry(
+            "c",
+            "Consulter le rapport des rondes et matchs du tournoi",
+            RoundsInfoMenuController(self.players, self.tournaments, self.tournament, self.sorting)
+        )
         if self.sorting == "score":
-            self.menu_data.add_entry("a", "Classer les joueurs par ordre alphabétique", TournamentInfoMenuController(self.players, self.tournaments, self.tournament, "name"))
+            self.menu_data.add_entry(
+                "a",
+                "Classer les joueurs par ordre alphabétique",
+                TournamentInfoMenuController(self.players, self.tournaments, self.tournament, "name")
+            )
         elif self.sorting == "name":
-            self.menu_data.add_entry("s", "Classer les joueurs par score du tournoi", TournamentInfoMenuController(self.players, self.tournaments, self.tournament, "score"))
-        self.menu_data.add_entry("t", "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau", TournamentsMenuController(self.players, self.tournaments))
-        self.menu_data.add_entry("r", "ACCUEIL : Retourner au menu de démarrage", HomeMenuController(self.players, self.tournaments))
+            self.menu_data.add_entry(
+                "s",
+                "Classer les joueurs par score du tournoi",
+                TournamentInfoMenuController(self.players, self.tournaments, self.tournament, "score")
+            )
+        self.menu_data.add_entry(
+            "t",
+            "MENU TOURNOIS : Consulter les tournois passés, en créer un nouveau",
+            TournamentsMenuController(self.players, self.tournaments)
+        )
+        self.menu_data.add_entry(
+            "r",
+            "ACCUEIL : Retourner au menu de démarrage",
+            HomeMenuController(self.players, self.tournaments)
+        )
         self.menu_data.add_input_message("Saisissez votre choix")
 
         return self.view.get_user_choice()
@@ -466,8 +550,8 @@ class RoundsInfoMenuController:
     def __init__(self, players, tournaments, tournament, sorting):
         """
         Init method.
-        self.menu_data is an instance of MenuData
-        self.view is an instance of PlayersMenuView taking self.menu_data as parameter.
+        self.menu_data: An instance of MenuData
+        self.view: An instance of PlayersMenuView taking self.menu_data as parameter.
         :param players: A list of instances of all players registered in database.
         :param tournaments: A list of instances of all tournaments registered in database.
         :param tournament: the instance of tournament detailed in this menu.
@@ -539,8 +623,8 @@ class EndScreenController:
     def __init__(self):
         """
         Init method.
-        self.menu_data is an instance of MenuData
-        self.view is an instance of PlayersMenuView taking self.menu_data as parameter.
+        self.menu_data: An instance of MenuData
+        self.view: An instance of PlayersMenuView taking self.menu_data as parameter.
         """
         self.menu_data = MenuData()
         self.view = EndScreenView(self.menu_data)
