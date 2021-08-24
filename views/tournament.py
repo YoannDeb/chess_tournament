@@ -6,7 +6,7 @@ from views.utils import clear_screen
 
 class InfoTournamentCreationView:
     """
-    View class for tournament creation interface, interacting with TournamentCreationController.
+    View class for tournament creation's simple info, interacting with TournamentCreationController.
     A MenuData instance is used by the controller to transmit information to the view.
     """
     def __init__(self, menu_data):
