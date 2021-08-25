@@ -1,5 +1,7 @@
 # chess_tournament
 
+Readme en français : [README_FR.md](https://github.com/YoannDeb/chess_tournament/blob/master/README_FR.md)
+
 Training Project to create and handle chess tournaments with Swiss pairing.
 
 The interface is in french langage.
@@ -80,30 +82,9 @@ If a tournament was not finished and the program closed, the tournament will be 
 
 ## Flake8 and flake8-html report
 
-### Setup:
-
-* Open a terminal in chess_tournament folder and make sure virtual environement is activated.
-* To install flake8: 
-
-```bash
-pip install flake8
-```
-
-* To install flake8-html:
-
-```bash
-pip install flake8-html
-```
-
-* Alternative way of installing both modules using requirements_flake8.txt to install the exacts version I used:
-
-```bash
-pip install -r requirements_flake8.txt
-```
-
 ### Generate an html report:
 
-* Always in a terminal in chess_tournament folder and with virtual environement activated:
+* Open a terminal in chess_tournament folder and make sure virtual environement is activated.
 
 ```bash
 flake8 --format=html --htmldir=flake8 --max-line-length=119 --exclude=winenv/,env/
