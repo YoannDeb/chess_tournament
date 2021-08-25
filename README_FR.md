@@ -1,6 +1,6 @@
 # chess_tournament
 
-English readme : [README_EN.md](https://github.com/YoannDeb/chess_tournament/blob/master/README_EN.md)
+English readme : [README.md](https://github.com/YoannDeb/chess_tournament/blob/master/README.md)
 
 Projet exercice pour créer et gérer des tournois en utilisant le sytème suisse d'appariement.
 
@@ -81,30 +81,9 @@ Si le programme est fermé alors qu'un tournoi n'était pas terminé, le tournoi
 
 ## Rapport flake8 et flake8-html
 
-### Installation:
-
-* Ouvrez un terminal dans le dossier chess_tournament et assurez-vous d'avoir activé l'environnement virtuel.
-* installer flake8: 
-
-```bash
-pip install flake8
-```
-
-* Install flake8-html:
-
-```bash
-pip install flake8-html
-```
-
-* Méthode alternative pour installer ces deux modules en utilisant requirements_flake8.txt pour avoir les versions que j'ai utilisées:
-
-```bash
-pip install -r requirements_flake8.txt
-```
-
 ### Générer un rapport au format html:
 
-* Toujours dans un terminal dans le dossier chess_tournament avec l'environnement virtuel activé:
+* Ouvrez un terminal dans le dossier chess_tournament et assurez-vous d'avoir activé l'environnement virtuel.
 
 ```bash
 flake8 --format=html --htmldir=flake8 --max-line-length=119 --exclude=winenv/,env/
