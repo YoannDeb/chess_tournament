@@ -48,7 +48,6 @@ class Round:
         - Finally creates the matches corresponding to the pairs.
         :param players_ids: List of players' id in the tournament.
         """
-
         list_middle = int(len(players_ids) / 2)
         first_half_players = players_ids[:list_middle]
         second_half_players = players_ids[list_middle:]
@@ -72,7 +71,6 @@ class Round:
          by tournament's rank.
         :param rounds: A list of instances of rounds in the tournament.
         """
-
         print(players_ids)
         reversed_order = False
         one_of_last_matches_impossible = True
@@ -81,36 +79,23 @@ class Round:
             for index in range(0, len(players_ids), 2):
                 if one_of_last_matches_impossible:
                     break
-                # input()
                 relative_index_of_player_to_switch_with = 2
-                print(f"checking player in position {index} id = {players_ids[index]} "
-                      f"with player in position {index + 1} id = {players_ids[index + 1]}")
                 while self.check_if_previous_encounter(players_ids[index], players_ids[index + 1], rounds):
-                    print("existing match detected between those two players")
-                    # Checks if the player to switch with is not the last player
                     index_of_player_to_switch_with = index + relative_index_of_player_to_switch_with
                     if index_of_player_to_switch_with != len(players_ids):
                         players_ids[index + 1], players_ids[index_of_player_to_switch_with] = \
                             players_ids[index_of_player_to_switch_with], players_ids[index + 1]
-                        print(f"nouvelle liste réarrangée : {players_ids}")
                         relative_index_of_player_to_switch_with += 1
-                        print(relative_index_of_player_to_switch_with)
                     else:
-                        print("no more players to pair with")
                         if index <= len(players_ids) - 4:
                             players_ids[index + 1], players_ids[index_of_player_to_switch_with - 1] = \
                                 players_ids[index_of_player_to_switch_with - 1], players_ids[index + 1]
-                        print(f"players before reversing {players_ids}")
                         players_ids.reverse()
-                        print(f"players after reversing {players_ids}")
                         reversed_order = not reversed_order
                         one_of_last_matches_impossible = True
                         break
-                print("match ok")
         if reversed_order:
             players_ids.reverse()
-        print(f"final sorting {players_ids}")
-        # input()
 
         for index in range(0, len(players_ids), 2):
             self.matches.append(([players_ids[index], None], [players_ids[index + 1], None]))
