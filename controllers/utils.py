@@ -1,5 +1,5 @@
 """
-Module for utils used by controllers.
+Module for utils used by controllers (data verification essentially).
 """
 import re
 
