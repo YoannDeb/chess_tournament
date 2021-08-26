@@ -71,7 +71,7 @@ Par défaut, la base de donnée sera enregistrée dans un fichier `db.json`, dan
 
 Vous pouvez changer le nom du fichier de base de données utilisé avec l'argument `--database` ou `-d`.
 
-Exemple: `python chess_tournament.py -d db2.json`
+Exemple: `$ python chess_tournament.py -d db2.json`
 
 Si le fichier de base de données (et le dossier database) n'existent pas, il sera créé.
 
