@@ -72,7 +72,7 @@ By default the database file will be registered in a db.json file in a databse f
 
 You can change the name of the database file with the `--databse` or `-d` argument.
 
-Example: `python chess_tournament.py -d db2.json`
+Example: `$ python chess_tournament.py -d db2.json`
 
 if the database file (and folder) does not exist, it will be created.
 
