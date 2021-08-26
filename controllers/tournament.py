@@ -49,7 +49,7 @@ class CreateTournament:
         self.menu_data.clear_data()
         location = self.tournament_location()
         self.menu_data.clear_data()
-        rounds_number = int(self.rounds_number())
+        rounds_number = self.rounds_number()
 
         # Player selection loop
         while True:
@@ -59,14 +59,14 @@ class CreateTournament:
                 self.sorting = choice
             elif choice == "rounds":
                 self.menu_data.clear_data()
-                rounds_number = int(self.rounds_number())
+                rounds_number = self.rounds_number()
             elif choice == "end":
                 if len(self.tournament_players_ids) < (rounds_number + 4):
                     self.menu_data.clear_data()
                     choice2 = self.too_much_rounds()
                     if choice2 == "rounds":
                         self.menu_data.clear_data()
-                        rounds_number = int(self.rounds_number())
+                        rounds_number = self.rounds_number()
                 elif len(self.tournament_players_ids) % 2 == 1:
                     self.menu_data.clear_data()
                     self.odd_players_number()
