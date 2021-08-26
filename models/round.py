@@ -71,7 +71,6 @@ class Round:
          by tournament's rank.
         :param rounds: A list of instances of rounds in the tournament.
         """
-        print(players_ids)
         reversed_order = False
         one_of_last_matches_impossible = True
         while one_of_last_matches_impossible:
