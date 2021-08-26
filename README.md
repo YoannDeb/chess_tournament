@@ -16,22 +16,22 @@ Open a terminal and navigate into the folder you want chess_tournament to be dow
 
 * On Linux or MacOS:
 ```bash
-git clone https://github.com/YoannDeb/chess_tournament.git
-cd chess_tournament
-python3 -m venv env
-source env/bin/activate
-pip install -r requirements.txt
-python chess_tournament.py
+$ git clone https://github.com/YoannDeb/chess_tournament.git
+$ cd chess_tournament
+$ python3 -m venv env
+$ source env/bin/activate
+$ pip install -r requirements.txt
+$ python chess_tournament.py
 ```
 
 * On Windows:
 ```bash
-git clone https://github.com/YoannDeb/chess_tournament.git
-cd chess_tournament
-python -m venv env
-env\Scripts\activate.bat
-pip install -r requirements.txt
-python chess_tournament.py
+$ git clone https://github.com/YoannDeb/chess_tournament.git
+$ cd chess_tournament
+$ python -m venv env
+$ env\Scripts\activate
+$ pip install -r requirements.txt
+$ python chess_tournament.py
 ```
 
 ## How to use chess_tournament?
@@ -87,7 +87,7 @@ If a tournament was not finished and the program closed, the tournament will be 
 * Open a terminal in chess_tournament folder and make sure virtual environement is activated.
 
 ```bash
-flake8 --format=html --htmldir=flake8 --max-line-length=119 --exclude=winenv/,env/
+$ flake8 --format=html --htmldir=flake8 --max-line-length=119 --exclude=winenv/,env/
 ```
 
 * Report will be generated in flake8 folder.
