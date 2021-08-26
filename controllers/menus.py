@@ -245,6 +245,7 @@ class PlayerCreationMenuController:
         while True:
             elo = self.view.get_user_choice()
             if check_elo_format(elo):
+                elo = int(elo)
                 break
             else:
                 self.menu_data.add_line(f"/!\\ Classement Elo '{elo}' invalide /!\\")
