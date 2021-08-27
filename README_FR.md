@@ -16,22 +16,22 @@ Ouvrir un terminal, se placer dans le dossier voulu et lancer les commandes suiv
 
 * Sur Linux ou macOS :
 ```bash
-$ git clone https://github.com/YoannDeb/chess_tournament.git
-$ cd chess_tournament
-$ python3 -m venv env
-$ source env/bin/activate
-$ pip install -r requirements.txt
-$ python chess_tournament.py
+git clone https://github.com/YoannDeb/chess_tournament.git
+cd chess_tournament
+python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt
+python chess_tournament.py
 ```
 
 * Sur Windows :
 ```bash
-$ git clone https://github.com/YoannDeb/chess_tournament.git
-$ cd chess_tournament
-$ python -m venv env
-$ env\Scripts\activate
-$ pip install -r requirements.txt
-$ python chess_tournament.py
+git clone https://github.com/YoannDeb/chess_tournament.git
+cd chess_tournament
+python -m venv env
+env\Scripts\activate
+pip install -r requirements.txt
+python chess_tournament.py
 ```
 
 ## Comment utiliser chess_tournament ?
@@ -86,7 +86,7 @@ Si le programme est fermé alors qu'un tournoi n'était pas terminé, le tournoi
 * Ouvrez un terminal dans le dossier chess_tournament et assurez-vous d'avoir activé l'environnement virtuel.
 
 ```bash
-$ flake8 --format=html --htmldir=flake8 --max-line-length=119 --exclude=winenv/,env/
+flake8 --format=html --htmldir=flake8 --max-line-length=119 --exclude=winenv/,env/
 ```
 
 * Le rapport est consultable dans le dossier flake8 nouvellement créé.
