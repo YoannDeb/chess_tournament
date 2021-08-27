@@ -96,7 +96,8 @@ class CreateTournament:
         while True:
             name = self.view_info.get_user_choice()
             if check_name_format(name):
-                name = name.strip().capitalize()
+                name = name.strip()
+                name = name[0].upper() + name[1:]
                 return name
             else:
                 self.menu_data.add_line(
@@ -118,7 +119,7 @@ class CreateTournament:
         while True:
             location = self.view_info.get_user_choice()
             if check_name_format(location):
-                location = location.strip().capitalize()
+                location = location[0].upper() + location[1:]
                 return location
             else:
                 self.menu_data.add_line(
@@ -273,7 +274,8 @@ class CreateTournament:
         while True:
             description = self.view_info.get_user_choice()
             if check_name_format(description):
-                description = description.strip().capitalize()
+                description = description.strip()
+                description = description[0].upper() + description[1:]
                 return description
             else:
                 self.menu_data.add_line(

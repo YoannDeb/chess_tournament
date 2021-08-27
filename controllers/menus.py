@@ -184,7 +184,8 @@ class PlayerCreationMenuController:
         while True:
             surname = self.view.get_user_choice()
             if check_name_format(surname):
-                surname = surname.strip().capitalize()
+                surname = surname.strip()
+                surname = surname[0].upper() + surname[1:]
                 break
             else:
                 self.menu_data.add_line(
@@ -202,7 +203,8 @@ class PlayerCreationMenuController:
         while True:
             name = self.view.get_user_choice()
             if check_name_format(name):
-                name = name.strip().capitalize()
+                name = name.strip()
+                name = name[0].upper() + name[1:]
                 break
             else:
                 self.menu_data.add_line(
@@ -252,8 +254,8 @@ class PlayerCreationMenuController:
 
         # Instantiation and storage
         player = Player(
-            surname.capitalize(),
-            name.capitalize(),
+            surname,
+            name,
             birth_date,
             sex,
             elo,
