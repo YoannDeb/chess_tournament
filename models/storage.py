@@ -6,8 +6,7 @@ import pathlib
 
 from tinydb import TinyDB
 
-DATABASE_FILE_NAME = 'db.json'
-DATABASE_FILE = pathlib.Path.cwd() / 'database' / DATABASE_FILE_NAME
+DATABASE_FILE = pathlib.Path.cwd() / 'database' / 'db.json'
 os.makedirs(pathlib.Path.cwd() / 'database', exist_ok=True)
 
 
@@ -92,7 +91,7 @@ def change_database_file(database_file):
     :param database_file: A new database filename.
     """
     global DATABASE_FILE
-    DATABASE_FILE = database_file
+    DATABASE_FILE = pathlib.Path.cwd() / 'database' / database_file
 
 
 def check_database_exists():
