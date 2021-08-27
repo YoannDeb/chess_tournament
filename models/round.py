@@ -2,6 +2,9 @@
 Module for class Round.
 """
 from datetime import datetime
+from itertools import combinations
+
+from models.player import Player
 
 
 class Round:
@@ -73,47 +76,203 @@ class Round:
         :param rounds: A list of instances of rounds in the tournament.
         """
 
-        print(players_ids)
-        reversed_order = False
-        one_of_last_matches_impossible = True
-        while one_of_last_matches_impossible:
-            one_of_last_matches_impossible = False
-            for index in range(0, len(players_ids), 2):
-                if one_of_last_matches_impossible:
-                    break
-                # input()
-                relative_index_of_player_to_switch_with = 2
-                print(f"checking player in position {index} id = {players_ids[index]} "
-                      f"with player in position {index + 1} id = {players_ids[index + 1]}")
-                while self.check_if_previous_encounter(players_ids[index], players_ids[index + 1], rounds):
-                    print("existing match detected between those two players")
-                    # Checks if the player to switch with is not the last player
-                    index_of_player_to_switch_with = index + relative_index_of_player_to_switch_with
-                    if index_of_player_to_switch_with != len(players_ids):
-                        players_ids[index + 1], players_ids[index_of_player_to_switch_with] = \
-                            players_ids[index_of_player_to_switch_with], players_ids[index + 1]
-                        print(f"nouvelle liste réarrangée : {players_ids}")
-                        relative_index_of_player_to_switch_with += 1
-                        print(relative_index_of_player_to_switch_with)
-                    else:
-                        print("no more players to pair with")
-                        if index <= len(players_ids) - 4:
-                            players_ids[index + 1], players_ids[index_of_player_to_switch_with - 1] = \
-                                players_ids[index_of_player_to_switch_with - 1], players_ids[index + 1]
-                        print(f"players before reversing {players_ids}")
-                        players_ids.reverse()
-                        print(f"players after reversing {players_ids}")
-                        reversed_order = not reversed_order
-                        one_of_last_matches_impossible = True
-                        break
-                print("match ok")
-        if reversed_order:
-            players_ids.reverse()
-        print(f"final sorting {players_ids}")
-        # input()
+        # # make list with all (players, elo)
+        # players_ids_elos = [(player_id, Player.get(player_id).elo_ranking) for player_id in players_ids]
+        #
+        # # make a list with all possible matches [((player1, elo), (player2, elo)), ((player1, elo), (player3, elo)),...]
+        # all_possible_matches = []
+        # while len(players_ids_elos) > 1:
+        #     player_to_pair = players_ids_elos.pop(0)
+        #     for player in players_ids_elos:
+        #         all_possible_matches.append((player_to_pair, player))
 
-        for index in range(0, len(players_ids), 2):
-            self.matches.append(([players_ids[index], None], [players_ids[index + 1], None]))
+        all_possible_matches = list(combinations(players_ids, 2))
+
+        print(all_possible_matches)
+        print(len(all_possible_matches))
+
+        # remove all already played matches:
+        all_possible_matches_not_played = [match for match in all_possible_matches if not self.check_if_previous_encounter(match[0], match[1], rounds)]
+        # for match in all_possible_matches:
+        #     if not self.check_if_previous_encounter(match[0], match[1], rounds):
+        #         all_possible_matches_not_played.append(match)
+
+        print(len(all_possible_matches_not_played))
+        print(len(rounds[0].matches))
+        print(len(rounds))
+        print((len(rounds)-1)*(len(rounds[0].matches)))
+        print(all_possible_matches_not_played)
+
+        # trouver toutes les combinaisons de matchs possibles
+        all_matches_combinations = list(combinations(all_possible_matches_not_played, int(len(players_ids)/2)))
+        print(len(all_matches_combinations))
+
+        # Sélectionner celles qui n'ont pas de doublons de joueurs:
+        valid_matches_combinations = []
+        for matches in all_matches_combinations:
+            deserialized_matches = []
+            for match in matches:
+                deserialized_matches.append(match[0])
+                deserialized_matches.append(match[1])
+            doubles = False
+            for player in players_ids:
+                if not deserialized_matches.count(player) == 1:
+                    doubles = True
+            if not doubles:
+                valid_matches_combinations.append(matches)
+
+        print(valid_matches_combinations)
+
+        # Ordonner les combinaisons par différence de score croissante et prendre la plus basse:
+
+        def player_tournament_score(player_id):
+            score = 0
+            for chess_round in rounds:
+                for match in chess_round.matches:
+                    if match[0][1] is not None:
+                        if player_id == match[0][0]:
+                            score += match[0][1]
+                        elif player_id == match[1][0]:
+                            score += match[1][1]
+            return score
+
+        def match_score_diff(match):
+            print(f"player1 score {player_tournament_score(match[0])}")
+            print(f"player2 score {player_tournament_score(match[1])}")
+            print(f"scorediff {abs(player_tournament_score(match[0]) - player_tournament_score(match[1]))}")
+            print()
+            return abs(player_tournament_score(match[0]) - player_tournament_score(match[1]))
+
+        def match_score_sum(match):
+            return player_tournament_score(match[0]) + player_tournament_score(match[1])
+
+        def matches_total_score_diff(matches_list):
+            return sum([match_score_diff(match) for match in matches_list])
+
+        def match_elo_diff(match):
+            return abs(Player.get(match[0]).elo_ranking - Player.get(match[1]).elo_ranking)
+
+        def match_elo_sum(match):
+            return Player.get(match[0]).elo_ranking + Player.get(match[1]).elo_ranking
+
+        def matches_total_elo_diff(matches_list):
+            return sum([match_elo_diff(match) for match in matches_list])
+
+        print(matches_total_score_diff(valid_matches_combinations[0]))
+        print(valid_matches_combinations[0])
+        input()
+
+        for n in range(0, 10):
+            print(matches_total_score_diff(valid_matches_combinations[n]))
+            print(valid_matches_combinations[n])
+
+        print()
+
+        for n in range(-10, -1):
+            print(matches_total_score_diff(valid_matches_combinations[n]))
+            print(valid_matches_combinations[n])
+
+        input()
+        valid_matches_combinations.sort(key=lambda x: matches_total_elo_diff(x))
+        valid_matches_combinations.sort(key=lambda x: matches_total_score_diff(x))
+
+        for n in range(0, 10):
+            print(matches_total_score_diff(valid_matches_combinations[n]))
+            print(matches_total_elo_diff(valid_matches_combinations[n]))
+            print(valid_matches_combinations[n])
+
+        print()
+
+        for n in range(-10, -1):
+            print(matches_total_score_diff(valid_matches_combinations[n]))
+            print(matches_total_elo_diff(valid_matches_combinations[n]))
+            print(valid_matches_combinations[n])
+
+        print()
+        input()
+
+        print(valid_matches_combinations[0])
+
+        best_combination = list(valid_matches_combinations[0])
+        best_combination.sort(key=lambda x: match_elo_sum(x), reverse=True)
+        best_combination.sort(key=lambda x: match_score_sum(x), reverse=True)
+        for match in best_combination:
+            print(match)
+            print(match_score_sum(match))
+            print(match_score_sum(match))
+            self.matches.append(([match[0], None], [match[1], None]))
+
+        print(self.matches)
+        print(players_ids)
+
+        # self.matches = best_combination.sort(key=lambda x: match_sum(x))
+        # self.matches.sort(key=lambda x: match_sum(x))
+
+
+        input()
+
+
+
+
+
+
+
+
+        # print(players_ids)
+        # reversed_order = False
+        # one_of_last_matches_impossible = True
+        # while one_of_last_matches_impossible:
+        #     one_of_last_matches_impossible = False
+        #     for index_of_player_to_check in range(0, len(players_ids), 2):
+        #         if one_of_last_matches_impossible:
+        #             break
+        #         # input()
+        #         relative_index_of_player_to_switch_with = 2
+        #         print(f"checking {players_ids[index_of_player_to_check]} and {players_ids[index_of_player_to_check + 1]}")
+        #         print(players_ids)
+        #         print()
+        #         # Tries to do one inversion if the match exists.
+        #         while self.check_if_previous_encounter(players_ids[index_of_player_to_check], players_ids[index_of_player_to_check + 1], rounds):
+        #             print(f"existing match detected between those two players {players_ids[index_of_player_to_check]} and {players_ids[index_of_player_to_check + 1]} NOK!!!")
+        #             index_of_player_to_switch_with = index_of_player_to_check + relative_index_of_player_to_switch_with
+        #             # Checks if the player to switch with is not the last player.
+        #             if index_of_player_to_switch_with != len(players_ids):
+        #                 # process with inversion
+        #                 players_ids[index_of_player_to_check + 1], players_ids[index_of_player_to_switch_with] = \
+        #                     players_ids[index_of_player_to_switch_with], players_ids[index_of_player_to_check + 1]
+        #                 print(f"nouvelle liste réarrangée : {players_ids}")
+        #                 relative_index_of_player_to_switch_with += 1
+        #                 print(relative_index_of_player_to_switch_with)
+        #             # The player to check is the last player, there is no player after him.
+        #             else:
+        #                 print("no more players to pair with")
+        #                 # if index_of_player_to_check <= len(players_ids) - 4:
+        #                     # replace players after in original order before reversing
+        #                 players_ids.append(players_ids.pop(index_of_player_to_check + 1))
+        #                     # , players_ids[-1] = players_ids[-1], players_ids[index_of_player_to_check + 1]
+        #                 print(f"players before reversing {players_ids}")
+        #                 players_ids.reverse()
+        #                 print(f"players after reversing {players_ids}")
+        #                 answer = input("test match by id ? y N >> ")
+        #                 while answer == "y":
+        #                     player1 = input("id 1 >> ")
+        #                     player2 = input("id 2 >> ")
+        #                     print(f"{self.check_if_previous_encounter(int(player1), int(player2), rounds)}")
+        #                     answer = input("test another match existence? y N >> ")
+        #                 reversed_order = not reversed_order
+        #                 one_of_last_matches_impossible = True
+        #                 break
+        #
+        #         print(f"match {players_ids[index_of_player_to_check]} and {players_ids[index_of_player_to_check + 1]} OK!!!")
+        #         print(players_ids)
+        #         print()
+        # if reversed_order:
+        #     players_ids.reverse()
+        # print(f"final sorting {players_ids}")
+        # input()
+        #
+        # for index_of_player_to_check in range(0, len(players_ids), 2):
+        #     self.matches.append(([players_ids[index_of_player_to_check], None], [players_ids[index_of_player_to_check + 1], None]))
 
     def register_end_time(self):
         """
