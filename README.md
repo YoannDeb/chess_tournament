@@ -6,7 +6,7 @@ Training Project to create and handle chess tournaments with Swiss pairing.
 
 The interface is in French langage.
 
-Part of [Open Classrooms](/https://openclassrooms.com) "DA Python" formation, 4th Project.
+Part of [Open Classrooms](https://openclassrooms.com) "DA Python" formation, 4th Project.
 
 ## Creating Virtual environment, downloading and running the program:
 
